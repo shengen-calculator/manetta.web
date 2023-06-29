@@ -19,8 +19,6 @@ import {
     updateGroup
 } from "./groupSaga";
 import {
-    createTag,
-    deleteTag,
     getTags
 } from "./tagSaga";
 
@@ -39,8 +37,6 @@ function* mySaga() {
     yield takeLatest(types.DELETE_GROUP_REQUEST, deleteGroup);
     yield takeLatest(types.UPDATE_GROUP_REQUEST, updateGroup);
     yield takeLatest(types.GET_TAGS_REQUEST, getTags);
-    yield takeLatest(types.CREATE_TAG_REQUEST, createTag);
-    yield takeLatest(types.DELETE_TAG_REQUEST, deleteTag);
     yield takeEvery(types.GET_ACCOUNT_BALANCE_REQUEST, getAccountBalance)
 }
 
