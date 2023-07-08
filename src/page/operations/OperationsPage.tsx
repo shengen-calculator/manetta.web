@@ -54,6 +54,10 @@ const OperationsPage: React.FC<OperationsPageProps> = (
 
     const saveTags = () => {
         console.log(`Save tags params: ${JSON.stringify(tagDialogStatus.tagDialogParams)}`);
+        setTagDialogStatus({
+            ...tagDialogStatus,
+            isOpen: false
+        });
     };
 
     const [rowStatuses, setRowStatuses] = React.useState<RowStatus[]>([]);

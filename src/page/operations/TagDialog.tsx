@@ -48,7 +48,7 @@ const TagDialog: React.FC<TagDialogProps> = (
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onCancel}>Cancel</Button>
-                    <Button onClick={handleSave}>Subscribe</Button>
+                    <Button onClick={handleSave}>Save</Button>
                 </DialogActions>
             </Dialog>
         </div>
