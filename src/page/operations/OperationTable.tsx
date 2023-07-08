@@ -24,6 +24,7 @@ interface OperationTableProps {
     getAccountsRequest: () => GetAccountsAction
     getGroupsRequest: () => GetGroupsAction
     saveRowStatus: (key: number, isValid: boolean) => void
+    tagDialogOpen: (tagDialogParams: TagDialogParams) => void
     operations: OperationState
     accounts: AccountState
     groups: Group[]
@@ -37,6 +38,7 @@ const OperationTable: React.FC<OperationTableProps> = (
         getAccountsRequest,
         getGroupsRequest,
         saveRowStatus,
+        tagDialogOpen,
         operations,
         accounts,
         groups,
@@ -96,6 +98,7 @@ const OperationTable: React.FC<OperationTableProps> = (
                             groups={groups}
                             save={save}
                             saveRowStatus={saveRowStatus}
+                            tagDialogOpen={tagDialogOpen}
                         />
                     ))}
                 </TableBody>

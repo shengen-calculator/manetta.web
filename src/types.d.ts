@@ -96,3 +96,10 @@ interface OperationTemplate {
     title: string,
     description: string,
 }
+
+interface TagDialogParams {
+    operationId: number,
+    tags: string[],
+    groupName: string
+}
+
