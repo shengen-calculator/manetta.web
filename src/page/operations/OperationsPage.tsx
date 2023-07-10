@@ -11,8 +11,10 @@ import menuItems from "../../component/menuItems";
 import {connect} from "react-redux";
 import {ApplicationState, OperationState} from "../../redux/reducers/types";
 import PostDialog from "./PostDialog";
-import {PostOperationsAction, postOperationsRequest} from "../../redux/actions/operationActions";
-import TagDialog from "./TagDialog";
+import {
+    PostOperationsAction,
+    postOperationsRequest
+} from "../../redux/actions/operationActions";
 
 type RowStatus = {
     key: number
@@ -22,11 +24,6 @@ type RowStatus = {
 type PostDialogStatus = {
     isOpen: boolean
     asSingle: boolean
-}
-
-type TagDialogStatus = {
-    isOpen: boolean
-    tagDialogParams: TagDialogParams
 }
 
 interface OperationsPageProps {
@@ -52,27 +49,10 @@ const OperationsPage: React.FC<OperationsPageProps> = (
         });
     };
 
-    const saveTags = () => {
-        console.log(`Save tags params: ${JSON.stringify(tagDialogStatus.tagDialogParams)}`);
-        setTagDialogStatus({
-            ...tagDialogStatus,
-            isOpen: false
-        });
-    };
-
     const [rowStatuses, setRowStatuses] = React.useState<RowStatus[]>([]);
     const [postDialogStatus, setPostDialogStatus] = React.useState<PostDialogStatus>({
         isOpen: false,
         asSingle: false
-    });
-
-    const [tagDialogStatus, setTagDialogStatus] = React.useState<TagDialogStatus>({
-        isOpen: false,
-        tagDialogParams: {
-            tags: [],
-            operationId: 0,
-            groupName: ""
-        }
     });
 
     const nonZeroOperations = [...operations.items].filter(opr => opr.sum);
@@ -100,21 +80,6 @@ const OperationsPage: React.FC<OperationsPageProps> = (
         });
     };
 
-    const tagDialogOpen = (tagDialogParams: TagDialogParams) => {
-        setTagDialogStatus({
-            ...tagDialogStatus,
-            tagDialogParams,
-            isOpen: true
-        });
-    };
-
-    const handleTagDialogCancel = () => {
-        setTagDialogStatus({
-            ...tagDialogStatus,
-            isOpen: false
-        });
-    };
-
     const saveRowStatus = (key: number, isValid: boolean) => {
         setRowStatuses((prev) => [
             ...prev.filter(rs => rs.key !== key),
@@ -135,17 +100,11 @@ const OperationsPage: React.FC<OperationsPageProps> = (
                     onCancel={handlePostDialogCancel}
                     post={post}
                 />
-                <TagDialog
-                    isOpen={tagDialogStatus.isOpen}
-                    onCancel={handleTagDialogCancel}
-                    save={saveTags}
-                />
                 <Header title="MANETTA" menuItems={menuItems}/>
                 <main>
                     <ButtonPanel buttons={panelButtons}/>
                     <OperationTable
                         saveRowStatus={saveRowStatus}
-                        tagDialogOpen={tagDialogOpen}
                     />
                 </main>
             </Container>

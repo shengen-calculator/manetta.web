@@ -1,21 +1,29 @@
 import * as React from 'react';
+import {useEffect} from "react";
+import {connect} from "react-redux";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import Paper from '@mui/material/Paper';
 import OperationTableRow from "./OperationTableRow";
-import {AccountState, ApplicationState, OperationState} from "../../redux/reducers/types";
+import {
+    AccountState,
+    ApplicationState,
+    OperationState
+} from "../../redux/reducers/types";
 import {
     CreateOperationAction,
-    createOperationRequest, GetOperationsAction,
-    getOperationsRequest, UpdateOperationAction,
+    createOperationRequest,
+    GetOperationsAction,
+    getOperationsRequest,
+    UpdateOperationAction,
     updateOperationRequest
 } from "../../redux/actions/operationActions";
 import {GetAccountsAction, getAccountsRequest} from "../../redux/actions/accountActions";
 import {GetGroupsAction, getGroupsRequest} from "../../redux/actions/groupActions";
-import {connect} from "react-redux";
-import {useEffect} from "react";
+import {GetTagsAction, getTagsRequest} from "../../redux/actions/tagActions";
 import OperationHelper from "../../util/OperationHelper";
+import TagDialog from "./TagDialog";
 
 interface OperationTableProps {
     createOperationRequest: (params: CreateOperationParams) => CreateOperationAction
@@ -23,11 +31,16 @@ interface OperationTableProps {
     getOperationsRequest: () => GetOperationsAction
     getAccountsRequest: () => GetAccountsAction
     getGroupsRequest: () => GetGroupsAction
+    getTagsRequest: () => GetTagsAction
     saveRowStatus: (key: number, isValid: boolean) => void
-    tagDialogOpen: (tagDialogParams: TagDialogParams) => void
     operations: OperationState
     accounts: AccountState
+    allTags: string[]
     groups: Group[]
+}
+
+type TagDialogStatus = {
+    isOpen: boolean
 }
 
 const OperationTable: React.FC<OperationTableProps> = (
@@ -37,10 +50,11 @@ const OperationTable: React.FC<OperationTableProps> = (
         getOperationsRequest,
         getAccountsRequest,
         getGroupsRequest,
+        getTagsRequest,
         saveRowStatus,
-        tagDialogOpen,
         operations,
         accounts,
+        allTags,
         groups,
     }
 ) => {
@@ -52,6 +66,7 @@ const OperationTable: React.FC<OperationTableProps> = (
             getOperationsRequest();
             getAccountsRequest();
             getGroupsRequest();
+            getTagsRequest();
         }
     }, []);
 
@@ -73,6 +88,32 @@ const OperationTable: React.FC<OperationTableProps> = (
         }
     }, [operations, accounts]);
 
+    const [tagDialogStatus, setTagDialogStatus] = React.useState<TagDialogStatus>({
+        isOpen: false
+    });
+
+    const saveTags = () => {
+        //console.log(`Save tags params: ${JSON.stringify(tagDialogStatus.tagDialogParams)}`);
+        setTagDialogStatus({
+            ...tagDialogStatus,
+            isOpen: false
+        });
+    };
+
+    const openTagDialog = (tagDialogParams: TagDialogParams) => {
+        setTagDialogStatus({
+            ...tagDialogStatus,
+            isOpen: true
+        });
+    };
+
+    const handleTagDialogCancel = () => {
+        setTagDialogStatus({
+            ...tagDialogStatus,
+            isOpen: false
+        });
+    };
+
     const save = ((operation: Operation): void => {
         const date = new Date(operation.date);
         const operationParams = {
@@ -88,6 +129,13 @@ const OperationTable: React.FC<OperationTableProps> = (
 
     return (
         <TableContainer component={Paper}>
+            <TagDialog
+                isOpen={tagDialogStatus.isOpen}
+                onCancel={handleTagDialogCancel}
+                groups={groups}
+                tags={allTags}
+                save={saveTags}
+            />
             <Table sx={{minWidth: 450}} aria-label="simple table">
                 <TableBody>
                     {rows.map((row) => (
@@ -98,7 +146,7 @@ const OperationTable: React.FC<OperationTableProps> = (
                             groups={groups}
                             save={save}
                             saveRowStatus={saveRowStatus}
-                            tagDialogOpen={tagDialogOpen}
+                            tagDialogOpen={openTagDialog}
                         />
                     ))}
                 </TableBody>
@@ -111,7 +159,8 @@ const mapStateToProps = (state: ApplicationState) => {
     return {
         operations: state.operations,
         accounts: state.accounts,
-        groups: state.groups
+        groups: state.groups,
+        allTags: state.tags,
     }
 };
 
@@ -122,6 +171,7 @@ const mapDispatchToProps = {
     getOperationsRequest,
     getAccountsRequest,
     getGroupsRequest,
+    getTagsRequest
 };
 
 export default connect(
