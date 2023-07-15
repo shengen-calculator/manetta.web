@@ -17,7 +17,8 @@ interface TagDialogProps {
     onCancel: () => void
     groups: Group[],
     tags: string[],
-    save: (operationId: string, tags: string[], groupName: string) => void
+    tagDialogParams: TagDialogParams,
+    save: (tagDialogParams: TagDialogParams) => void
 }
 
 
@@ -51,13 +52,21 @@ const top100Films = [
 const TagDialog: React.FC<TagDialogProps> = (
     {
         isOpen,
+        groups,
+        tags,
+        tagDialogParams,
         onCancel,
         save
     }
 ) => {
 
-    const handleSave = () => {
-        save("12345", [], "");
+    const handleSave = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        save({
+            operationId: tagDialogParams.operationId,
+            tags: [],
+            groupName: ""
+        });
     };
 
     return (
@@ -66,70 +75,73 @@ const TagDialog: React.FC<TagDialogProps> = (
                 open={isOpen}
                 onClose={onCancel}>
                 <DialogTitle>Apply Operation tags</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Don't forget that tag order is important for reports. Please find more information in provided documentation.
-                    </DialogContentText>
-                    <Autocomplete
-                        id="base-tags"
-                        multiple
-                        options={top100Films}
-                        getOptionLabel={(option) =>
-                            typeof option === "string" ? option : option["title"] }
-                        defaultValue={[top100Films[13], top100Films[10]]}
-                        filterSelectedOptions
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Base Tags"
-                                placeholder="Limited by existing tag order"
-                                margin="dense"
-                                fullWidth
-                            />
-                        )}
-                    />
-                    <Autocomplete
-                        id="extra-tags"
-                        multiple
-                        freeSolo
-                        options={top100Films}
-                        getOptionLabel={(option) =>
-                            typeof option === "string" ? option : option["title"] }
-                        defaultValue={[top100Films[13]]}
-                        filterSelectedOptions
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Extra Tags"
-                                placeholder="Any value allowed"
-                                margin="dense"
-                                fullWidth
-                            />
-                        )}
-                    />
-                    <FormControlLabel control={<Checkbox />} label="Save as group" />
-                    <Autocomplete
-                        id="group"
-                        freeSolo
-                        options={top100Films}
-                        getOptionLabel={(option) =>
-                            typeof option === "string" ? option : option["title"] }
-                        defaultValue={top100Films[13]}
-                        filterSelectedOptions
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Group name"
-                                margin="dense"
-                                fullWidth
-                            />
-                        )}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={onCancel}>Cancel</Button>
-                    <Button onClick={handleSave}>Save</Button>
-                </DialogActions>
+                <form onSubmit={handleSave}>
+                    <DialogContent>
+                        <DialogContentText>
+                            Don't forget that tag order is important for reports. Please find more information in
+                            provided documentation.
+                        </DialogContentText>
+                        <Autocomplete
+                            id="base-tags"
+                            multiple
+                            options={top100Films}
+                            getOptionLabel={(option) =>
+                                typeof option === "string" ? option : option["title"]}
+                            defaultValue={[top100Films[13], top100Films[10]]}
+                            filterSelectedOptions
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Base Tags"
+                                    placeholder="Limited by existing tag order"
+                                    margin="dense"
+                                    fullWidth
+                                />
+                            )}
+                        />
+                        <Autocomplete
+                            id="extra-tags"
+                            multiple
+                            freeSolo
+                            options={top100Films}
+                            getOptionLabel={(option) =>
+                                typeof option === "string" ? option : option["title"]}
+                            defaultValue={[top100Films[13]]}
+                            filterSelectedOptions
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Extra Tags"
+                                    placeholder="Any value allowed"
+                                    margin="dense"
+                                    fullWidth
+                                />
+                            )}
+                        />
+                        <FormControlLabel control={<Checkbox/>} label="Save as group"/>
+                        <Autocomplete
+                            id="group"
+                            freeSolo
+                            options={top100Films}
+                            getOptionLabel={(option) =>
+                                typeof option === "string" ? option : option["title"]}
+                            defaultValue={top100Films[13]}
+                            filterSelectedOptions
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Group name"
+                                    margin="dense"
+                                    fullWidth
+                                />
+                            )}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={onCancel}>Cancel</Button>
+                        <Button type="submit">Save</Button>
+                    </DialogActions>
+                </form>
             </Dialog>
         </div>
     );

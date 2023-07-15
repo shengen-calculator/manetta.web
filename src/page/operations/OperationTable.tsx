@@ -40,6 +40,7 @@ interface OperationTableProps {
 }
 
 type TagDialogStatus = {
+    tagDialogParams: TagDialogParams
     isOpen: boolean
 }
 
@@ -89,11 +90,16 @@ const OperationTable: React.FC<OperationTableProps> = (
     }, [operations, accounts]);
 
     const [tagDialogStatus, setTagDialogStatus] = React.useState<TagDialogStatus>({
+        tagDialogParams: {
+            operationId: 0,
+            tags: [],
+            groupName: ""
+        },
         isOpen: false
     });
 
     const saveTags = () => {
-        //console.log(`Save tags params: ${JSON.stringify(tagDialogStatus.tagDialogParams)}`);
+        console.log(`Save tags params: ${JSON.stringify(tagDialogStatus.tagDialogParams)}`);
         setTagDialogStatus({
             ...tagDialogStatus,
             isOpen: false
@@ -103,6 +109,7 @@ const OperationTable: React.FC<OperationTableProps> = (
     const openTagDialog = (tagDialogParams: TagDialogParams) => {
         setTagDialogStatus({
             ...tagDialogStatus,
+            tagDialogParams,
             isOpen: true
         });
     };
@@ -134,6 +141,7 @@ const OperationTable: React.FC<OperationTableProps> = (
                 onCancel={handleTagDialogCancel}
                 groups={groups}
                 tags={allTags}
+                tagDialogParams={tagDialogStatus.tagDialogParams}
                 save={saveTags}
             />
             <Table sx={{minWidth: 450}} aria-label="simple table">
