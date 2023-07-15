@@ -11,6 +11,9 @@ import {
     Checkbox,
     FormControlLabel,
 } from "@mui/material";
+import {useState} from "react";
+import AutoCompleteInput from "./AutoCompleteInput";
+import TableCell from "@mui/material/TableCell";
 
 interface TagDialogProps {
     isOpen: boolean
@@ -21,6 +24,10 @@ interface TagDialogProps {
     save: (tagDialogParams: TagDialogParams) => void
 }
 
+interface OperationTags extends TagDialogParams {
+    saveAsGroup: boolean,
+    inputGroupName: string
+}
 
 // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
 const top100Films = [
@@ -64,10 +71,24 @@ const TagDialog: React.FC<TagDialogProps> = (
         event.preventDefault();
         save({
             operationId: tagDialogParams.operationId,
-            tags: [],
-            groupName: ""
+            tags: operationTags.tags,
+            groupName: operationTags.saveAsGroup ? operationTags.inputGroupName : ""
         });
     };
+    const handleAutocompleteChange = (event: React.SyntheticEvent, newValue: string | null, inputId: string): void => {
+        setOperationTags(prev => ({
+            ...prev,
+            [inputId]: newValue
+        }));
+    };
+
+    const [operationTags, setOperationTags] = useState<OperationTags>({
+        operationId: tagDialogParams.operationId,
+        tags: tagDialogParams.tags,
+        groupName: tagDialogParams.groupName,
+        inputGroupName: "",
+        saveAsGroup: false
+    });
 
     return (
         <div>
@@ -119,22 +140,17 @@ const TagDialog: React.FC<TagDialogProps> = (
                             )}
                         />
                         <FormControlLabel control={<Checkbox/>} label="Save as group"/>
-                        <Autocomplete
-                            id="group"
-                            freeSolo
-                            options={top100Films}
-                            getOptionLabel={(option) =>
-                                typeof option === "string" ? option : option["title"]}
-                            defaultValue={top100Films[13]}
-                            filterSelectedOptions
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    label="Group name"
-                                    margin="dense"
-                                    fullWidth
-                                />
-                            )}
+                        <AutoCompleteInput
+                            id="groupName"
+                            label="Group name"
+                            freeSolo={true}
+                            options={groups.map(gr => gr.name)}
+                            error={false}
+                            variant={"outlined"}
+                            value={operationTags.groupName || ''}
+                            inputValue={operationTags.inputGroupName}
+                            onChange={(e, newVal) => handleAutocompleteChange(e, newVal, "groupName")}
+                            onInputChange={(e, newVal) => handleAutocompleteChange(e, newVal, "inputGroupName")}
                         />
                     </DialogContent>
                     <DialogActions>
