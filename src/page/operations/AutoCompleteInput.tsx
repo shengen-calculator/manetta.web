@@ -6,9 +6,11 @@ interface AutoCompleteInputProps {
     id: string,
     label: string,
     options: string[],
-    width: number,
+    width?: number,
     value: string | null,
     inputValue: string,
+    freeSolo?: boolean,
+    variant?: "standard" | "outlined" | "filled"
     error: boolean,
     onChange: (event: React.SyntheticEvent, newValue: string | null, inputId: string) => void,
     onInputChange: (event: React.SyntheticEvent, newValue: string | null, inputId: string) => void
@@ -22,19 +24,23 @@ const AutoCompleteInput: React.FC<AutoCompleteInputProps> = (
         width,
         value,
         inputValue,
+        freeSolo,
+        variant,
         error,
         onChange,
         onInputChange
     }
 ) => {
+    const sx = width ? {"width": width} : {};
     return (
         <Autocomplete
             autoHighlight
             id={id}
             value={value}
             inputValue={inputValue}
+            freeSolo={!!freeSolo}
             options={options}
-            sx={{width: {width}}}
+            sx={sx}
             onChange={onChange}
             onInputChange={onInputChange}
             renderInput={
@@ -43,7 +49,7 @@ const AutoCompleteInput: React.FC<AutoCompleteInputProps> = (
                         {...params}
                         label={label}
                         error={error}
-                        variant="standard"
+                        variant={variant || "standard"}
                     />
             }
         />
