@@ -1,13 +1,11 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {
-    Autocomplete,
     Checkbox,
     FormControlLabel,
 } from "@mui/material";
@@ -25,35 +23,12 @@ interface TagDialogProps {
 
 interface OperationTags extends TagDialogParams {
     saveAsGroup: boolean,
-    inputGroupName: string
+    baseTags: string[],
+    extraTags: string[],
+    inputGroupName: string,
+    inputExtraTag: string,
+    inputBaseTag: string
 }
-
-// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
-const top100Films = [
-    { title: 'The Shawshank Redemption', year: 1994 },
-    { title: 'The Godfather', year: 1972 },
-    { title: 'The Godfather: Part II', year: 1974 },
-    { title: 'The Dark Knight', year: 2008 },
-    { title: '12 Angry Men', year: 1957 },
-    { title: "Schindler's List", year: 1993 },
-    { title: 'Pulp Fiction', year: 1994 },
-    { title: 'Amadeus', year: 1984 },
-    { title: 'To Kill a Mockingbird', year: 1962 },
-    { title: 'Toy Story 3', year: 2010 },
-    { title: 'Logan', year: 2017 },
-    { title: 'Full Metal Jacket', year: 1987 },
-    { title: 'Dangal', year: 2016 },
-    { title: 'The Sting', year: 1973 },
-    { title: '2001: A Space Odyssey', year: 1968 },
-    { title: "Singin' in the Rain", year: 1952 },
-    { title: 'Toy Story', year: 1995 },
-    { title: 'Bicycle Thieves', year: 1948 },
-    { title: 'The Kid', year: 1921 },
-    { title: 'Inglourious Basterds', year: 2009 },
-    { title: 'Snatch', year: 2000 },
-    { title: '3 Idiots', year: 2009 },
-    { title: 'Monty Python and the Holy Grail', year: 1975 },
-];
 
 const TagDialog: React.FC<TagDialogProps> = (
     {
@@ -75,7 +50,7 @@ const TagDialog: React.FC<TagDialogProps> = (
         }));
         save({
             operationId: tagDialogParams.operationId,
-            tags: operationTags.tags,
+            tags: [...operationTags.baseTags, ...operationTags.extraTags],
             groupName: operationTags.saveAsGroup ? operationTags.inputGroupName : ""
         });
     };
@@ -104,14 +79,29 @@ const TagDialog: React.FC<TagDialogProps> = (
     const [operationTags, setOperationTags] = useState<OperationTags>({
         operationId: 0,
         tags: [],
+        baseTags: [],
+        extraTags: [],
         groupName: "",
         inputGroupName: "",
+        inputBaseTag: "",
+        inputExtraTag: "",
         saveAsGroup: false
     });
 
-    const sumTags = (index: number) => {
-        return tags.reduce(
+    const getBaseTags = () => {
+        const index = operationTags.baseTags.length;
+        let filtered: string[][] = [];
+        filtered = tags.filter((coll) => coll.length > index);
+        operationTags.baseTags.forEach((tag, index) => {
+            filtered = filtered.filter(coll => coll[index] === tag);
+        });
+        return filtered.reduce(
             (accumulator, currentValue) => [...accumulator, currentValue[index]], []);
+    };
+
+    const getExtraTags = () => {
+        return tags.reduce(
+            (accumulator: string[], currentValue) => [...accumulator, ...currentValue], []);
     };
 
     const onlyUnique = (value: string, index: number, array: string[]) => {
@@ -130,42 +120,34 @@ const TagDialog: React.FC<TagDialogProps> = (
                             Don't forget that tag order is important for reports. Please find more information in
                             provided documentation.
                         </DialogContentText>
-                        <Autocomplete
-                            id="base-tags"
-                            multiple
-                            options={sumTags(0).filter(onlyUnique)}
-                            // getOptionLabel={(option) =>
-                            //     typeof option === "string" ? option : option["title"]}
-                            // defaultValue={[top100Films[3], top100Films[5]]}
-                            filterSelectedOptions
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    label="Base Tags"
-                                    placeholder="Limited by existing tag order"
-                                    margin="dense"
-                                    fullWidth
-                                />
-                            )}
+                        <AutoCompleteInput
+                            id="baseTags"
+                            label="Base Tags"
+                            multiple={true}
+                            options={getBaseTags().filter(onlyUnique)}
+                            placeholder="Limited by existing tag order"
+                            margin="dense"
+                            error={false}
+                            variant={"outlined"}
+                            value={operationTags.baseTags || []}
+                            inputValue={operationTags.inputBaseTag}
+                            onChange={(e, newVal) => handleAutocompleteChange(e, newVal, "baseTags")}
+                            onInputChange={(e, newVal) => handleAutocompleteChange(e, newVal, "inputBaseTag")}
                         />
-                        <Autocomplete
-                            id="extra-tags"
-                            multiple
-                            freeSolo
-                            options={top100Films}
-                            getOptionLabel={(option) =>
-                                typeof option === "string" ? option : option["title"]}
-                            defaultValue={[top100Films[13]]}
-                            filterSelectedOptions
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    label="Extra Tags"
-                                    placeholder="Any value allowed"
-                                    margin="dense"
-                                    fullWidth
-                                />
-                            )}
+                        <AutoCompleteInput
+                            id="extraTags"
+                            label="Extra Tags"
+                            freeSolo={true}
+                            multiple={true}
+                            options={getExtraTags().filter(onlyUnique)}
+                            placeholder="Any value allowed"
+                            margin="dense"
+                            error={false}
+                            variant={"outlined"}
+                            value={operationTags.extraTags || []}
+                            inputValue={operationTags.inputExtraTag}
+                            onChange={(e, newVal) => handleAutocompleteChange(e, newVal, "extraTags")}
+                            onInputChange={(e, newVal) => handleAutocompleteChange(e, newVal, "inputExtraTag")}
                         />
                         <FormControlLabel control={
                             <Checkbox id="saveAsGroup" checked={operationTags.saveAsGroup} onChange={handleCheckBoxChange}/>

@@ -6,6 +6,7 @@ interface AutoCompleteInputProps {
     id: string,
     label: string,
     options: string[],
+    placeholder?: string,
     multiple?: boolean,
     width?: number,
     margin?: "dense" | "none" | "normal" | undefined,
@@ -23,6 +24,7 @@ const AutoCompleteInput: React.FC<AutoCompleteInputProps> = (
         id,
         label,
         options,
+        placeholder,
         width,
         margin,
         multiple,
@@ -53,6 +55,7 @@ const AutoCompleteInput: React.FC<AutoCompleteInputProps> = (
                     <TextField
                         {...params}
                         label={label}
+                        placeholder={placeholder}
                         error={error}
                         margin={!!margin ? margin : undefined}
                         variant={variant || "standard"}
