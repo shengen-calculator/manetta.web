@@ -11,9 +11,8 @@ import {
     Checkbox,
     FormControlLabel,
 } from "@mui/material";
-import {useState} from "react";
+import {ChangeEvent, useState} from "react";
 import AutoCompleteInput from "./AutoCompleteInput";
-import TableCell from "@mui/material/TableCell";
 
 interface TagDialogProps {
     isOpen: boolean
@@ -69,11 +68,24 @@ const TagDialog: React.FC<TagDialogProps> = (
 
     const handleSave = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setOperationTags(prev => ({
+            ...prev,
+            groupName: "",
+            saveAsGroup: false
+        }));
         save({
             operationId: tagDialogParams.operationId,
             tags: operationTags.tags,
             groupName: operationTags.saveAsGroup ? operationTags.inputGroupName : ""
         });
+    };
+    const handleCancel = (): void => {
+        setOperationTags(prev => ({
+            ...prev,
+            groupName: "",
+            saveAsGroup: false
+        }));
+        onCancel();
     };
     const handleAutocompleteChange = (event: React.SyntheticEvent, newValue: string | null, inputId: string): void => {
         setOperationTags(prev => ({
@@ -81,11 +93,18 @@ const TagDialog: React.FC<TagDialogProps> = (
             [inputId]: newValue
         }));
     };
+    const handleCheckBoxChange = (event: ChangeEvent<HTMLInputElement>, checked: boolean): void => {
+        setOperationTags(prev => ({
+            ...prev,
+            groupName: tagDialogParams.groupName,
+            saveAsGroup: checked
+        }));
+    };
 
     const [operationTags, setOperationTags] = useState<OperationTags>({
-        operationId: tagDialogParams.operationId,
-        tags: tagDialogParams.tags,
-        groupName: tagDialogParams.groupName,
+        operationId: 0,
+        tags: [],
+        groupName: "",
         inputGroupName: "",
         saveAsGroup: false
     });
@@ -94,7 +113,7 @@ const TagDialog: React.FC<TagDialogProps> = (
         <div>
             <Dialog
                 open={isOpen}
-                onClose={onCancel}>
+                onClose={handleCancel}>
                 <DialogTitle>Apply Operation tags</DialogTitle>
                 <form onSubmit={handleSave}>
                     <DialogContent>
@@ -108,7 +127,7 @@ const TagDialog: React.FC<TagDialogProps> = (
                             options={top100Films}
                             getOptionLabel={(option) =>
                                 typeof option === "string" ? option : option["title"]}
-                            defaultValue={[top100Films[13], top100Films[10]]}
+                            defaultValue={[top100Films[3], top100Films[5]]}
                             filterSelectedOptions
                             renderInput={(params) => (
                                 <TextField
@@ -139,22 +158,28 @@ const TagDialog: React.FC<TagDialogProps> = (
                                 />
                             )}
                         />
-                        <FormControlLabel control={<Checkbox/>} label="Save as group"/>
-                        <AutoCompleteInput
-                            id="groupName"
-                            label="Group name"
-                            freeSolo={true}
-                            options={groups.map(gr => gr.name)}
-                            error={false}
-                            variant={"outlined"}
-                            value={operationTags.groupName || ''}
-                            inputValue={operationTags.inputGroupName}
-                            onChange={(e, newVal) => handleAutocompleteChange(e, newVal, "groupName")}
-                            onInputChange={(e, newVal) => handleAutocompleteChange(e, newVal, "inputGroupName")}
-                        />
+                        <FormControlLabel control={
+                            <Checkbox id="saveAsGroup" checked={operationTags.saveAsGroup} onChange={handleCheckBoxChange}/>
+                        } label="Save as group"/>
+                        {
+                            operationTags.saveAsGroup ?
+                                <AutoCompleteInput
+                                    id="groupName"
+                                    label="Group name"
+                                    freeSolo={true}
+                                    options={groups.map(gr => gr.name)}
+                                    margin="dense"
+                                    error={false}
+                                    variant={"outlined"}
+                                    value={operationTags.groupName || ''}
+                                    inputValue={operationTags.inputGroupName}
+                                    onChange={(e, newVal) => handleAutocompleteChange(e, newVal, "groupName")}
+                                    onInputChange={(e, newVal) => handleAutocompleteChange(e, newVal, "inputGroupName")}
+                                /> : ""
+                        }
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={onCancel}>Cancel</Button>
+                        <Button onClick={handleCancel}>Cancel</Button>
                         <Button type="submit">Save</Button>
                     </DialogActions>
                 </form>

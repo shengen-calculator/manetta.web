@@ -98,8 +98,8 @@ const OperationTable: React.FC<OperationTableProps> = (
         isOpen: false
     });
 
-    const saveTags = () => {
-        console.log(`Save tags params: ${JSON.stringify(tagDialogStatus.tagDialogParams)}`);
+    const saveTags = (tagDialogParams: TagDialogParams) => {
+        console.log(`Save tags params: ${JSON.stringify(tagDialogParams)}`);
         setTagDialogStatus({
             ...tagDialogStatus,
             isOpen: false
