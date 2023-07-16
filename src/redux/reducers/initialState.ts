@@ -1,4 +1,4 @@
-import {AccountState, ApplicationState} from "./types";
+import {ApplicationState} from "./types";
 
 const initialState: ApplicationState = {
     authentication: {

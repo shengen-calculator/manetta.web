@@ -18,7 +18,7 @@ interface TagDialogProps {
     isOpen: boolean
     onCancel: () => void
     groups: Group[],
-    tags: string[],
+    tags: string[][],
     tagDialogParams: TagDialogParams,
     save: (tagDialogParams: TagDialogParams) => void
 }
@@ -109,6 +109,15 @@ const TagDialog: React.FC<TagDialogProps> = (
         saveAsGroup: false
     });
 
+    const sumTags = (index: number) => {
+        return tags.reduce(
+            (accumulator, currentValue) => [...accumulator, currentValue[index]], []);
+    };
+
+    const onlyUnique = (value: string, index: number, array: string[]) => {
+        return array.indexOf(value) === index;
+    };
+
     return (
         <div>
             <Dialog
@@ -124,10 +133,10 @@ const TagDialog: React.FC<TagDialogProps> = (
                         <Autocomplete
                             id="base-tags"
                             multiple
-                            options={top100Films}
-                            getOptionLabel={(option) =>
-                                typeof option === "string" ? option : option["title"]}
-                            defaultValue={[top100Films[3], top100Films[5]]}
+                            options={sumTags(0).filter(onlyUnique)}
+                            // getOptionLabel={(option) =>
+                            //     typeof option === "string" ? option : option["title"]}
+                            // defaultValue={[top100Films[3], top100Films[5]]}
                             filterSelectedOptions
                             renderInput={(params) => (
                                 <TextField

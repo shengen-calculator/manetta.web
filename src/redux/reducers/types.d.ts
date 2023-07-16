@@ -34,7 +34,7 @@ type ApplicationState = {
     operations: OperationState,
     accounts: AccountState,
     groups: Array<Group>,
-    tags: Array<string>,
+    tags: Array<Array<string>>,
     message: MessageState,
     apiCallsInProgress: number
 }

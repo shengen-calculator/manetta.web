@@ -35,7 +35,7 @@ interface OperationTableProps {
     saveRowStatus: (key: number, isValid: boolean) => void
     operations: OperationState
     accounts: AccountState
-    allTags: string[]
+    allTags: string[][]
     groups: Group[]
 }
 
