@@ -6,14 +6,15 @@ interface AutoCompleteInputProps {
     id: string,
     label: string,
     options: string[],
+    multiple?: boolean,
     width?: number,
     margin?: "dense" | "none" | "normal" | undefined,
-    value: string | null,
+    value: string | string[] | null,
     inputValue: string,
     freeSolo?: boolean,
     variant?: "standard" | "outlined" | "filled"
     error: boolean,
-    onChange: (event: React.SyntheticEvent, newValue: string | null, inputId: string) => void,
+    onChange: (event: React.SyntheticEvent, newValue: any, inputId: string) => void,
     onInputChange: (event: React.SyntheticEvent, newValue: string | null, inputId: string) => void
 }
 
@@ -24,6 +25,7 @@ const AutoCompleteInput: React.FC<AutoCompleteInputProps> = (
         options,
         width,
         margin,
+        multiple,
         value,
         inputValue,
         freeSolo,
@@ -41,6 +43,7 @@ const AutoCompleteInput: React.FC<AutoCompleteInputProps> = (
             value={value}
             inputValue={inputValue}
             freeSolo={!!freeSolo}
+            multiple={!!multiple}
             options={options}
             sx={sx}
             onChange={onChange}
