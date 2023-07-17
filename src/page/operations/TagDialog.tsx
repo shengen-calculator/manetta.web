@@ -9,7 +9,7 @@ import {
     Checkbox,
     FormControlLabel,
 } from "@mui/material";
-import {ChangeEvent, useState} from "react";
+import {ChangeEvent, useEffect, useState} from "react";
 import AutoCompleteInput from "./AutoCompleteInput";
 
 interface TagDialogProps {
@@ -40,41 +40,17 @@ const TagDialog: React.FC<TagDialogProps> = (
         save
     }
 ) => {
-
-    const handleSave = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        setOperationTags(prev => ({
-            ...prev,
-            groupName: "",
-            saveAsGroup: false
-        }));
-        save({
-            operationId: tagDialogParams.operationId,
-            tags: [...operationTags.baseTags, ...operationTags.extraTags],
-            groupName: operationTags.saveAsGroup ? operationTags.inputGroupName : ""
-        });
-    };
-    const handleCancel = (): void => {
-        setOperationTags(prev => ({
-            ...prev,
-            groupName: "",
-            saveAsGroup: false
-        }));
-        onCancel();
-    };
-    const handleAutocompleteChange = (event: React.SyntheticEvent, newValue: string | null, inputId: string): void => {
-        setOperationTags(prev => ({
-            ...prev,
-            [inputId]: newValue
-        }));
-    };
-    const handleCheckBoxChange = (event: ChangeEvent<HTMLInputElement>, checked: boolean): void => {
-        setOperationTags(prev => ({
-            ...prev,
-            groupName: tagDialogParams.groupName,
-            saveAsGroup: checked
-        }));
-    };
+    useEffect(() => {
+        if(isOpen) {
+            setOperationTags(prev => ({
+                ...prev,
+                baseTags: tagDialogParams.tags,
+                extraTags: [],
+                groupName: "",
+                saveAsGroup: false
+            }));
+        }
+    }, [tagDialogParams.tags, isOpen]);
 
     const [operationTags, setOperationTags] = useState<OperationTags>({
         operationId: 0,
@@ -88,6 +64,30 @@ const TagDialog: React.FC<TagDialogProps> = (
         saveAsGroup: false
     });
 
+    const handleSave = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        save({
+            operationId: tagDialogParams.operationId,
+            tags: [...operationTags.baseTags, ...operationTags.extraTags],
+            groupName: operationTags.saveAsGroup ? operationTags.inputGroupName : ""
+        });
+    };
+
+    const handleAutocompleteChange = (event: React.SyntheticEvent, newValue: string | null, inputId: string): void => {
+        setOperationTags(prev => ({
+            ...prev,
+            [inputId]: newValue
+        }));
+    };
+
+    const handleCheckBoxChange = (event: ChangeEvent<HTMLInputElement>, checked: boolean): void => {
+        setOperationTags(prev => ({
+            ...prev,
+            groupName: tagDialogParams.groupName,
+            saveAsGroup: checked
+        }));
+    };
+    
     const getBaseTags = () => {
         const index = operationTags.baseTags.length;
         let filtered: string[][] = [];
@@ -112,7 +112,7 @@ const TagDialog: React.FC<TagDialogProps> = (
         <div>
             <Dialog
                 open={isOpen}
-                onClose={handleCancel}>
+                onClose={onCancel}>
                 <DialogTitle>Apply Operation tags</DialogTitle>
                 <form onSubmit={handleSave}>
                     <DialogContent>
@@ -170,7 +170,7 @@ const TagDialog: React.FC<TagDialogProps> = (
                         }
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleCancel}>Cancel</Button>
+                        <Button onClick={onCancel}>Cancel</Button>
                         <Button type="submit">Save</Button>
                     </DialogActions>
                 </form>
