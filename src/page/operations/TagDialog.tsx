@@ -16,61 +16,63 @@ interface TagDialogProps {
     isOpen: boolean
     onCancel: () => void
     groups: Group[],
-    tags: string[][],
-    tagDialogParams: TagDialogParams,
-    save: (tagDialogParams: TagDialogParams) => void
+    allTags: string[][],
+    operationId: number,
+    tags: string[],
+    groupName: string,
+    save: (operationId: number, tags: string[], groupName: string) => void
 }
 
-interface OperationTags extends TagDialogParams {
-    saveAsGroup: boolean,
+interface OperationTags {
     baseTags: string[],
     extraTags: string[],
+    groupName: string,
+    saveAsGroup: boolean,
     inputGroupName: string,
-    inputExtraTag: string,
-    inputBaseTag: string
+    inputBaseTag: string,
+    inputExtraTag: string
 }
 
 const TagDialog: React.FC<TagDialogProps> = (
     {
         isOpen,
         groups,
+        allTags,
+        operationId,
         tags,
-        tagDialogParams,
+        groupName,
         onCancel,
         save
     }
 ) => {
+
     useEffect(() => {
         if(isOpen) {
             setOperationTags(prev => ({
                 ...prev,
-                baseTags: tagDialogParams.tags,
+                baseTags: tags,
                 extraTags: [],
                 groupName: "",
                 saveAsGroup: false
             }));
         }
-    }, [tagDialogParams.tags, isOpen]);
+    }, [tags, isOpen]);
 
     const [operationTags, setOperationTags] = useState<OperationTags>({
-        operationId: 0,
-        tags: [],
         baseTags: [],
         extraTags: [],
         groupName: "",
+        saveAsGroup: false,
         inputGroupName: "",
         inputBaseTag: "",
         inputExtraTag: "",
-        saveAsGroup: false
     });
 
     const handleSave = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        save({
-            operationId: tagDialogParams.operationId,
-            tags: [...operationTags.baseTags, ...operationTags.extraTags],
-            groupName: operationTags.saveAsGroup ? operationTags.inputGroupName : ""
-        });
+        save(operationId,
+            [...operationTags.baseTags, ...operationTags.extraTags],
+            operationTags.saveAsGroup ? operationTags.inputGroupName : "");
     };
 
     const handleAutocompleteChange = (event: React.SyntheticEvent, newValue: string | null, inputId: string): void => {
@@ -83,15 +85,15 @@ const TagDialog: React.FC<TagDialogProps> = (
     const handleCheckBoxChange = (event: ChangeEvent<HTMLInputElement>, checked: boolean): void => {
         setOperationTags(prev => ({
             ...prev,
-            groupName: tagDialogParams.groupName,
+            groupName,
             saveAsGroup: checked
         }));
     };
-    
+
     const getBaseTags = () => {
         const index = operationTags.baseTags.length;
         let filtered: string[][] = [];
-        filtered = tags.filter((coll) => coll.length > index);
+        filtered = allTags.filter((coll) => coll.length > index);
         operationTags.baseTags.forEach((tag, index) => {
             filtered = filtered.filter(coll => coll[index] === tag);
         });
@@ -100,7 +102,7 @@ const TagDialog: React.FC<TagDialogProps> = (
     };
 
     const getExtraTags = () => {
-        return tags.reduce(
+        return allTags.reduce(
             (accumulator: string[], currentValue) => [...accumulator, ...currentValue], []);
     };
 

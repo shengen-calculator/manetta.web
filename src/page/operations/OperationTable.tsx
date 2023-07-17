@@ -40,7 +40,9 @@ interface OperationTableProps {
 }
 
 type TagDialogStatus = {
-    tagDialogParams: TagDialogParams
+    operationId: number,
+    tags: string[],
+    groupName: string
     isOpen: boolean
 }
 
@@ -90,26 +92,25 @@ const OperationTable: React.FC<OperationTableProps> = (
     }, [operations, accounts]);
 
     const [tagDialogStatus, setTagDialogStatus] = React.useState<TagDialogStatus>({
-        tagDialogParams: {
-            operationId: 0,
-            tags: [],
-            groupName: ""
-        },
+        operationId: 0,
+        tags: [],
+        groupName: "",
         isOpen: false
     });
 
-    const saveTags = (tagDialogParams: TagDialogParams) => {
-        console.log(`Save tags params: ${JSON.stringify(tagDialogParams)}`);
-        setTagDialogStatus({
-            ...tagDialogStatus,
-            isOpen: false
-        });
+    const saveTags = (operationId: number, tags: string[], groupName: string) => {
+        handleTagDialogCancel();
+        console.log(`operationId => ${operationId}`);
+        console.log(`groupName => ${groupName}`);
+        console.log(`tags => ${JSON.stringify(tags)}`);
     };
 
-    const openTagDialog = (tagDialogParams: TagDialogParams) => {
+    const openTagDialog = (operationId: number, tags: string[], groupName: string) => {
         setTagDialogStatus({
             ...tagDialogStatus,
-            tagDialogParams,
+            operationId,
+            tags,
+            groupName,
             isOpen: true
         });
     };
@@ -140,8 +141,10 @@ const OperationTable: React.FC<OperationTableProps> = (
                 isOpen={tagDialogStatus.isOpen}
                 onCancel={handleTagDialogCancel}
                 groups={groups}
-                tags={allTags}
-                tagDialogParams={tagDialogStatus.tagDialogParams}
+                allTags={allTags}
+                operationId={tagDialogStatus.operationId}
+                tags={tagDialogStatus.tags}
+                groupName={tagDialogStatus.groupName}
                 save={saveTags}
             />
             <Table sx={{minWidth: 450}} aria-label="simple table">

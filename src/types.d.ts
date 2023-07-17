@@ -97,9 +97,4 @@ interface OperationTemplate {
     description: string,
 }
 
-interface TagDialogParams {
-    operationId: number,
-    tags: string[],
-    groupName: string
-}
 

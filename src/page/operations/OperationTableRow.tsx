@@ -15,7 +15,7 @@ import {useEffect} from "react";
 
 interface OperationTableRowProps {
     saveRowStatus: (key: number, isValid: boolean) => void
-    tagDialogOpen: (tagDialogParams: TagDialogParams) => void
+    tagDialogOpen: (operationId: number, tags: string[], groupName: string) => void
     operation: Operation
     accounts: Account[]
     groups: Group[]
@@ -67,11 +67,7 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
     }, []);
 
     const handleTagDialogOpen = (): void => {
-        tagDialogOpen({
-            operationId: operationRow.id,
-            tags: operationRow.tags,
-            groupName: operationRow.group
-        })
+        tagDialogOpen(operationRow.id, operationRow.tags, operationRow.group);
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
