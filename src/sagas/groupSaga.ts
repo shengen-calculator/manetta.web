@@ -22,7 +22,7 @@ export function* getGroups(action: GetGroupsAction) {
 export function* createGroup(action: CreateGroupAction) {
     try {
         yield put({type: types.BEGIN_API_CALL});
-        const {data} = yield call(GroupApi.createGroup, action.params);
+        yield call(GroupApi.createGroup, action.params);
         yield put({type: types.CREATE_GROUP_SUCCESS, params: {...action.params}});
     } catch (e: any) {
         yield put({type: types.API_CALL_ERROR});
@@ -33,7 +33,7 @@ export function* createGroup(action: CreateGroupAction) {
 export function* updateGroup(action: UpdateGroupAction) {
     try {
         yield put({type: types.BEGIN_API_CALL});
-        const {data} = yield call(GroupApi.updateGroup, action.params);
+        yield call(GroupApi.updateGroup, action.params);
         yield put({type: types.UPDATE_GROUP_SUCCESS, params: {...action.params}});
     } catch (e: any) {
         yield put({type: types.API_CALL_ERROR});

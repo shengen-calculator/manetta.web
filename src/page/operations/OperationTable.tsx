@@ -132,7 +132,7 @@ const OperationTable: React.FC<OperationTableProps> = (
                     tags
                 })
             }
-            if (!group) {
+            if (!group && groupName) {
                 createGroupRequest({
                     name: groupName,
                     tags
