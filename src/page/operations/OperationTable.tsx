@@ -100,9 +100,19 @@ const OperationTable: React.FC<OperationTableProps> = (
 
     const saveTags = (operationId: number, tags: string[], groupName: string) => {
         handleTagDialogCancel();
-        console.log(`operationId => ${operationId}`);
-        console.log(`groupName => ${groupName}`);
-        console.log(`tags => ${JSON.stringify(tags)}`);
+        const operation = operations.items.find(o => o.id === operationId);
+        if(operation) {
+            save({
+                id: operationId,
+                date: operation.date,
+                account: operation.account,
+                group: groupName,
+                created: operation.created,
+                description: operation.description,
+                sum: operation.sum,
+                tags: tags
+            });
+        }
     };
 
     const openTagDialog = (operationId: number, tags: string[], groupName: string) => {
