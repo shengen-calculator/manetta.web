@@ -20,7 +20,14 @@ import {
     updateOperationRequest
 } from "../../redux/actions/operationActions";
 import {GetAccountsAction, getAccountsRequest} from "../../redux/actions/accountActions";
-import {GetGroupsAction, getGroupsRequest} from "../../redux/actions/groupActions";
+import {
+    CreateGroupAction,
+    createGroupRequest,
+    GetGroupsAction,
+    getGroupsRequest,
+    UpdateGroupAction,
+    updateGroupRequest
+} from "../../redux/actions/groupActions";
 import {GetTagsAction, getTagsRequest} from "../../redux/actions/tagActions";
 import OperationHelper from "../../util/OperationHelper";
 import TagDialog from "./TagDialog";
@@ -30,6 +37,8 @@ interface OperationTableProps {
     updateOperationRequest: (params: UpdateOperationParams) => UpdateOperationAction
     getOperationsRequest: () => GetOperationsAction
     getAccountsRequest: () => GetAccountsAction
+    createGroupRequest: (params: CreateGroupParams) => CreateGroupAction
+    updateGroupRequest: (params: UpdateGroupParams) => UpdateGroupAction
     getGroupsRequest: () => GetGroupsAction
     getTagsRequest: () => GetTagsAction
     saveRowStatus: (key: number, isValid: boolean) => void
@@ -52,6 +61,8 @@ const OperationTable: React.FC<OperationTableProps> = (
         updateOperationRequest,
         getOperationsRequest,
         getAccountsRequest,
+        createGroupRequest,
+        updateGroupRequest,
         getGroupsRequest,
         getTagsRequest,
         saveRowStatus,
@@ -100,7 +111,6 @@ const OperationTable: React.FC<OperationTableProps> = (
 
     const saveTags = (operationId: number, tags: string[], groupName: string, saveAsGroup: boolean) => {
         handleTagDialogCancel();
-        console.log(`save as group ${saveAsGroup}`);
         const operation = operations.items.find(o => o.id === operationId);
         if (operation) {
             save({
@@ -115,7 +125,19 @@ const OperationTable: React.FC<OperationTableProps> = (
             });
         }
         if (saveAsGroup) {
-            // create update group
+            const group = groups.find(el => el.name === groupName);
+            if (group && group.tags !== tags) {
+                updateGroupRequest({
+                    name: groupName,
+                    tags
+                })
+            }
+            if (!group) {
+                createGroupRequest({
+                    name: groupName,
+                    tags
+                })
+            }
         }
     };
 
@@ -195,6 +217,8 @@ const mapDispatchToProps = {
     updateOperationRequest,
     getOperationsRequest,
     getAccountsRequest,
+    createGroupRequest,
+    updateGroupRequest,
     getGroupsRequest,
     getTagsRequest
 };
