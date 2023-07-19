@@ -66,6 +66,14 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
         }
     }, []);
 
+    useEffect(() => {
+        setOperationRow(prev => ({
+            ...prev,
+            tags: operation.tags,
+            group: operation.group
+        }));
+    }, [operation.tags, operation.group]);
+
     const handleTagDialogOpen = (): void => {
         tagDialogOpen(operationRow.id, operationRow.tags, operationRow.group);
     };

@@ -98,10 +98,11 @@ const OperationTable: React.FC<OperationTableProps> = (
         isOpen: false
     });
 
-    const saveTags = (operationId: number, tags: string[], groupName: string) => {
+    const saveTags = (operationId: number, tags: string[], groupName: string, saveAsGroup: boolean) => {
         handleTagDialogCancel();
+        console.log(`save as group ${saveAsGroup}`);
         const operation = operations.items.find(o => o.id === operationId);
-        if(operation) {
+        if (operation) {
             save({
                 id: operationId,
                 date: operation.date,
@@ -112,6 +113,9 @@ const OperationTable: React.FC<OperationTableProps> = (
                 sum: operation.sum,
                 tags: tags
             });
+        }
+        if (saveAsGroup) {
+            // create update group
         }
     };
 

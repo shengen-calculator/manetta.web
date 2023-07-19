@@ -20,7 +20,7 @@ interface TagDialogProps {
     operationId: number,
     tags: string[],
     groupName: string,
-    save: (operationId: number, tags: string[], groupName: string) => void
+    save: (operationId: number, tags: string[], groupName: string, saveAsGroup: boolean) => void
 }
 
 interface OperationTags {
@@ -72,7 +72,8 @@ const TagDialog: React.FC<TagDialogProps> = (
         event.preventDefault();
         save(operationId,
             [...operationTags.baseTags, ...operationTags.extraTags],
-            operationTags.saveAsGroup ? operationTags.inputGroupName : "");
+            operationTags.saveAsGroup ? operationTags.inputGroupName : groupName,
+            operationTags.saveAsGroup);
     };
 
     const handleAutocompleteChange = (event: React.SyntheticEvent, newValue: string | null, inputId: string): void => {
