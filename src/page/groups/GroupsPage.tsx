@@ -5,9 +5,9 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 import Header from "../../component/Header";
 import Footer from "../../component/Footer";
-import { styled } from '@mui/material/styles';
+import {styled} from '@mui/material/styles';
 import ButtonPanel from "../../component/ButtonPanel";
-import {Chip, ListItem, Paper, Stack} from "@mui/material";
+import {Chip, ListItem, Paper} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import menuItems from "../../component/menuItems";
 import {
@@ -19,7 +19,13 @@ import {
 import {connect} from "react-redux";
 import {ApplicationState} from "../../redux/reducers/types";
 import {useEffect} from "react";
+import GroupDialog from "./GroupDialog";
 
+type GroupDialogStatus = {
+    isOpen: boolean,
+    groupName: string,
+    tags: string[]
+}
 
 interface GroupsPageProps {
     deleteGroupRequest: (params: DeleteGroupParams) => DeleteGroupAction,
@@ -34,6 +40,7 @@ const GroupsPage: React.FC<GroupsPageProps> = (
         groups
     }
 ) => {
+
     let isDataRequested = false;
     useEffect(() => {
         if (!isDataRequested) {
@@ -41,18 +48,58 @@ const GroupsPage: React.FC<GroupsPageProps> = (
             getGroupsRequest();
         }
     }, []);
+
+    const [groupDialogStatus, setGroupDialogStatus] = React.useState<GroupDialogStatus>({
+        isOpen: false,
+        groupName: "",
+        tags: []
+    });
+
+    const openGroupDialog = (group: Group) => {
+        setGroupDialogStatus({
+            ...groupDialogStatus,
+            isOpen: true,
+            groupName: group.name,
+            tags: group.tags
+        });
+    };
+
+    const handleGroupDialogCancel = () => {
+        setGroupDialogStatus({
+            ...groupDialogStatus,
+            isOpen: false
+        });
+    };
+
+    const deleteGroup = (name: string) => {
+        deleteGroupRequest({
+           name
+        });
+        setGroupDialogStatus({
+            ...groupDialogStatus,
+            isOpen: false
+        });
+    };
+
     const ListItem = styled('li')(({ theme }) => ({
         margin: theme.spacing(1.5),
     }));
 
     return (
         <ThemeProvider theme={theme}>
-            <CssBaseline />
+            <CssBaseline/>
             <Container maxWidth="lg">
-                <Header title="MANETTA" menuItems={menuItems} />
+                <GroupDialog
+                    isOpen={groupDialogStatus.isOpen}
+                    groupName={groupDialogStatus.groupName}
+                    tags={groupDialogStatus.tags}
+                    onCancel={handleGroupDialogCancel}
+                    deleteGroup={deleteGroup}
+                />
+                <Header title="MANETTA" menuItems={menuItems}/>
                 <main>
-                    <ButtonPanel buttons={[]} />
-                    <Grid item xs={12} md={6} >
+                    <ButtonPanel buttons={[]}/>
+                    <Grid item xs={12} md={6}>
                         <Paper
                             sx={{
                                 display: 'flex',
@@ -65,11 +112,12 @@ const GroupsPage: React.FC<GroupsPageProps> = (
                             component="ul"
                         >
                             {
-                                groups.map((group) => (
+                                groups.map((group, index) => (
                                     <ListItem key={group.name}>
                                         <Chip
                                             label={group.name}
-                                            onClick={() => {alert("edit!")}}
+                                            onClick={() => openGroupDialog(group)}
+                                            variant={(index % 2 == 0) ? "outlined" : "filled"}
                                         />
                                     </ListItem>
                                 ))
