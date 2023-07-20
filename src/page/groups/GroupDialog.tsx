@@ -32,8 +32,8 @@ const GroupDialog: React.FC<GroupDialogProps> = (
                 <DialogTitle>{groupName.toUpperCase()}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        To subscribe to this website, please enter your email address here. We
-                        will send updates occasionally.
+                        You can delete group at any time this will not affect any existing transactions (operations).
+                        The idea of the Group is to make the data entry process as convenient as possible.
                     </DialogContentText>
                     <Stack direction="row" spacing={2} sx={{mt: 4}}>
                         {

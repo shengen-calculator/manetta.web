@@ -48,7 +48,7 @@ export function* deleteGroup(action: DeleteGroupAction) {
         yield put({type: types.DELETE_GROUP_SUCCESS, data});
     } catch (e: any) {
         yield put({type: types.API_CALL_ERROR});
-        yield put({type: types.DELETE_GROUP_FAILURE, text: e.message});
+        yield put({type: types.DELETE_GROUP_FAILURE, params: {...action.params, error: e.message}});
         yield put({type: types.GET_GROUPS_REQUEST});
     }
 }
