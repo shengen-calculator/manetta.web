@@ -8,6 +8,13 @@ import TableCell from "@mui/material/TableCell";
 import {Box} from "@mui/material";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import headCells from "./headCells";
+import {ApplicationState, HistoryState} from "../../redux/reducers/types";
+import {connect} from "react-redux";
+import {
+    GetRecentlyPostedAction,
+    getRecentlyPostedRequest
+} from "../../redux/actions/operationActions";
+import {useEffect} from "react";
 
 function createData(
     date: string,
@@ -30,11 +37,32 @@ const rows = [
 ];
 
 
-const HistoryTable = () => {
-    const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-        alert("Rollback transaction => " + name);
-    };
+interface HistoryTableProps {
+    getRecentlyPostedRequest: (params: GetRecentlyPostedParams) => GetRecentlyPostedAction,
+    history: HistoryState
+}
 
+const HistoryTable: React.FC<HistoryTableProps> = (
+    {
+        getRecentlyPostedRequest,
+        history
+    }
+) => {
+
+    let isDataRequested = false;
+
+    useEffect(() => {
+        if (!isDataRequested) {
+            isDataRequested = true;
+            getRecentlyPostedRequest({
+                startCursor: ""
+            })
+        }
+    }, []);
+
+    const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
+        console.log("Rollback transaction => " + name);
+    };
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -47,7 +75,7 @@ const HistoryTable = () => {
                     >
                         <EnhancedTableHead headCells={headCells}/>
                         <TableBody>
-                            {rows.map((row, index) => {
+                            {history.entries.map((row, index) => {
                                 const labelId = `enhanced-table-checkbox-${index}`;
                                 return (
                                     <TableRow
@@ -55,7 +83,7 @@ const HistoryTable = () => {
                                         onClick={(event) => handleClick(event, row.date)}
                                         role="checkbox"
                                         tabIndex={-1}
-                                        key={row.date}
+                                        key={row.id}
                                         sx={{ cursor: 'pointer' }}
                                     >
                                         <TableCell
@@ -65,10 +93,12 @@ const HistoryTable = () => {
                                             padding="none"
                                             sx={{pl: 2}}
                                         >
-                                            {row.date}
+                                            {new Date(row.date).toISOString().slice(0, 10)}
                                         </TableCell>
                                         <TableCell align="left">{row.account}</TableCell>
-                                        <TableCell align="left">{row.description}</TableCell>
+                                        <TableCell align="left">
+                                            {`${row.tags[row.tags.length - 1]} ${row.description ? "->" : ""} ${row.description}`}
+                                        </TableCell>
                                         <TableCell align="right">{row.docNumber}</TableCell>
                                         <TableCell align="right">₴{row.sum}</TableCell>
                                         <TableCell align="right">€{row.equivalent}</TableCell>
@@ -84,4 +114,19 @@ const HistoryTable = () => {
     );
 };
 
-export default HistoryTable;
+const mapStateToProps = (state: ApplicationState) => {
+    return {
+        history: state.history
+    }
+};
+
+// noinspection JSUnusedGlobalSymbols
+const mapDispatchToProps = {
+    getRecentlyPostedRequest
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(HistoryTable)
+

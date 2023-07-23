@@ -98,7 +98,7 @@ interface AccountInfo {
 
 interface PostedOperation {
     id: number,
-    date: number,
+    date: string,
     account: string,
     docNumber: number,
     equivalent: number,
@@ -107,6 +107,20 @@ interface PostedOperation {
     sum: number,
     tags: string[]
 }
+
+interface PostedOperationResult {
+    id: string,
+    date: number,
+    account: string,
+    docNumber: number,
+    euro: number,
+    balance: number,
+    description: string,
+    sum: number,
+    tags: string[]
+}
+
+
 
 interface HeadCell {
     disablePadding: boolean;

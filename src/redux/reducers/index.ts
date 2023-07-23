@@ -4,6 +4,7 @@ import authentication from './authenticationReducer';
 import message from "./messageReducer";
 import operations from "./operationReducer";
 import groups from "./groupReducer";
+import history from "./historyReducer";
 import tags from "./tagReducer";
 import accounts from "./accountReducer";
 import apiCallsInProgress from "./apiStatusReducer";
@@ -18,6 +19,7 @@ export const persistConfig = {
         'apiCallsInProgress',
         'operations',
         'accounts',
+        'history',
         'groups',
         'tags'
     ]
@@ -34,6 +36,7 @@ const rootReducer = combineReducers({
     message,
     apiCallsInProgress,
     operations,
+    history,
     accounts,
     groups,
     tags
