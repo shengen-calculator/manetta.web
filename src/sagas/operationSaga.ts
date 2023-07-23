@@ -22,7 +22,7 @@ export function* getOperations(action: GetOperationsAction) {
 
 export function* getRecentlyPosted(action: GetRecentlyPostedAction) {
     try {yield put({type: types.BEGIN_API_CALL});
-        const {data} = yield call(OperationApi.getRecentlyPosted);
+        const {data} = yield call(OperationApi.getRecentlyPosted, action.params);
         yield put({type: types.GET_RECENTLY_POSTED_SUCCESS, data});
     } catch (e: any) {
         yield put({type: types.API_CALL_ERROR});
