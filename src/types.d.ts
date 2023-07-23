@@ -96,6 +96,25 @@ interface AccountInfo {
     accountName: string
 }
 
+interface PostedOperation {
+    id: number,
+    date: number,
+    account: string,
+    docNumber: number,
+    equivalent: number,
+    balance: number,
+    description: string,
+    sum: number,
+    tags: string[]
+}
+
+interface HeadCell {
+    disablePadding: boolean;
+    id: keyof PostedOperation;
+    label: string;
+    numeric: boolean;
+}
+
 interface OperationTemplate {
     title: string,
     description: string,

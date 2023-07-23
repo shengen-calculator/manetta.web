@@ -15,6 +15,10 @@ const initialState: ApplicationState = {
         isLoaded: false,
         items: []
     },
+    history: {
+        entries: [],
+        cursor: ""
+    },
     accounts: {
         items: [],
         balances: []

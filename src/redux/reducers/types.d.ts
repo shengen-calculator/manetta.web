@@ -29,12 +29,18 @@ type AccountState = {
     balances: AccountBalance[]
 }
 
+type HistoryState = {
+    entries: Array<PostedOperation>
+    cursor: string
+}
+
 type ApplicationState = {
     authentication: AuthenticationState,
     operations: OperationState,
     accounts: AccountState,
     groups: Array<Group>,
     tags: Array<Array<string>>,
+    history: HistoryState,
     message: MessageState,
     apiCallsInProgress: number
 }
