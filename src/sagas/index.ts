@@ -5,6 +5,7 @@ import {
     createOperation,
     deleteOperation,
     getOperations,
+    getRecentlyPosted,
     postOperations,
     updateOperation,
 } from "./operationSaga";
@@ -27,6 +28,7 @@ function* mySaga() {
     yield takeLatest(types.AUTHENTICATION_REQUEST, logIn);
     yield takeLatest(types.REGISTRATION_REQUEST, register);
     yield takeLatest(types.GET_OPERATIONS_REQUEST, getOperations);
+    yield takeLatest(types.GET_RECENTLY_POSTED_REQUEST, getRecentlyPosted);
     yield takeLatest(types.CREATE_OPERATION_REQUEST, createOperation);
     yield takeLatest(types.DELETE_OPERATION_REQUEST, deleteOperation);
     yield takeLatest(types.UPDATE_OPERATION_REQUEST, updateOperation);

@@ -24,6 +24,10 @@ interface PostOperationsParams {
     ids: string[]
 }
 
+interface GetRecentlyPostedParams {
+    startCursor: string
+}
+
 interface DeleteOperationParams {
     id: string
 }
