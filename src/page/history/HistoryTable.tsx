@@ -15,7 +15,7 @@ interface HistoryTableProps {
 
 const HistoryTable: React.FC<HistoryTableProps> = (
     {
-        rows
+        rows,
     }
 ) => {
 

@@ -48,6 +48,12 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         }
     }, []);
 
+    const showMore = (): void => {
+        getRecentlyPostedRequest({
+            startCursor: history.cursor
+        })
+    };
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -55,14 +61,12 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                 <Header title="MANETTA" menuItems={menuItems} />
                 <main>
                     <ButtonPanel buttons={panelButtons} />
-                    <HistoryTable rows={history.entries}/>
+                    <HistoryTable rows={history.entries} />
                     <Link
                         component="button"
                         variant="body2"
                         sx={{ml: 2, mt: 4}}
-                        onClick={() => {
-                            console.info("Add 10 rows.");
-                        }}
+                        onClick={showMore}
                     >
                         Show more rows...
                     </Link>
