@@ -8,57 +8,16 @@ import TableCell from "@mui/material/TableCell";
 import {Box} from "@mui/material";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import headCells from "./headCells";
-import {ApplicationState, HistoryState} from "../../redux/reducers/types";
-import {connect} from "react-redux";
-import {
-    GetRecentlyPostedAction,
-    getRecentlyPostedRequest
-} from "../../redux/actions/operationActions";
-import {useEffect} from "react";
-
-function createData(
-    date: string,
-    account: string,
-    description: string,
-    docNumber: number,
-    sum: number,
-    equivalent: number,
-    balance: number
-) {
-    return {date, account, description, docNumber, sum, equivalent, balance};
-}
-
-const rows = [
-    createData('12/02/2023', "OTP-BLACK", "Dastor: Some small desc", 1, 6.0, 24, 4.0),
-    createData('14/02/2023', "OTP-BLACK", "Restaurant: Some bigger description", 2, 9.0, 37, 4.3),
-    createData('16/02/2023', "OTP-BLACK", "Shtefanyo: Just a few words", 3, 16.0, 24, 6.0),
-    createData('19/02/2023', "PRIVAT-EUR", "Medicine: interesting book", 4, 3.7, 67, 4.3),
-    createData('23/02/2023', "MONO-EUR", "Silpo: ", 5, 16.0, 49, 3.9),
-];
-
 
 interface HistoryTableProps {
-    getRecentlyPostedRequest: (params: GetRecentlyPostedParams) => GetRecentlyPostedAction,
-    history: HistoryState
+    rows: Array<PostedOperation>
 }
 
 const HistoryTable: React.FC<HistoryTableProps> = (
     {
-        getRecentlyPostedRequest,
-        history
+        rows
     }
 ) => {
-
-    let isDataRequested = false;
-
-    useEffect(() => {
-        if (!isDataRequested) {
-            isDataRequested = true;
-            getRecentlyPostedRequest({
-                startCursor: ""
-            })
-        }
-    }, []);
 
     const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
         console.log("Rollback transaction => " + name);
@@ -75,7 +34,7 @@ const HistoryTable: React.FC<HistoryTableProps> = (
                     >
                         <EnhancedTableHead headCells={headCells}/>
                         <TableBody>
-                            {history.entries.map((row, index) => {
+                            {rows.map((row, index) => {
                                 const labelId = `enhanced-table-checkbox-${index}`;
                                 return (
                                     <TableRow
@@ -114,19 +73,5 @@ const HistoryTable: React.FC<HistoryTableProps> = (
     );
 };
 
-const mapStateToProps = (state: ApplicationState) => {
-    return {
-        history: state.history
-    }
-};
-
-// noinspection JSUnusedGlobalSymbols
-const mapDispatchToProps = {
-    getRecentlyPostedRequest
-};
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(HistoryTable)
+export default HistoryTable;
 
