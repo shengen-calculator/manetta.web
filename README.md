@@ -1,6 +1,6 @@
 # Material UI - Create React App example in TypeScript
 
-## How to use
+## How to
 
 
 ```sh
