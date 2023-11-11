@@ -17,11 +17,18 @@ import {
 } from "../../redux/actions/operationActions";
 import {connect} from "react-redux";
 import {useEffect} from "react";
+import ReportDialog from "./ReportDialog";
 
 
 interface HistoryPageProps {
     getRecentlyPostedRequest: (params: GetRecentlyPostedParams) => GetRecentlyPostedAction,
     history: HistoryState
+}
+
+type ReportDialogStatus = {
+    isOpen: boolean,
+    startDate: string,
+    endDate: string
 }
 
 const HistoryPage: React.FC<HistoryPageProps> = (
@@ -34,7 +41,9 @@ const HistoryPage: React.FC<HistoryPageProps> = (
     const panelButtons: PanelButton[] = [{
         btnText: "REPORT",
         disabled: false,
-        onClick: () => {}
+        onClick: () => {
+            openReportDialog();
+        }
     }];
 
     let isDataRequested = false;
@@ -48,16 +57,47 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         }
     }, []);
 
+    const [reportDialogStatus, setReportDialogStatus] = React.useState<ReportDialogStatus>({
+        isOpen: false,
+        startDate: "",
+        endDate: ""
+    });
+
     const showMore = (): void => {
         getRecentlyPostedRequest({
             startCursor: history.cursor
         })
     };
 
+    const openReportDialog = () => {
+        setReportDialogStatus({
+            ...reportDialogStatus,
+            isOpen: true
+        });
+    };
+
+    const handleReportDialogCancel = () => {
+        setReportDialogStatus({
+            ...reportDialogStatus,
+            isOpen: false
+        });
+    };
+
+    const generateReport = () => {
+        alert("hello");
+    };
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Container maxWidth="lg">
+                <ReportDialog
+                    isOpen={reportDialogStatus.isOpen}
+                    startDate={reportDialogStatus.startDate}
+                    endDate={reportDialogStatus.endDate}
+                    onCancel={handleReportDialogCancel}
+                    onReport={generateReport}
+                />
                 <Header title="MANETTA" menuItems={menuItems} />
                 <main>
                     <ButtonPanel buttons={panelButtons} />
