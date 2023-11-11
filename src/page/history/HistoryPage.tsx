@@ -19,10 +19,18 @@ import {connect} from "react-redux";
 import {useEffect} from "react";
 import ReportDialog from "./ReportDialog";
 import {Dayjs} from "dayjs";
+import {
+    GenerateReportAction,
+    ReportPeriodExceededAction,
+    generateReportRequest,
+    reportPeriodExceeded
+} from "../../redux/actions/reportActions";
 
 
 interface HistoryPageProps {
     getRecentlyPostedRequest: (params: GetRecentlyPostedParams) => GetRecentlyPostedAction,
+    generateReportRequest: (params: GenerateExpensesReportParams) => GenerateReportAction,
+    reportPeriodExceeded: (params: ReportPeriodExceededParams) => ReportPeriodExceededAction
     history: HistoryState
 }
 
@@ -35,11 +43,14 @@ type ReportDialogStatus = {
 const HistoryPage: React.FC<HistoryPageProps> = (
     {
         getRecentlyPostedRequest,
+        generateReportRequest,
+        reportPeriodExceeded,
         history
     }
 ) => {
 
     const switchDay = 12;
+    const reportPeriodLimitDays = 180;
     const panelButtons: PanelButton[] = [{
         btnText: "REPORT",
         disabled: false,
@@ -106,10 +117,15 @@ const HistoryPage: React.FC<HistoryPageProps> = (
     };
 
     const generateReport = () => {
-        if (reportDialogStatus.endDate - reportDialogStatus.startDate > 92 * 24 * 60 * 60 * 1000) {
-            alert(reportDialogStatus.endDate - reportDialogStatus.startDate);
+        if (reportDialogStatus.endDate - reportDialogStatus.startDate > reportPeriodLimitDays * 24 * 60 * 60 * 1000) {
+            reportPeriodExceeded({
+                daysLimit: reportPeriodLimitDays
+            })
         } else {
-            alert(reportDialogStatus.startDate + " => " + reportDialogStatus.endDate);
+            generateReportRequest({
+                startDate: reportDialogStatus.startDate,
+                endDate: reportDialogStatus.endDate
+            })
         }
     };
 
@@ -154,7 +170,9 @@ const mapStateToProps = (state: ApplicationState) => {
 
 // noinspection JSUnusedGlobalSymbols
 const mapDispatchToProps = {
-    getRecentlyPostedRequest
+    getRecentlyPostedRequest,
+    generateReportRequest,
+    reportPeriodExceeded
 };
 
 export default connect(
