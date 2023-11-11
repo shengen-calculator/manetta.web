@@ -100,7 +100,7 @@ export default function messageReducer(state = initialState.message, action: any
             return {
                 ...state,
                 type: 'error',
-                text: action.params.error
+                text: action.params.error ? action.params.error : "Generate report Error"
             };
 
         default:
