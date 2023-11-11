@@ -32,6 +32,15 @@ interface DeleteOperationParams {
     id: string
 }
 
+interface GenerateExpensesReportParams {
+    startDate: number,
+    endDate: number
+}
+
+interface ReportPeriodExceededParams {
+    daysLimit: number
+}
+
 interface GetAccountBalanceParams {
     accountName: string
 }
