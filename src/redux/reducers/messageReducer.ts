@@ -96,6 +96,13 @@ export default function messageReducer(state = initialState.message, action: any
                 text: `Report period exceeded. Maximum limit days is: ${action.params.daysLimit}`
             };
 
+        case types.GENERATE_EXPENSES_REPORT_FAILURE:
+            return {
+                ...state,
+                type: 'error',
+                text: action.params.error
+            };
+
         default:
             return state;
     }

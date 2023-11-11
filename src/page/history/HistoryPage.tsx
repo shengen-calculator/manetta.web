@@ -9,7 +9,7 @@ import Header from "../../component/Header";
 import Footer from "../../component/Footer";
 import {
     ApplicationState,
-    HistoryState
+    HistoryState, ReportState
 } from "../../redux/reducers/types";
 import {
     GetRecentlyPostedAction,
@@ -30,7 +30,8 @@ import {
 interface HistoryPageProps {
     getRecentlyPostedRequest: (params: GetRecentlyPostedParams) => GetRecentlyPostedAction,
     generateReportRequest: (params: GenerateExpensesReportParams) => GenerateReportAction,
-    reportPeriodExceeded: (params: ReportPeriodExceededParams) => ReportPeriodExceededAction
+    reportPeriodExceeded: (params: ReportPeriodExceededParams) => ReportPeriodExceededAction,
+    report: ReportState,
     history: HistoryState
 }
 
@@ -45,7 +46,8 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         getRecentlyPostedRequest,
         generateReportRequest,
         reportPeriodExceeded,
-        history
+        history,
+        report
     }
 ) => {
 
@@ -69,6 +71,12 @@ const HistoryPage: React.FC<HistoryPageProps> = (
             })
         }
     }, []);
+
+    useEffect(() => {
+        if(report.url) {
+            window.location.href = report.url;
+        }
+    }, [report.url]);
 
 
     const [reportDialogStatus, setReportDialogStatus] = React.useState<ReportDialogStatus>({
@@ -123,9 +131,13 @@ const HistoryPage: React.FC<HistoryPageProps> = (
             })
         } else {
             generateReportRequest({
-                startDate: reportDialogStatus.startDate,
-                endDate: reportDialogStatus.endDate
-            })
+                startDate: new Date(reportDialogStatus.startDate).toISOString().slice(0, 10),
+                endDate: new Date(reportDialogStatus.endDate).toISOString().slice(0, 10)
+            });
+            setReportDialogStatus({
+                ...reportDialogStatus,
+                isOpen: false
+            });
         }
     };
 
@@ -164,7 +176,8 @@ const HistoryPage: React.FC<HistoryPageProps> = (
 
 const mapStateToProps = (state: ApplicationState) => {
     return {
-        history: state.history
+        history: state.history,
+        report: state.report
     }
 };
 

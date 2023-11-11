@@ -33,8 +33,8 @@ interface DeleteOperationParams {
 }
 
 interface GenerateExpensesReportParams {
-    startDate: number,
-    endDate: number
+    startDate: string,
+    endDate: string
 }
 
 interface ReportPeriodExceededParams {

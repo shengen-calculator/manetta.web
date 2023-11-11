@@ -34,6 +34,10 @@ type HistoryState = {
     cursor: string
 }
 
+type ReportState = {
+    url: string
+}
+
 type ApplicationState = {
     authentication: AuthenticationState,
     operations: OperationState,
@@ -42,5 +46,7 @@ type ApplicationState = {
     tags: Array<Array<string>>,
     history: HistoryState,
     message: MessageState,
+    report: ReportState,
     apiCallsInProgress: number
 }
+

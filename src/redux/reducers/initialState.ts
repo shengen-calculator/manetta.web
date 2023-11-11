@@ -25,6 +25,9 @@ const initialState: ApplicationState = {
     },
     groups: [],
     tags: [],
+    report: {
+        url: ""
+    },
     apiCallsInProgress: 0
 };
 

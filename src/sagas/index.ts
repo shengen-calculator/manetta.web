@@ -22,6 +22,9 @@ import {
 import {
     getTags
 } from "./tagSaga";
+import {
+    generateExpensesReport
+} from "./reportSaga";
 
 function* mySaga() {
     yield takeLatest(types.LOG_OUT_REQUEST, logOut);
@@ -39,7 +42,8 @@ function* mySaga() {
     yield takeLatest(types.DELETE_GROUP_REQUEST, deleteGroup);
     yield takeLatest(types.UPDATE_GROUP_REQUEST, updateGroup);
     yield takeLatest(types.GET_TAGS_REQUEST, getTags);
-    yield takeEvery(types.GET_ACCOUNT_BALANCE_REQUEST, getAccountBalance)
+    yield takeLatest(types.GENERATE_EXPENSES_REPORT_REQUEST, generateExpensesReport);
+    yield takeEvery(types.GET_ACCOUNT_BALANCE_REQUEST, getAccountBalance);
 }
 
 export default mySaga;
