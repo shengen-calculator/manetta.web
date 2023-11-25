@@ -15,6 +15,7 @@ import {useEffect} from "react";
 
 interface OperationTableRowProps {
     saveRowStatus: (key: number, isValid: boolean) => void
+    tagDialogOpen: (operationId: number, tags: string[], groupName: string) => void
     operation: Operation
     accounts: Account[]
     groups: Group[]
@@ -36,6 +37,7 @@ type RowError = {
 const OperationTableRow: React.FC<OperationTableRowProps> = (
     {
         saveRowStatus,
+        tagDialogOpen,
         operation,
         accounts,
         groups,
@@ -63,6 +65,18 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
             saveRowStatus(operationRow.id, true);
         }
     }, []);
+
+    useEffect(() => {
+        setOperationRow(prev => ({
+            ...prev,
+            tags: operation.tags,
+            group: operation.group
+        }));
+    }, [operation.tags, operation.group]);
+
+    const handleTagDialogOpen = (): void => {
+        tagDialogOpen(operationRow.id, operationRow.tags, operationRow.group);
+    };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const {name, value} = event.target;
@@ -206,7 +220,11 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
             </TableCell>
             <TableCell align="right">
                 <Badge badgeContent={operationRow.tags.length} color="primary">
-                    <IconButton aria-label="operation tags" component="label">
+                    <IconButton
+                        aria-label="operation tags"
+                        component="label"
+                        onClick={handleTagDialogOpen}
+                    >
                         <BookmarksIcon/>
                     </IconButton>
                 </Badge>

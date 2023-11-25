@@ -2,6 +2,7 @@ import {
     CreateOperationAction,
     DeleteOperationAction,
     GetOperationsAction,
+    GetRecentlyPostedAction,
     PostOperationsAction,
     UpdateOperationAction
 } from "../redux/actions/operationActions";
@@ -16,6 +17,16 @@ export function* getOperations(action: GetOperationsAction) {
     } catch (e: any) {
         yield put({type: types.API_CALL_ERROR});
         yield put({type: types.GET_OPERATIONS_FAILURE, text: e.message});
+    }
+}
+
+export function* getRecentlyPosted(action: GetRecentlyPostedAction) {
+    try {yield put({type: types.BEGIN_API_CALL});
+        const {data} = yield call(OperationApi.getRecentlyPosted, action.params);
+        yield put({type: types.GET_RECENTLY_POSTED_SUCCESS, data});
+    } catch (e: any) {
+        yield put({type: types.API_CALL_ERROR});
+        yield put({type: types.GET_RECENTLY_POSTED_FAILURE, text: e.message});
     }
 }
 

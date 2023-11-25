@@ -11,7 +11,10 @@ import menuItems from "../../component/menuItems";
 import {connect} from "react-redux";
 import {ApplicationState, OperationState} from "../../redux/reducers/types";
 import PostDialog from "./PostDialog";
-import {PostOperationsAction, postOperationsRequest} from "../../redux/actions/operationActions";
+import {
+    PostOperationsAction,
+    postOperationsRequest
+} from "../../redux/actions/operationActions";
 
 type RowStatus = {
     key: number
@@ -70,7 +73,7 @@ const OperationsPage: React.FC<OperationsPageProps> = (
         })
     }];
 
-    const handleCancel = () => {
+    const handlePostDialogCancel = () => {
         setPostDialogStatus({
             ...postDialogStatus,
             isOpen: false
@@ -94,13 +97,15 @@ const OperationsPage: React.FC<OperationsPageProps> = (
                 <PostDialog
                     isOpen={postDialogStatus.isOpen}
                     asSingle={postDialogStatus.asSingle}
-                    onCancel={handleCancel}
+                    onCancel={handlePostDialogCancel}
                     post={post}
                 />
                 <Header title="MANETTA" menuItems={menuItems}/>
                 <main>
                     <ButtonPanel buttons={panelButtons}/>
-                    <OperationTable saveRowStatus={saveRowStatus}/>
+                    <OperationTable
+                        saveRowStatus={saveRowStatus}
+                    />
                 </main>
             </Container>
             <Footer

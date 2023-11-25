@@ -22,8 +22,8 @@ export function* getGroups(action: GetGroupsAction) {
 export function* createGroup(action: CreateGroupAction) {
     try {
         yield put({type: types.BEGIN_API_CALL});
-        const {data} = yield call(GroupApi.createGroup, action.params);
-        yield put({type: types.CREATE_GROUP_SUCCESS, params: {...action.params, data}});
+        yield call(GroupApi.createGroup, action.params);
+        yield put({type: types.CREATE_GROUP_SUCCESS, params: {...action.params}});
     } catch (e: any) {
         yield put({type: types.API_CALL_ERROR});
         yield put({type: types.CREATE_GROUP_FAILURE, params: {...action.params, error: e.message}});
@@ -33,12 +33,11 @@ export function* createGroup(action: CreateGroupAction) {
 export function* updateGroup(action: UpdateGroupAction) {
     try {
         yield put({type: types.BEGIN_API_CALL});
-        const {data} = yield call(GroupApi.updateGroup, action.params);
-        yield put({type: types.UPDATE_GROUP_SUCCESS, params: {...action.params, data}});
+        yield call(GroupApi.updateGroup, action.params);
+        yield put({type: types.UPDATE_GROUP_SUCCESS, params: {...action.params}});
     } catch (e: any) {
         yield put({type: types.API_CALL_ERROR});
         yield put({type: types.UPDATE_GROUP_FAILURE, params: {...action.params, error: e.message}});
-        yield put({type: types.GET_GROUPS_REQUEST});
     }
 }
 
@@ -49,7 +48,7 @@ export function* deleteGroup(action: DeleteGroupAction) {
         yield put({type: types.DELETE_GROUP_SUCCESS, data});
     } catch (e: any) {
         yield put({type: types.API_CALL_ERROR});
-        yield put({type: types.DELETE_GROUP_FAILURE, text: e.message});
+        yield put({type: types.DELETE_GROUP_FAILURE, params: {...action.params, error: e.message}});
         yield put({type: types.GET_GROUPS_REQUEST});
     }
 }

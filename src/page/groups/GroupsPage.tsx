@@ -5,32 +5,101 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 import Header from "../../component/Header";
 import Footer from "../../component/Footer";
-import { styled } from '@mui/material/styles';
+import {styled} from '@mui/material/styles';
 import ButtonPanel from "../../component/ButtonPanel";
-import {Chip, ListItem, Paper, Stack} from "@mui/material";
+import {Chip, ListItem, Paper} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import menuItems from "../../component/menuItems";
+import {
+    DeleteGroupAction,
+    deleteGroupRequest,
+    GetGroupsAction,
+    getGroupsRequest
+} from "../../redux/actions/groupActions";
+import {connect} from "react-redux";
+import {ApplicationState} from "../../redux/reducers/types";
+import {useEffect} from "react";
+import GroupDialog from "./GroupDialog";
 
+type GroupDialogStatus = {
+    isOpen: boolean,
+    groupName: string,
+    tags: string[]
+}
 
+interface GroupsPageProps {
+    deleteGroupRequest: (params: DeleteGroupParams) => DeleteGroupAction,
+    getGroupsRequest: () => GetGroupsAction
+    groups: Array<Group>
+}
 
-export default function GroupsPage() {
+const GroupsPage: React.FC<GroupsPageProps> = (
+    {
+        deleteGroupRequest,
+        getGroupsRequest,
+        groups
+    }
+) => {
+
+    let isDataRequested = false;
+    useEffect(() => {
+        if (!isDataRequested) {
+            isDataRequested = true;
+            getGroupsRequest();
+        }
+    }, []);
+
+    const [groupDialogStatus, setGroupDialogStatus] = React.useState<GroupDialogStatus>({
+        isOpen: false,
+        groupName: "",
+        tags: []
+    });
+
+    const openGroupDialog = (group: Group) => {
+        setGroupDialogStatus({
+            ...groupDialogStatus,
+            isOpen: true,
+            groupName: group.name,
+            tags: group.tags
+        });
+    };
+
+    const handleGroupDialogCancel = () => {
+        setGroupDialogStatus({
+            ...groupDialogStatus,
+            isOpen: false
+        });
+    };
+
+    const deleteGroup = (name: string) => {
+        deleteGroupRequest({
+           name
+        });
+        setGroupDialogStatus({
+            ...groupDialogStatus,
+            isOpen: false
+        });
+    };
+
     const ListItem = styled('li')(({ theme }) => ({
         margin: theme.spacing(1.5),
     }));
-    const panelButtons: PanelButton[] = [{
-        btnText: "NEW GROUP",
-        disabled: false,
-        onClick: () => {
-        }
-    }];
+
     return (
         <ThemeProvider theme={theme}>
-            <CssBaseline />
+            <CssBaseline/>
             <Container maxWidth="lg">
-                <Header title="MANETTA" menuItems={menuItems} />
+                <GroupDialog
+                    isOpen={groupDialogStatus.isOpen}
+                    groupName={groupDialogStatus.groupName}
+                    tags={groupDialogStatus.tags}
+                    onCancel={handleGroupDialogCancel}
+                    deleteGroup={deleteGroup}
+                />
+                <Header title="MANETTA" menuItems={menuItems}/>
                 <main>
-                    <ButtonPanel buttons={panelButtons} />
-                    <Grid item xs={12} md={6} >
+                    <ButtonPanel buttons={[]}/>
+                    <Grid item xs={12} md={6}>
                         <Paper
                             sx={{
                                 display: 'flex',
@@ -40,78 +109,19 @@ export default function GroupsPage() {
                                 p: 2.5,
                                 m: 0,
                             }}
-
                             component="ul"
                         >
-
-                            <ListItem key={1}>
-                                <Chip label="Dastor" onDelete={()=>{alert("deleted!")}} onClick={() => {alert("edit!")}} />
-                            </ListItem>
-                            <ListItem key={2}>
-                                <Chip label="Silpo" variant="outlined" onDelete={()=>{alert("delete!")}} onClick={() => {alert("edit!")}}/>
-                            </ListItem>
-                            <ListItem key={3}>
-                                <Chip label="Fenix expenses" onDelete={()=>{alert("deleted!")}} onClick={() => {alert("edit!")}} />
-                            </ListItem>
-                            <ListItem key={4}>
-                                <Chip label="Spain 2022" variant="outlined" onDelete={()=>{alert("delete!")}} onClick={() => {alert("edit!")}}/>
-                            </ListItem>
-                            <ListItem key={5}>
-                                <Chip label="Fencing" onDelete={()=>{alert("deleted!")}} onClick={() => {alert("edit!")}} />
-                            </ListItem>
-                            <ListItem key={6}>
-                                <Chip label="Competition" variant="outlined" onDelete={()=>{alert("delete!")}} onClick={() => {alert("edit!")}}/>
-                            </ListItem>
-                            <ListItem key={7}>
-                                <Chip label="Shtefanyo" onDelete={()=>{alert("deleted!")}} onClick={() => {alert("edit!")}} />
-                            </ListItem>
-                            <ListItem key={8}>
-                                <Chip label="Eva" variant="outlined" onDelete={()=>{alert("delete!")}} onClick={() => {alert("edit!")}}/>
-                            </ListItem>
-                            <ListItem key={9}>
-                                <Chip label="Lidl" onDelete={()=>{alert("deleted!")}} onClick={() => {alert("edit!")}} />
-                            </ListItem>
-                            <ListItem key={10}>
-                                <Chip label="DM" variant="outlined" onDelete={()=>{alert("delete!")}} onClick={() => {alert("edit!")}}/>
-                            </ListItem>
-                            <ListItem key={11}>
-                                <Chip label="Fenix profit" onDelete={()=>{alert("deleted!")}} onClick={() => {alert("edit!")}} />
-                            </ListItem>
-                            <ListItem key={12}>
-                                <Chip label="VMware" variant="outlined" onDelete={()=>{alert("delete!")}} onClick={() => {alert("edit!")}}/>
-                            </ListItem>
-                            <ListItem key={13}>
-                                <Chip label="Restaurants" onDelete={()=>{alert("deleted!")}} onClick={() => {alert("edit!")}} />
-                            </ListItem>
-                            <ListItem key={14}>
-                                <Chip label="Electricity apartment" variant="outlined" onDelete={()=>{alert("delete!")}} onClick={() => {alert("edit!")}}/>
-                            </ListItem>
-                            <ListItem key={15}>
-                                <Chip label="Diesel" onDelete={()=>{alert("deleted!")}} onClick={() => {alert("edit!")}} />
-                            </ListItem>
-                            <ListItem key={16}>
-                                <Chip label="BMW" variant="outlined" onDelete={()=>{alert("delete!")}} onClick={() => {alert("edit!")}}/>
-                            </ListItem>
-                            <ListItem key={17}>
-                                <Chip label="Water apartment" onDelete={()=>{alert("deleted!")}} onClick={() => {alert("edit!")}} />
-                            </ListItem>
-                            <ListItem key={18}>
-                                <Chip label="Gauze apartment" variant="outlined" onDelete={()=>{alert("delete!")}} onClick={() => {alert("edit!")}}/>
-                            </ListItem>
-                            <ListItem key={19}>
-                                <Chip label="Dastor" onDelete={()=>{alert("deleted!")}} onClick={() => {alert("edit!")}} />
-                            </ListItem>
-                            <ListItem key={20}>
-                                <Chip label="Silpo" variant="outlined" onDelete={()=>{alert("delete!")}} onClick={() => {alert("edit!")}}/>
-                            </ListItem>
-                            <ListItem key={21}>
-                                <Chip label="Dastor" onDelete={()=>{alert("deleted!")}} onClick={() => {alert("edit!")}} />
-                            </ListItem>
-                            <ListItem key={22}>
-                                <Chip label="Silpo" variant="outlined" onDelete={()=>{alert("delete!")}} onClick={() => {alert("edit!")}}/>
-                            </ListItem>
-
-
+                            {
+                                groups.map((group, index) => (
+                                    <ListItem key={group.name}>
+                                        <Chip
+                                            label={group.name}
+                                            onClick={() => openGroupDialog(group)}
+                                            variant={(index % 2 == 0) ? "outlined" : "filled"}
+                                        />
+                                    </ListItem>
+                                ))
+                            }
                         </Paper>
                     </Grid>
                 </main>
@@ -121,4 +131,21 @@ export default function GroupsPage() {
             />
         </ThemeProvider>
     );
-}
+};
+
+const mapStateToProps = (state: ApplicationState) => {
+    return {
+        groups: state.groups
+    }
+};
+
+// noinspection JSUnusedGlobalSymbols
+const mapDispatchToProps = {
+    getGroupsRequest,
+    deleteGroupRequest
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(GroupsPage)

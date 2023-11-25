@@ -1,4 +1,4 @@
-import {AccountState, ApplicationState} from "./types";
+import {ApplicationState} from "./types";
 
 const initialState: ApplicationState = {
     authentication: {
@@ -15,12 +15,19 @@ const initialState: ApplicationState = {
         isLoaded: false,
         items: []
     },
+    history: {
+        entries: [],
+        cursor: ""
+    },
     accounts: {
         items: [],
         balances: []
     },
     groups: [],
     tags: [],
+    report: {
+        url: ""
+    },
     apiCallsInProgress: 0
 };
 

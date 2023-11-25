@@ -24,8 +24,21 @@ interface PostOperationsParams {
     ids: string[]
 }
 
+interface GetRecentlyPostedParams {
+    startCursor: string
+}
+
 interface DeleteOperationParams {
     id: string
+}
+
+interface GenerateExpensesReportParams {
+    startDate: string,
+    endDate: string
+}
+
+interface ReportPeriodExceededParams {
+    daysLimit: number
 }
 
 interface GetAccountBalanceParams {
@@ -92,7 +105,42 @@ interface AccountInfo {
     accountName: string
 }
 
+interface PostedOperation {
+    id: number,
+    date: string,
+    account: string,
+    docNumber: number,
+    equivalent: number,
+    balance: number,
+    description: string,
+    sum: number,
+    tags: string[]
+}
+
+interface PostedOperationResult {
+    id: string,
+    date: number,
+    account: string,
+    docNumber: number,
+    euro: number,
+    balance: number,
+    description: string,
+    sum: number,
+    tags: string[]
+}
+
+
+
+interface HeadCell {
+    disablePadding: boolean;
+    id: keyof PostedOperation;
+    label: string;
+    numeric: boolean;
+}
+
 interface OperationTemplate {
     title: string,
     description: string,
 }
+
+

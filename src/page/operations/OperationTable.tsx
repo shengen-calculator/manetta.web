@@ -1,32 +1,58 @@
 import * as React from 'react';
+import {useEffect} from "react";
+import {connect} from "react-redux";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableContainer from '@mui/material/TableContainer';
 import Paper from '@mui/material/Paper';
 import OperationTableRow from "./OperationTableRow";
-import {AccountState, ApplicationState, OperationState} from "../../redux/reducers/types";
+import {
+    AccountState,
+    ApplicationState,
+    OperationState
+} from "../../redux/reducers/types";
 import {
     CreateOperationAction,
-    createOperationRequest, GetOperationsAction,
-    getOperationsRequest, UpdateOperationAction,
+    createOperationRequest,
+    GetOperationsAction,
+    getOperationsRequest,
+    UpdateOperationAction,
     updateOperationRequest
 } from "../../redux/actions/operationActions";
 import {GetAccountsAction, getAccountsRequest} from "../../redux/actions/accountActions";
-import {GetGroupsAction, getGroupsRequest} from "../../redux/actions/groupActions";
-import {connect} from "react-redux";
-import {useEffect} from "react";
+import {
+    CreateGroupAction,
+    createGroupRequest,
+    GetGroupsAction,
+    getGroupsRequest,
+    UpdateGroupAction,
+    updateGroupRequest
+} from "../../redux/actions/groupActions";
+import {GetTagsAction, getTagsRequest} from "../../redux/actions/tagActions";
 import OperationHelper from "../../util/OperationHelper";
+import TagDialog from "./TagDialog";
 
 interface OperationTableProps {
     createOperationRequest: (params: CreateOperationParams) => CreateOperationAction
     updateOperationRequest: (params: UpdateOperationParams) => UpdateOperationAction
     getOperationsRequest: () => GetOperationsAction
     getAccountsRequest: () => GetAccountsAction
+    createGroupRequest: (params: CreateGroupParams) => CreateGroupAction
+    updateGroupRequest: (params: UpdateGroupParams) => UpdateGroupAction
     getGroupsRequest: () => GetGroupsAction
+    getTagsRequest: () => GetTagsAction
     saveRowStatus: (key: number, isValid: boolean) => void
     operations: OperationState
     accounts: AccountState
+    allTags: string[][]
     groups: Group[]
+}
+
+type TagDialogStatus = {
+    operationId: number,
+    tags: string[],
+    groupName: string
+    isOpen: boolean
 }
 
 const OperationTable: React.FC<OperationTableProps> = (
@@ -35,10 +61,14 @@ const OperationTable: React.FC<OperationTableProps> = (
         updateOperationRequest,
         getOperationsRequest,
         getAccountsRequest,
+        createGroupRequest,
+        updateGroupRequest,
         getGroupsRequest,
+        getTagsRequest,
         saveRowStatus,
         operations,
         accounts,
+        allTags,
         groups,
     }
 ) => {
@@ -50,6 +80,7 @@ const OperationTable: React.FC<OperationTableProps> = (
             getOperationsRequest();
             getAccountsRequest();
             getGroupsRequest();
+            getTagsRequest();
         }
     }, []);
 
@@ -71,6 +102,62 @@ const OperationTable: React.FC<OperationTableProps> = (
         }
     }, [operations, accounts]);
 
+    const [tagDialogStatus, setTagDialogStatus] = React.useState<TagDialogStatus>({
+        operationId: 0,
+        tags: [],
+        groupName: "",
+        isOpen: false
+    });
+
+    const saveTags = (operationId: number, tags: string[], groupName: string, saveAsGroup: boolean) => {
+        handleTagDialogCancel();
+        const operation = operations.items.find(o => o.id === operationId);
+        if (operation) {
+            save({
+                id: operationId,
+                date: operation.date,
+                account: operation.account,
+                group: groupName,
+                created: operation.created,
+                description: operation.description,
+                sum: operation.sum,
+                tags: tags
+            });
+        }
+        if (saveAsGroup) {
+            const group = groups.find(el => el.name === groupName);
+            if (group && group.tags !== tags) {
+                updateGroupRequest({
+                    name: groupName,
+                    tags
+                })
+            }
+            if (!group && groupName) {
+                createGroupRequest({
+                    name: groupName,
+                    tags
+                })
+            }
+        }
+    };
+
+    const openTagDialog = (operationId: number, tags: string[], groupName: string) => {
+        setTagDialogStatus({
+            ...tagDialogStatus,
+            operationId,
+            tags,
+            groupName,
+            isOpen: true
+        });
+    };
+
+    const handleTagDialogCancel = () => {
+        setTagDialogStatus({
+            ...tagDialogStatus,
+            isOpen: false
+        });
+    };
+
     const save = ((operation: Operation): void => {
         const date = new Date(operation.date);
         const operationParams = {
@@ -86,6 +173,16 @@ const OperationTable: React.FC<OperationTableProps> = (
 
     return (
         <TableContainer component={Paper}>
+            <TagDialog
+                isOpen={tagDialogStatus.isOpen}
+                onCancel={handleTagDialogCancel}
+                groups={groups}
+                allTags={allTags}
+                operationId={tagDialogStatus.operationId}
+                tags={tagDialogStatus.tags}
+                groupName={tagDialogStatus.groupName}
+                save={saveTags}
+            />
             <Table sx={{minWidth: 450}} aria-label="simple table">
                 <TableBody>
                     {rows.map((row) => (
@@ -96,6 +193,7 @@ const OperationTable: React.FC<OperationTableProps> = (
                             groups={groups}
                             save={save}
                             saveRowStatus={saveRowStatus}
+                            tagDialogOpen={openTagDialog}
                         />
                     ))}
                 </TableBody>
@@ -108,7 +206,8 @@ const mapStateToProps = (state: ApplicationState) => {
     return {
         operations: state.operations,
         accounts: state.accounts,
-        groups: state.groups
+        groups: state.groups,
+        allTags: state.tags,
     }
 };
 
@@ -118,7 +217,10 @@ const mapDispatchToProps = {
     updateOperationRequest,
     getOperationsRequest,
     getAccountsRequest,
+    createGroupRequest,
+    updateGroupRequest,
     getGroupsRequest,
+    getTagsRequest
 };
 
 export default connect(
