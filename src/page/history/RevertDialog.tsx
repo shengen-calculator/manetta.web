@@ -9,20 +9,20 @@ import Button from "@mui/material/Button";
 interface RevertDialogProps {
     isOpen: boolean
     onCancel: () => void
-    docNumber: number
+    row: PostedOperation
 }
 
 const RevertDialog: React.FC<RevertDialogProps> = (
     {
         isOpen,
         onCancel,
-        docNumber
+        row
     }
 ) => {
     return (
         <div>
             <Dialog open={isOpen} onClose={onCancel}>
-                <DialogTitle>Revert Operation #{docNumber}</DialogTitle>
+                <DialogTitle>Revert Operation #{row.docNumber}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         You can generate report in XLS format for specified period.

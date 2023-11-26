@@ -44,7 +44,7 @@ type ReportDialogStatus = {
 
 type RevertDialogStatus = {
     isOpen: boolean,
-    docNumber: number
+    row: PostedOperation
 }
 
 const HistoryPage: React.FC<HistoryPageProps> = (
@@ -93,7 +93,17 @@ const HistoryPage: React.FC<HistoryPageProps> = (
 
     const [revertDialogStatus, setRevertDialogStatus] = React.useState<RevertDialogStatus>({
         isOpen: false,
-        docNumber: 0
+        row: {
+            id: 0,
+            date: "",
+            account: "",
+            docNumber: 0,
+            equivalent: 0,
+            balance: 0,
+            description: "",
+            sum: 0,
+            tags: []
+        }
     });
 
     const showMore = (): void => {
@@ -121,11 +131,11 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         });
     };
 
-    const openRevertDialog = (docNumber: number) => {
+    const openRevertDialog = (row: PostedOperation) => {
         setRevertDialogStatus({
             ...revertDialogStatus,
             isOpen: true,
-            docNumber
+            row
         });
     };
 
@@ -182,7 +192,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                 <RevertDialog
                     isOpen={revertDialogStatus.isOpen}
                     onCancel={handleRevertDialogCancel}
-                    docNumber={revertDialogStatus.docNumber}
+                    row={revertDialogStatus.row}
                 />
                 <Header title="MANETTA" menuItems={menuItems}/>
                 <main>
