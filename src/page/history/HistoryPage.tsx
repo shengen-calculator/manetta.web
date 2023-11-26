@@ -25,6 +25,7 @@ import {
     generateReportRequest,
     reportPeriodExceeded
 } from "../../redux/actions/reportActions";
+import RevertDialog from "./RevertDialog";
 
 
 interface HistoryPageProps {
@@ -39,6 +40,11 @@ type ReportDialogStatus = {
     isOpen: boolean,
     startDate: number,
     endDate: number
+}
+
+type RevertDialogStatus = {
+    isOpen: boolean,
+    docNumber: number
 }
 
 const HistoryPage: React.FC<HistoryPageProps> = (
@@ -85,6 +91,11 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         endDate: 0
     });
 
+    const [revertDialogStatus, setRevertDialogStatus] = React.useState<RevertDialogStatus>({
+        isOpen: false,
+        docNumber: 0
+    });
+
     const showMore = (): void => {
         getRecentlyPostedRequest({
             startCursor: history.cursor
@@ -110,9 +121,24 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         });
     };
 
+    const openRevertDialog = (docNumber: number) => {
+        setRevertDialogStatus({
+            ...revertDialogStatus,
+            isOpen: true,
+            docNumber
+        });
+    };
+
     const handleReportDialogCancel = () => {
         setReportDialogStatus({
             ...reportDialogStatus,
+            isOpen: false
+        });
+    };
+
+    const handleRevertDialogCancel = () => {
+        setRevertDialogStatus({
+            ...revertDialogStatus,
             isOpen: false
         });
     };
@@ -153,10 +179,15 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                     onChange={handleDateChange}
                     onReport={generateReport}
                 />
+                <RevertDialog
+                    isOpen={revertDialogStatus.isOpen}
+                    onCancel={handleRevertDialogCancel}
+                    docNumber={revertDialogStatus.docNumber}
+                />
                 <Header title="MANETTA" menuItems={menuItems}/>
                 <main>
                     <ButtonPanel buttons={panelButtons}/>
-                    <HistoryTable rows={history.entries}/>
+                    <HistoryTable rows={history.entries} handleOpenRevertDialog={openRevertDialog}/>
                     <Link
                         component="button"
                         variant="body2"

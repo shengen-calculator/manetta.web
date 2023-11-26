@@ -11,16 +11,18 @@ import headCells from "./headCells";
 
 interface HistoryTableProps {
     rows: Array<PostedOperation>
+    handleOpenRevertDialog: (docNumber: number) => void
 }
 
 const HistoryTable: React.FC<HistoryTableProps> = (
     {
         rows,
+        handleOpenRevertDialog
     }
 ) => {
 
-    const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-        console.log("Rollback transaction => " + name);
+    const handleClick = (event: React.MouseEvent<unknown>, docNumber: number) => {
+        handleOpenRevertDialog(docNumber);
     };
 
     return (
@@ -39,7 +41,7 @@ const HistoryTable: React.FC<HistoryTableProps> = (
                                 return (
                                     <TableRow
                                         hover
-                                        onClick={(event) => handleClick(event, row.date)}
+                                        onClick={(event) => handleClick(event, row.docNumber)}
                                         role="checkbox"
                                         tabIndex={-1}
                                         key={row.id}
