@@ -56,17 +56,21 @@ interface OperationBase {
     tags: string[]
 }
 
-interface UpdateOperationParams extends OperationBase{
+interface UpdateOperationParams extends OperationBase {
     id: number
     date: string
 }
 
-interface CreateOperationParams extends OperationBase{
+interface RevertOperationParams {
+    docNumber: number
+}
+
+interface CreateOperationParams extends OperationBase {
     id: undefined,
     date: string
 }
 
-interface Operation extends OperationBase{
+interface Operation extends OperationBase {
     id: number,
     date: number
 }

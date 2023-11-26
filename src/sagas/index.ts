@@ -4,6 +4,7 @@ import {types} from "../redux/actions/types";
 import {
     createOperation,
     deleteOperation,
+    revertOperation,
     getOperations,
     getRecentlyPosted,
     postOperations,
@@ -34,6 +35,7 @@ function* mySaga() {
     yield takeLatest(types.GET_RECENTLY_POSTED_REQUEST, getRecentlyPosted);
     yield takeLatest(types.CREATE_OPERATION_REQUEST, createOperation);
     yield takeLatest(types.DELETE_OPERATION_REQUEST, deleteOperation);
+    yield takeLatest(types.REVERT_OPERATION_REQUEST, revertOperation);
     yield takeLatest(types.UPDATE_OPERATION_REQUEST, updateOperation);
     yield takeLatest(types.POST_OPERATIONS_REQUEST, postOperations);
     yield takeLatest(types.GET_ACCOUNTS_REQUEST, getAccounts);

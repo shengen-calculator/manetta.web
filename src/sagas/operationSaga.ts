@@ -3,7 +3,7 @@ import {
     DeleteOperationAction,
     GetOperationsAction,
     GetRecentlyPostedAction,
-    PostOperationsAction,
+    PostOperationsAction, RevertOperationAction,
     UpdateOperationAction
 } from "../redux/actions/operationActions";
 import {call, put} from 'redux-saga/effects';
@@ -62,6 +62,17 @@ export function* deleteOperation(action: DeleteOperationAction) {
         yield put({type: types.API_CALL_ERROR});
         yield put({type: types.DELETE_OPERATION_FAILURE, text: e.message});
         yield put({type: types.GET_OPERATIONS_REQUEST});
+    }
+}
+
+export function* revertOperation(action: RevertOperationAction) {
+    try {
+        yield put({type: types.BEGIN_API_CALL});
+        const {data} = yield call(OperationApi.revertOperation, action.params);
+        yield put({type: types.REVERT_OPERATION_SUCCESS, data});
+    } catch (e: any) {
+        yield put({type: types.API_CALL_ERROR});
+        yield put({type: types.REVERT_OPERATION_FAILURE, text: e.message});
     }
 }
 
