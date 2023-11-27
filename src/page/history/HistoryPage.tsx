@@ -9,11 +9,14 @@ import Header from "../../component/Header";
 import Footer from "../../component/Footer";
 import {
     ApplicationState,
-    HistoryState, ReportState
+    HistoryState,
+    ReportState
 } from "../../redux/reducers/types";
 import {
     GetRecentlyPostedAction,
-    getRecentlyPostedRequest
+    getRecentlyPostedRequest,
+    RevertOperationAction,
+    revertOperationRequest
 } from "../../redux/actions/operationActions";
 import {connect} from "react-redux";
 import {useEffect} from "react";
@@ -30,6 +33,7 @@ import RevertDialog from "./RevertDialog";
 
 interface HistoryPageProps {
     getRecentlyPostedRequest: (params: GetRecentlyPostedParams) => GetRecentlyPostedAction,
+    revertOperationRequest: (params: RevertOperationParams) => RevertOperationAction,
     generateReportRequest: (params: GenerateExpensesReportParams) => GenerateReportAction,
     reportPeriodExceeded: (params: ReportPeriodExceededParams) => ReportPeriodExceededAction,
     report: ReportState,
@@ -51,6 +55,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
     {
         getRecentlyPostedRequest,
         generateReportRequest,
+        revertOperationRequest,
         reportPeriodExceeded,
         history,
         report
@@ -160,6 +165,16 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         }));
     };
 
+    const revertOperation = (row: PostedOperation) => {
+        revertOperationRequest({
+            docNumber: row.docNumber
+        });
+        setRevertDialogStatus({
+            ...revertDialogStatus,
+            isOpen: false
+        });
+    };
+
     const generateReport = () => {
         if (reportDialogStatus.endDate - reportDialogStatus.startDate > reportPeriodLimitDays * 24 * 60 * 60 * 1000) {
             reportPeriodExceeded({
@@ -192,6 +207,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                 <RevertDialog
                     isOpen={revertDialogStatus.isOpen}
                     onCancel={handleRevertDialogCancel}
+                    onSubmit={revertOperation}
                     row={revertDialogStatus.row}
                 />
                 <Header title="MANETTA" menuItems={menuItems}/>
@@ -226,6 +242,7 @@ const mapStateToProps = (state: ApplicationState) => {
 const mapDispatchToProps = {
     getRecentlyPostedRequest,
     generateReportRequest,
+    revertOperationRequest,
     reportPeriodExceeded
 };
 

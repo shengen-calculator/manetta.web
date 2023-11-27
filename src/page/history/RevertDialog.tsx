@@ -9,6 +9,7 @@ import Button from "@mui/material/Button";
 interface RevertDialogProps {
     isOpen: boolean
     onCancel: () => void
+    onSubmit: (row: PostedOperation) => void
     row: PostedOperation
 }
 
@@ -16,6 +17,7 @@ const RevertDialog: React.FC<RevertDialogProps> = (
     {
         isOpen,
         onCancel,
+        onSubmit,
         row
     }
 ) => {
@@ -31,7 +33,7 @@ const RevertDialog: React.FC<RevertDialogProps> = (
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onCancel}>Cancel</Button>
-                    <Button onClick={onCancel}>Submit</Button>
+                    <Button onClick={() => onSubmit(row)}>Submit</Button>
                 </DialogActions>
             </Dialog>
         </div>
