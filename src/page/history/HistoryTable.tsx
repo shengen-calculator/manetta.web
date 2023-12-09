@@ -8,7 +8,7 @@ import TableCell from "@mui/material/TableCell";
 import {Box} from "@mui/material";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import headCells from "./headCells";
-import {deepOrange, purple} from "@mui/material/colors";
+import {deepOrange, yellow} from "@mui/material/colors";
 
 interface HistoryTableProps {
     rows: Array<PostedOperation>
@@ -27,11 +27,11 @@ const HistoryTable: React.FC<HistoryTableProps> = (
     };
 
     return (
-        <Box sx={{ width: '100%' }}>
-            <Paper sx={{ width: '100%', mb: 2 }}>
+        <Box sx={{width: '100%'}}>
+            <Paper sx={{width: '100%', mb: 2}}>
                 <TableContainer>
                     <Table
-                        sx={{ minWidth: 750 }}
+                        sx={{minWidth: 750}}
                         aria-labelledby="tableTitle"
                         size='small'
                     >
@@ -39,10 +39,16 @@ const HistoryTable: React.FC<HistoryTableProps> = (
                         <TableBody>
                             {rows.map((row, index) => {
                                 const labelId = `enhanced-table-checkbox-${index}`;
-                                const sx = row.sum > 100 ? { cursor: 'pointer' } : { backgroundColor: deepOrange[50] };
+                                const sx = row.isRevertOperation || row.isReverted ?
+                                    {
+                                        backgroundColor: row.isReverted ? deepOrange[50] : yellow[50]
+                                    } :
+                                    {
+                                        cursor: 'pointer'
+                                    };
                                 return (
                                     <TableRow
-                                        hover={row.sum > 100}
+                                        hover={!row.isRevertOperation && !row.isReverted}
                                         onClick={(event) => handleClick(event, row)}
                                         role="checkbox"
                                         tabIndex={-1}

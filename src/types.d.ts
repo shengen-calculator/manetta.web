@@ -118,7 +118,9 @@ interface PostedOperation {
     balance: number,
     description: string,
     sum: number,
-    tags: string[]
+    tags: string[],
+    isReverted: boolean,
+    isRevertOperation: boolean
 }
 
 interface PostedOperationResult {
@@ -130,7 +132,9 @@ interface PostedOperationResult {
     balance: number,
     description: string,
     sum: number,
-    tags: string[]
+    tags: string[],
+    isReverted: boolean,
+    isRevertOperation: boolean
 }
 
 

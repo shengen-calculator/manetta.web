@@ -20,7 +20,9 @@ export default function historyReducer(state = initialState.history, action: any
                             equivalent: posted.euro/100,
                             balance: posted.balance/100,
                             sum: posted.sum/100,
-                            tags: posted.tags
+                            tags: posted.tags,
+                            isReverted: posted.isReverted,
+                            isRevertOperation: posted.isRevertOperation
                         }
                     })
                 ],

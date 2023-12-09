@@ -115,7 +115,9 @@ const HistoryPage: React.FC<HistoryPageProps> = (
             balance: 0,
             description: "",
             sum: 0,
-            tags: []
+            tags: [],
+            isReverted: false,
+            isRevertOperation: false
         }
     });
 
@@ -145,6 +147,9 @@ const HistoryPage: React.FC<HistoryPageProps> = (
     };
 
     const openRevertDialog = (row: PostedOperation) => {
+        if (row.isReverted || row.isRevertOperation) {
+            return;
+        }
         setRevertDialogStatus({
             ...revertDialogStatus,
             isOpen: true,
