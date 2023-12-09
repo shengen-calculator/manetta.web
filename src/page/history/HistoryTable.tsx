@@ -8,6 +8,7 @@ import TableCell from "@mui/material/TableCell";
 import {Box} from "@mui/material";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import headCells from "./headCells";
+import {deepOrange, purple} from "@mui/material/colors";
 
 interface HistoryTableProps {
     rows: Array<PostedOperation>
@@ -38,14 +39,15 @@ const HistoryTable: React.FC<HistoryTableProps> = (
                         <TableBody>
                             {rows.map((row, index) => {
                                 const labelId = `enhanced-table-checkbox-${index}`;
+                                const sx = row.sum > 100 ? { cursor: 'pointer' } : { backgroundColor: deepOrange[50] };
                                 return (
                                     <TableRow
-                                        hover
+                                        hover={row.sum > 100}
                                         onClick={(event) => handleClick(event, row)}
                                         role="checkbox"
                                         tabIndex={-1}
                                         key={row.id}
-                                        sx={{ cursor: 'pointer' }}
+                                        sx={sx}
                                     >
                                         <TableCell
                                             component="th"

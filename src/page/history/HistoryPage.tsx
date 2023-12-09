@@ -84,6 +84,14 @@ const HistoryPage: React.FC<HistoryPageProps> = (
     }, []);
 
     useEffect(() => {
+        if (!history.isReverting && !isDataRequested) {
+            getRecentlyPostedRequest({
+                startCursor: ""
+            })
+        }
+    }, [history.isReverting]);
+
+    useEffect(() => {
         if(report.url) {
             window.location.href = report.url;
         }

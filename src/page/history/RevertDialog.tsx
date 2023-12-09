@@ -27,8 +27,7 @@ const RevertDialog: React.FC<RevertDialogProps> = (
                 <DialogTitle>Revert Operation #{row.docNumber}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        You can generate report in XLS format for specified period.
-                        But please note that the period should not exceed six months.
+                        As result of reverting Account balance will be affected. All other operations with the same Doc. Number will be reverted too. Revert Operation can not be canceled.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

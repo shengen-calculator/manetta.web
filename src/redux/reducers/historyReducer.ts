@@ -27,6 +27,25 @@ export default function historyReducer(state = initialState.history, action: any
                 cursor: action.data.cursor
             };
 
+        case types.REVERT_OPERATION_REQUEST:
+            return {
+                ...state,
+                entries: [],
+                isReverting: true
+            };
+
+        case types.REVERT_OPERATION_SUCCESS:
+            return {
+                ...state,
+                isReverting: false
+            };
+
+        case types.REVERT_OPERATION_FAILURE:
+            return {
+                ...state,
+                isReverting: false
+            };
+
         default:
             return state;
     }
