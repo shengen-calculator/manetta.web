@@ -9,15 +9,18 @@ import {Box} from "@mui/material";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import headCells from "./headCells";
 import {deepOrange, yellow} from "@mui/material/colors";
+import {currencies} from "../../util/currencies";
 
 interface HistoryTableProps {
     rows: Array<PostedOperation>
+    accounts: Array<Account>
     handleOpenRevertDialog: (operation: PostedOperation) => void
 }
 
 const HistoryTable: React.FC<HistoryTableProps> = (
     {
         rows,
+        accounts,
         handleOpenRevertDialog
     }
 ) => {
@@ -46,6 +49,11 @@ const HistoryTable: React.FC<HistoryTableProps> = (
                                     {
                                         cursor: 'pointer'
                                     };
+                                let rowCurrency;
+                                const account = accounts.find(acc => acc.name === row.account);
+                                if (account) {
+                                    rowCurrency = currencies.find(cur => cur.value === account.currency);
+                                }
                                 return (
                                     <TableRow
                                         hover={!row.isRevertOperation && !row.isReverted}
@@ -69,9 +77,13 @@ const HistoryTable: React.FC<HistoryTableProps> = (
                                             {`${row.tags[row.tags.length - 1]} ${row.description ? "->" : ""} ${row.description}`}
                                         </TableCell>
                                         <TableCell align="right">{row.docNumber}</TableCell>
-                                        <TableCell align="right">₴{row.sum}</TableCell>
+                                        <TableCell align="right">
+                                            {`${rowCurrency ? rowCurrency.label : ""}${row.sum}`}
+                                        </TableCell>
                                         <TableCell align="right">€{row.equivalent}</TableCell>
-                                        <TableCell align="right">₴{row.balance}</TableCell>
+                                        <TableCell align="right">
+                                            {`${rowCurrency ? rowCurrency.label : ""}${row.balance}`}
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })}

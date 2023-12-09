@@ -29,6 +29,10 @@ import {
     reportPeriodExceeded
 } from "../../redux/actions/reportActions";
 import RevertDialog from "./RevertDialog";
+import {
+    GetAccountsAction,
+    getAccountsRequest
+} from "../../redux/actions/accountActions";
 
 
 interface HistoryPageProps {
@@ -36,8 +40,10 @@ interface HistoryPageProps {
     revertOperationRequest: (params: RevertOperationParams) => RevertOperationAction,
     generateReportRequest: (params: GenerateExpensesReportParams) => GenerateReportAction,
     reportPeriodExceeded: (params: ReportPeriodExceededParams) => ReportPeriodExceededAction,
+    getAccountsRequest: () => GetAccountsAction
     report: ReportState,
-    history: HistoryState
+    history: HistoryState,
+    accounts: Array<Account>
 }
 
 type ReportDialogStatus = {
@@ -56,9 +62,11 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         getRecentlyPostedRequest,
         generateReportRequest,
         revertOperationRequest,
+        getAccountsRequest,
         reportPeriodExceeded,
         history,
-        report
+        report,
+        accounts
     }
 ) => {
 
@@ -79,7 +87,8 @@ const HistoryPage: React.FC<HistoryPageProps> = (
             isDataRequested = true;
             getRecentlyPostedRequest({
                 startCursor: ""
-            })
+            });
+            getAccountsRequest();
         }
     }, []);
 
@@ -226,7 +235,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                 <Header title="MANETTA" menuItems={menuItems}/>
                 <main>
                     <ButtonPanel buttons={panelButtons}/>
-                    <HistoryTable rows={history.entries} handleOpenRevertDialog={openRevertDialog}/>
+                    <HistoryTable rows={history.entries} accounts={accounts} handleOpenRevertDialog={openRevertDialog}/>
                     <Link
                         component="button"
                         variant="body2"
@@ -247,13 +256,15 @@ const HistoryPage: React.FC<HistoryPageProps> = (
 const mapStateToProps = (state: ApplicationState) => {
     return {
         history: state.history,
-        report: state.report
+        report: state.report,
+        accounts: state.accounts.items
     }
 };
 
 // noinspection JSUnusedGlobalSymbols
 const mapDispatchToProps = {
     getRecentlyPostedRequest,
+    getAccountsRequest,
     generateReportRequest,
     revertOperationRequest,
     reportPeriodExceeded
