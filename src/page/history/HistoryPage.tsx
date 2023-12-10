@@ -140,9 +140,9 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         const date = new Date();
         const year = date.getFullYear();
         const month = date.getDate() < switchDay ? date.getMonth() - 1 : date.getMonth();
-        const firstDay = new Date(year, month, 1);
+        const firstDay = new Date(year, month, 1, 16);
         const lastDay = date.getDate() < switchDay ?
-            new Date(year, month + 1, 0) : date;
+            new Date(year, month + 1, 0, 16) : date;
         return [firstDay.getTime(), lastDay.getTime()];
     };
 
