@@ -29,7 +29,7 @@ interface GetRecentlyPostedParams {
 }
 
 interface DeleteOperationParams {
-    id: string
+    id: number
 }
 
 interface GenerateExpensesReportParams {
