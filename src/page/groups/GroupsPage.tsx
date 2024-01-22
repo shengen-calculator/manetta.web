@@ -101,7 +101,7 @@ const GroupsPage: React.FC<GroupsPageProps> = (
                     onCancel={handleGroupDialogCancel}
                     deleteGroup={deleteGroup}
                 />
-                <HotKeys handlers={getHandlers(navigate)} keyMap={keyMap}>
+                <HotKeys handlers={getHandlers(navigate, null)} keyMap={keyMap}>
                     <Header title="MANETTA" menuItems={menuItems}/>
                     <main>
                         <ButtonPanel buttons={[]}/>

@@ -66,7 +66,7 @@ export default function HomePage() {
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Container maxWidth="lg">
-                <HotKeys handlers={getHandlers(navigate)} keyMap={keyMap}>
+                <HotKeys handlers={getHandlers(navigate, null)} keyMap={keyMap}>
                     <Header title="MANETTA" menuItems={menuItems} />
                     <main>
                         <MainPanel post={mainFeaturedPost} />

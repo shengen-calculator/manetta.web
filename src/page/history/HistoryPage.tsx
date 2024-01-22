@@ -236,7 +236,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                     onSubmit={revertOperation}
                     row={revertDialogStatus.row}
                 />
-                <HotKeys handlers={getHandlers(navigate)} keyMap={keyMap}>
+                <HotKeys handlers={getHandlers(navigate, null)} keyMap={keyMap}>
                     <Header title="MANETTA" menuItems={menuItems}/>
                     <main>
                         <ButtonPanel buttons={panelButtons}/>

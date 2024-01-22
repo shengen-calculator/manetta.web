@@ -62,6 +62,16 @@ const OperationsPage: React.FC<OperationsPageProps> = (
 
     const nonZeroOperations = [...operations.items].filter(opr => opr.sum);
 
+    const dialog = (asSingle: boolean) => {
+        const disabled = rowStatuses.some(rs => !rs.isValid) || nonZeroOperations.length === 0;
+        if (!disabled) {
+            setPostDialogStatus({
+                isOpen: true,
+                asSingle
+            })
+        }
+    };
+
     const panelButtons: PanelButton[] = [{
         btnText: "POST",
         disabled: rowStatuses.some(rs => !rs.isValid) || nonZeroOperations.length === 0,
@@ -107,7 +117,7 @@ const OperationsPage: React.FC<OperationsPageProps> = (
                     onCancel={handlePostDialogCancel}
                     post={post}
                 />
-                <HotKeys handlers={getHandlers(navigate)} keyMap={keyMap}>
+                <HotKeys handlers={getHandlers(navigate, dialog)} keyMap={keyMap}>
                     <Header title="MANETTA" menuItems={menuItems}/>
                     <main>
                         <ButtonPanel buttons={panelButtons}/>
