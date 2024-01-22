@@ -33,6 +33,9 @@ import {
     GetAccountsAction,
     getAccountsRequest
 } from "../../redux/actions/accountActions";
+import {getHandlers, keyMap} from "../../component/KeyMapHandlers";
+import {HotKeys} from "react-hotkeys";
+import {useNavigate} from "react-router-dom";
 
 
 interface HistoryPageProps {
@@ -106,6 +109,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         }
     }, [report.url]);
 
+    const navigate = useNavigate();
 
     const [reportDialogStatus, setReportDialogStatus] = React.useState<ReportDialogStatus>({
         isOpen: false,
@@ -232,19 +236,21 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                     onSubmit={revertOperation}
                     row={revertDialogStatus.row}
                 />
-                <Header title="MANETTA" menuItems={menuItems}/>
-                <main>
-                    <ButtonPanel buttons={panelButtons}/>
-                    <HistoryTable rows={history.entries} accounts={accounts} handleOpenRevertDialog={openRevertDialog}/>
-                    <Link
-                        component="button"
-                        variant="body2"
-                        sx={{ml: 2, mt: 4}}
-                        onClick={showMore}
-                    >
-                        Show more rows...
-                    </Link>
-                </main>
+                <HotKeys handlers={getHandlers(navigate)} keyMap={keyMap}>
+                    <Header title="MANETTA" menuItems={menuItems}/>
+                    <main>
+                        <ButtonPanel buttons={panelButtons}/>
+                        <HistoryTable rows={history.entries} accounts={accounts} handleOpenRevertDialog={openRevertDialog}/>
+                        <Link
+                            component="button"
+                            variant="body2"
+                            sx={{ml: 2, mt: 4}}
+                            onClick={showMore}
+                        >
+                            Show more rows...
+                        </Link>
+                    </main>
+                </HotKeys>
             </Container>
             <Footer
                 description="Accounting it's easy!"

@@ -10,6 +10,9 @@ import ButtonPanel from "../../component/ButtonPanel";
 import {Chip, ListItem, Paper, Stack} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import menuItems from "../../component/menuItems";
+import {getHandlers, keyMap} from "../../component/KeyMapHandlers";
+import {HotKeys} from "react-hotkeys";
+import {useNavigate} from "react-router-dom";
 
 
 
@@ -23,10 +26,12 @@ export default function RatesPage() {
         onClick: () => {
         }
     }];
+    const navigate = useNavigate();
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>
             <Container maxWidth="lg">
+                <HotKeys handlers={getHandlers(navigate)} keyMap={keyMap}>
                 <Header title="MANETTA" menuItems={menuItems}/>
                 <main>
                     <ButtonPanel buttons={panelButtons}/>
@@ -207,6 +212,7 @@ export default function RatesPage() {
                         </Grid>
                     </Grid>
                 </main>
+                </HotKeys>
             </Container>
             <Footer
                 description="Accounting it's easy!"

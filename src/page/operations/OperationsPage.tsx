@@ -15,6 +15,9 @@ import {
     PostOperationsAction,
     postOperationsRequest
 } from "../../redux/actions/operationActions";
+import {HotKeys} from "react-hotkeys";
+import {getHandlers, keyMap} from "../../component/KeyMapHandlers";
+import {useNavigate} from "react-router-dom";
 
 type RowStatus = {
     key: number
@@ -55,6 +58,8 @@ const OperationsPage: React.FC<OperationsPageProps> = (
         asSingle: false
     });
 
+    const navigate = useNavigate();
+
     const nonZeroOperations = [...operations.items].filter(opr => opr.sum);
 
     const panelButtons: PanelButton[] = [{
@@ -90,6 +95,8 @@ const OperationsPage: React.FC<OperationsPageProps> = (
         ]);
     };
 
+
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>
@@ -100,13 +107,15 @@ const OperationsPage: React.FC<OperationsPageProps> = (
                     onCancel={handlePostDialogCancel}
                     post={post}
                 />
-                <Header title="MANETTA" menuItems={menuItems}/>
-                <main>
-                    <ButtonPanel buttons={panelButtons}/>
-                    <OperationTable
-                        saveRowStatus={saveRowStatus}
-                    />
-                </main>
+                <HotKeys handlers={getHandlers(navigate)} keyMap={keyMap}>
+                    <Header title="MANETTA" menuItems={menuItems}/>
+                    <main>
+                        <ButtonPanel buttons={panelButtons}/>
+                        <OperationTable
+                            saveRowStatus={saveRowStatus}
+                        />
+                    </main>
+                </HotKeys>
             </Container>
             <Footer
                 description="Accounting it's easy!"
