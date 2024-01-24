@@ -19,11 +19,11 @@ export const getHandlers = (navigate: any, dialog: any | null) => {
 };
 
 export const keyMap = {
-    GO_HOME: "option+a",
-    GO_OPERATIONS: "option+s",
-    GO_GROUPS: "option+d",
-    GO_HISTORY: "option+f",
-    GO_RATES: "option+g",
-    OPEN_POST_SEPARATE: "option+p",
-    OPEN_POST_SINGLE: "option+o"
+    GO_HOME: "1",
+    GO_OPERATIONS: "2",
+    GO_GROUPS: "3",
+    GO_HISTORY: "4",
+    GO_RATES: "5",
+    OPEN_POST_SEPARATE: "p",
+    OPEN_POST_SINGLE: "l"
 };
