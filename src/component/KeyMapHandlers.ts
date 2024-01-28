@@ -24,6 +24,6 @@ export const keyMap = {
     GO_GROUPS: "3",
     GO_HISTORY: "4",
     GO_RATES: "5",
-    OPEN_POST_SEPARATE: "p",
-    OPEN_POST_SINGLE: "l"
+    OPEN_POST_SEPARATE: "option+p",
+    OPEN_POST_SINGLE: "option+l"
 };
