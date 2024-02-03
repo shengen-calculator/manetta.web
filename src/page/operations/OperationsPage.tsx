@@ -15,6 +15,9 @@ import {
     PostOperationsAction,
     postOperationsRequest
 } from "../../redux/actions/operationActions";
+import {HotKeys} from "react-hotkeys";
+import {getHandlers, keyMap} from "../../component/KeyMapHandlers";
+import {useNavigate} from "react-router-dom";
 
 type RowStatus = {
     key: number
@@ -55,10 +58,23 @@ const OperationsPage: React.FC<OperationsPageProps> = (
         asSingle: false
     });
 
+    const navigate = useNavigate();
+
     const nonZeroOperations = [...operations.items].filter(opr => opr.sum);
+
+    const dialog = (asSingle: boolean) => {
+        const disabled = rowStatuses.some(rs => !rs.isValid) || nonZeroOperations.length === 0;
+        if (!disabled) {
+            setPostDialogStatus({
+                isOpen: true,
+                asSingle
+            })
+        }
+    };
 
     const panelButtons: PanelButton[] = [{
         btnText: "POST",
+        tooltip: "Hot key: Alt (option) + P",
         disabled: rowStatuses.some(rs => !rs.isValid) || nonZeroOperations.length === 0,
         onClick: () => setPostDialogStatus({
             isOpen: true,
@@ -66,6 +82,7 @@ const OperationsPage: React.FC<OperationsPageProps> = (
         })
     }, {
         btnText: "POST AS SINGLE",
+        tooltip: "Hot key: Alt (option) + L",
         disabled: rowStatuses.some(rs => !rs.isValid) || nonZeroOperations.length === 0,
         onClick: () => setPostDialogStatus({
             isOpen: true,
@@ -90,6 +107,8 @@ const OperationsPage: React.FC<OperationsPageProps> = (
         ]);
     };
 
+
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>
@@ -100,13 +119,15 @@ const OperationsPage: React.FC<OperationsPageProps> = (
                     onCancel={handlePostDialogCancel}
                     post={post}
                 />
-                <Header title="MANETTA" menuItems={menuItems}/>
-                <main>
-                    <ButtonPanel buttons={panelButtons}/>
-                    <OperationTable
-                        saveRowStatus={saveRowStatus}
-                    />
-                </main>
+                <HotKeys handlers={getHandlers(navigate, dialog)} keyMap={keyMap}>
+                    <Header title="MANETTA" menuItems={menuItems}/>
+                    <main>
+                        <ButtonPanel buttons={panelButtons}/>
+                        <OperationTable
+                            saveRowStatus={saveRowStatus}
+                        />
+                    </main>
+                </HotKeys>
             </Container>
             <Footer
                 description="Accounting it's easy!"

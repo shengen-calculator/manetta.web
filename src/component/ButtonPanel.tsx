@@ -2,7 +2,7 @@ import * as React from 'react';
 import Typography from '@mui/material/Typography';
 import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
-import {LinearProgress} from "@mui/material";
+import {LinearProgress, Tooltip} from "@mui/material";
 import {ApplicationState} from "../redux/reducers/types";
 import {connect} from "react-redux";
 
@@ -42,17 +42,19 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (
                 {
                     buttons.map(btn => {
                             return (
-                                <Button
-                                    key={btnId++}
-                                    onClick={btn.onClick}
-                                    disabled={btn.disabled}
-                                    variant="outlined"
-                                    size="small"
-                                    color="inherit"
-                                    sx={{ml: 3}}
-                                >
-                                    {btn.btnText}
-                                </Button>
+                                <Tooltip title={btn.tooltip}>
+                                    <Button
+                                        key={btnId++}
+                                        onClick={btn.onClick}
+                                        disabled={btn.disabled}
+                                        variant="outlined"
+                                        size="small"
+                                        color="inherit"
+                                        sx={{ml: 3}}
+                                    >
+                                        {btn.btnText}
+                                    </Button>
+                                </Tooltip>
                             )
                         }
                     )

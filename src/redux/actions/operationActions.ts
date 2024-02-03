@@ -24,6 +24,11 @@ export type UpdateOperationAction = {
     params: UpdateOperationParams
 }
 
+export type RevertOperationAction = {
+    type: types.REVERT_OPERATION_REQUEST
+    params: RevertOperationParams
+}
+
 export type DeleteOperationAction = {
     type: types.DELETE_OPERATION_REQUEST
     params: DeleteOperationParams
@@ -51,4 +56,8 @@ export function deleteOperationRequest(params: DeleteOperationParams): DeleteOpe
 
 export function updateOperationRequest(params: UpdateOperationParams): UpdateOperationAction {
     return {type: types.UPDATE_OPERATION_REQUEST, params}
+}
+
+export function revertOperationRequest(params: RevertOperationParams): RevertOperationAction {
+    return {type: types.REVERT_OPERATION_REQUEST, params}
 }

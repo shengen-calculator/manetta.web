@@ -14,6 +14,8 @@ import {
 import {
     CreateOperationAction,
     createOperationRequest,
+    DeleteOperationAction,
+    deleteOperationRequest,
     GetOperationsAction,
     getOperationsRequest,
     UpdateOperationAction,
@@ -35,6 +37,7 @@ import TagDialog from "./TagDialog";
 interface OperationTableProps {
     createOperationRequest: (params: CreateOperationParams) => CreateOperationAction
     updateOperationRequest: (params: UpdateOperationParams) => UpdateOperationAction
+    deleteOperationRequest: (params: DeleteOperationParams) => DeleteOperationAction
     getOperationsRequest: () => GetOperationsAction
     getAccountsRequest: () => GetAccountsAction
     createGroupRequest: (params: CreateGroupParams) => CreateGroupAction
@@ -59,6 +62,7 @@ const OperationTable: React.FC<OperationTableProps> = (
     {
         createOperationRequest,
         updateOperationRequest,
+        deleteOperationRequest,
         getOperationsRequest,
         getAccountsRequest,
         createGroupRequest,
@@ -194,6 +198,7 @@ const OperationTable: React.FC<OperationTableProps> = (
                             save={save}
                             saveRowStatus={saveRowStatus}
                             tagDialogOpen={openTagDialog}
+                            deleteRowClick={deleteOperationRequest}
                         />
                     ))}
                 </TableBody>
@@ -215,6 +220,7 @@ const mapStateToProps = (state: ApplicationState) => {
 const mapDispatchToProps = {
     createOperationRequest,
     updateOperationRequest,
+    deleteOperationRequest,
     getOperationsRequest,
     getAccountsRequest,
     createGroupRequest,

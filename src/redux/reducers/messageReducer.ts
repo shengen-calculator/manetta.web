@@ -103,6 +103,13 @@ export default function messageReducer(state = initialState.message, action: any
                 text: action.params.error ? action.params.error : "Generate report Error"
             };
 
+        case types.REVERT_OPERATION_FAILURE:
+            return {
+                ...state,
+                type: 'error',
+                text: action.text
+            };
+
         default:
             return state;
     }

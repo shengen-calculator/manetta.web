@@ -11,6 +11,9 @@ import Footer from '../../component/Footer';
 import theme from "../../theme";
 import OperationTemplate from "./OperationTemplate";
 import menuItems from "../../component/menuItems";
+import {getHandlers, keyMap} from "../../component/KeyMapHandlers";
+import {HotKeys} from "react-hotkeys";
+import {useNavigate} from "react-router-dom";
 
 const mainFeaturedPost = {
     title: 'Manetta Accounting',
@@ -58,29 +61,32 @@ const templates: OperationTemplate[] = [
 ];
 
 export default function HomePage() {
+    const navigate = useNavigate();
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Container maxWidth="lg">
-                <Header title="MANETTA" menuItems={menuItems} />
-                <main>
-                    <MainPanel post={mainFeaturedPost} />
-                    <Grid container spacing={4}>
-                        {accountsInfo.map((acc) => (
-                            <AccountSummary key={acc.accountName} account={acc} />
-                        ))}
-                    </Grid>
-                    <Grid container spacing={5} sx={{ mt: 3 }}>
-                    </Grid>
-                    <Divider />
-                    <Grid container spacing={5} sx={{ mt: 3 }}>
-                    </Grid>
-                    <Grid container spacing={4}>
-                        {templates.map((post) => (
-                            <OperationTemplate key={post.title} post={post} />
-                        ))}
-                    </Grid>
-                </main>
+                <HotKeys handlers={getHandlers(navigate, null)} keyMap={keyMap}>
+                    <Header title="MANETTA" menuItems={menuItems} />
+                    <main>
+                        <MainPanel post={mainFeaturedPost} />
+                        <Grid container spacing={4}>
+                            {accountsInfo.map((acc) => (
+                                <AccountSummary key={acc.accountName} account={acc} />
+                            ))}
+                        </Grid>
+                        <Grid container spacing={5} sx={{ mt: 3 }}>
+                        </Grid>
+                        <Divider />
+                        <Grid container spacing={5} sx={{ mt: 3 }}>
+                        </Grid>
+                        <Grid container spacing={4}>
+                            {templates.map((post) => (
+                                <OperationTemplate key={post.title} post={post} />
+                            ))}
+                        </Grid>
+                    </main>
+                </HotKeys>
             </Container>
             <Footer
                 description="Accounting it's easy!"

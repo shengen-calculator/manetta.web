@@ -16,6 +16,7 @@ const initialState: ApplicationState = {
         items: []
     },
     history: {
+        isReverting: false,
         entries: [],
         cursor: ""
     },

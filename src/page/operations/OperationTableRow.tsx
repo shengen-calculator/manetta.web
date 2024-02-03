@@ -20,9 +20,10 @@ interface OperationTableRowProps {
     accounts: Account[]
     groups: Group[]
     save: (operation: Operation) => void
+    deleteRowClick: (params: DeleteOperationParams) => void
 }
 
-interface OperationRow extends Operation{
+interface OperationRow extends Operation {
     inputGroup: string,
     inputAccount: string
 }
@@ -41,6 +42,7 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
         operation,
         accounts,
         groups,
+        deleteRowClick,
         save
     }
 ) => {
@@ -230,7 +232,15 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
                 </Badge>
             </TableCell>
             <TableCell align="right">
-                <IconButton aria-label="delete" component="label" color="error" disabled={operationRow.sum === 0}>
+                <IconButton
+                    aria-label="delete"
+                    component="label"
+                    color="error"
+                    disabled={operationRow.sum === 0}
+                    onClick={() => deleteRowClick({
+                        id: Number(operationRow.id)
+                    })}
+                >
                     <DeleteIcon/>
                 </IconButton>
             </TableCell>

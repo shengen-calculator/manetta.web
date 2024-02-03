@@ -8,6 +8,11 @@ class OperationApi {
         return func(params);
     }
 
+    static revertOperation(params: RevertOperationParams){
+        const func = httpsCallable(functions, 'operation-revertOperation');
+        return func(params);
+    }
+
     static createOperation(params: CreateOperationParams) {
         const func = httpsCallable(functions, 'operation-saveOperation');
         return func(params);

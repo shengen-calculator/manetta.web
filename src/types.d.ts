@@ -29,7 +29,7 @@ interface GetRecentlyPostedParams {
 }
 
 interface DeleteOperationParams {
-    id: string
+    id: number
 }
 
 interface GenerateExpensesReportParams {
@@ -56,17 +56,21 @@ interface OperationBase {
     tags: string[]
 }
 
-interface UpdateOperationParams extends OperationBase{
+interface UpdateOperationParams extends OperationBase {
     id: number
     date: string
 }
 
-interface CreateOperationParams extends OperationBase{
+interface RevertOperationParams {
+    docNumber: number
+}
+
+interface CreateOperationParams extends OperationBase {
     id: undefined,
     date: string
 }
 
-interface Operation extends OperationBase{
+interface Operation extends OperationBase {
     id: number,
     date: number
 }
@@ -94,6 +98,7 @@ interface Account  {
 
 interface PanelButton {
     btnText: string,
+    tooltip: string,
     disabled: boolean,
     onClick: () => void
 }
@@ -114,7 +119,9 @@ interface PostedOperation {
     balance: number,
     description: string,
     sum: number,
-    tags: string[]
+    tags: string[],
+    isReverted: boolean,
+    isRevertOperation: boolean
 }
 
 interface PostedOperationResult {
@@ -126,7 +133,9 @@ interface PostedOperationResult {
     balance: number,
     description: string,
     sum: number,
-    tags: string[]
+    tags: string[],
+    isReverted: boolean,
+    isRevertOperation: boolean
 }
 
 

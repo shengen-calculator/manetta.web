@@ -9,11 +9,14 @@ import Header from "../../component/Header";
 import Footer from "../../component/Footer";
 import {
     ApplicationState,
-    HistoryState, ReportState
+    HistoryState,
+    ReportState
 } from "../../redux/reducers/types";
 import {
     GetRecentlyPostedAction,
-    getRecentlyPostedRequest
+    getRecentlyPostedRequest,
+    RevertOperationAction,
+    revertOperationRequest
 } from "../../redux/actions/operationActions";
 import {connect} from "react-redux";
 import {useEffect} from "react";
@@ -25,14 +28,25 @@ import {
     generateReportRequest,
     reportPeriodExceeded
 } from "../../redux/actions/reportActions";
+import RevertDialog from "./RevertDialog";
+import {
+    GetAccountsAction,
+    getAccountsRequest
+} from "../../redux/actions/accountActions";
+import {getHandlers, keyMap} from "../../component/KeyMapHandlers";
+import {HotKeys} from "react-hotkeys";
+import {useNavigate} from "react-router-dom";
 
 
 interface HistoryPageProps {
     getRecentlyPostedRequest: (params: GetRecentlyPostedParams) => GetRecentlyPostedAction,
+    revertOperationRequest: (params: RevertOperationParams) => RevertOperationAction,
     generateReportRequest: (params: GenerateExpensesReportParams) => GenerateReportAction,
     reportPeriodExceeded: (params: ReportPeriodExceededParams) => ReportPeriodExceededAction,
+    getAccountsRequest: () => GetAccountsAction
     report: ReportState,
-    history: HistoryState
+    history: HistoryState,
+    accounts: Array<Account>
 }
 
 type ReportDialogStatus = {
@@ -41,13 +55,21 @@ type ReportDialogStatus = {
     endDate: number
 }
 
+type RevertDialogStatus = {
+    isOpen: boolean,
+    row: PostedOperation
+}
+
 const HistoryPage: React.FC<HistoryPageProps> = (
     {
         getRecentlyPostedRequest,
         generateReportRequest,
+        revertOperationRequest,
+        getAccountsRequest,
         reportPeriodExceeded,
         history,
-        report
+        report,
+        accounts
     }
 ) => {
 
@@ -55,6 +77,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
     const reportPeriodLimitDays = 180;
     const panelButtons: PanelButton[] = [{
         btnText: "REPORT",
+        tooltip: "Hot key: Alt (option) + P",
         disabled: false,
         onClick: () => {
             openReportDialog();
@@ -68,9 +91,18 @@ const HistoryPage: React.FC<HistoryPageProps> = (
             isDataRequested = true;
             getRecentlyPostedRequest({
                 startCursor: ""
-            })
+            });
+            getAccountsRequest();
         }
     }, []);
+
+    useEffect(() => {
+        if (!history.isReverting && !isDataRequested) {
+            getRecentlyPostedRequest({
+                startCursor: ""
+            })
+        }
+    }, [history.isReverting]);
 
     useEffect(() => {
         if(report.url) {
@@ -78,11 +110,29 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         }
     }, [report.url]);
 
+    const navigate = useNavigate();
 
     const [reportDialogStatus, setReportDialogStatus] = React.useState<ReportDialogStatus>({
         isOpen: false,
         startDate: 0,
         endDate: 0
+    });
+
+    const [revertDialogStatus, setRevertDialogStatus] = React.useState<RevertDialogStatus>({
+        isOpen: false,
+        row: {
+            id: 0,
+            date: "",
+            account: "",
+            docNumber: 0,
+            equivalent: 0,
+            balance: 0,
+            description: "",
+            sum: 0,
+            tags: [],
+            isReverted: false,
+            isRevertOperation: false
+        }
     });
 
     const showMore = (): void => {
@@ -95,9 +145,9 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         const date = new Date();
         const year = date.getFullYear();
         const month = date.getDate() < switchDay ? date.getMonth() - 1 : date.getMonth();
-        const firstDay = new Date(year, month, 1);
+        const firstDay = new Date(year, month, 1, 16);
         const lastDay = date.getDate() < switchDay ?
-            new Date(year, month + 1, 0) : date;
+            new Date(year, month + 1, 0, 16) : date;
         return [firstDay.getTime(), lastDay.getTime()];
     };
 
@@ -110,9 +160,27 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         });
     };
 
+    const openRevertDialog = (row: PostedOperation) => {
+        if (row.isReverted || row.isRevertOperation) {
+            return;
+        }
+        setRevertDialogStatus({
+            ...revertDialogStatus,
+            isOpen: true,
+            row
+        });
+    };
+
     const handleReportDialogCancel = () => {
         setReportDialogStatus({
             ...reportDialogStatus,
+            isOpen: false
+        });
+    };
+
+    const handleRevertDialogCancel = () => {
+        setRevertDialogStatus({
+            ...revertDialogStatus,
             isOpen: false
         });
     };
@@ -122,6 +190,16 @@ const HistoryPage: React.FC<HistoryPageProps> = (
             ...prev,
             [name]: (value && value.isValid()) ? value.valueOf() : null
         }));
+    };
+
+    const revertOperation = (row: PostedOperation) => {
+        revertOperationRequest({
+            docNumber: row.docNumber
+        });
+        setRevertDialogStatus({
+            ...revertDialogStatus,
+            isOpen: false
+        });
     };
 
     const generateReport = () => {
@@ -153,19 +231,27 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                     onChange={handleDateChange}
                     onReport={generateReport}
                 />
-                <Header title="MANETTA" menuItems={menuItems}/>
-                <main>
-                    <ButtonPanel buttons={panelButtons}/>
-                    <HistoryTable rows={history.entries}/>
-                    <Link
-                        component="button"
-                        variant="body2"
-                        sx={{ml: 2, mt: 4}}
-                        onClick={showMore}
-                    >
-                        Show more rows...
-                    </Link>
-                </main>
+                <RevertDialog
+                    isOpen={revertDialogStatus.isOpen}
+                    onCancel={handleRevertDialogCancel}
+                    onSubmit={revertOperation}
+                    row={revertDialogStatus.row}
+                />
+                <HotKeys handlers={getHandlers(navigate, null)} keyMap={keyMap}>
+                    <Header title="MANETTA" menuItems={menuItems}/>
+                    <main>
+                        <ButtonPanel buttons={panelButtons}/>
+                        <HistoryTable rows={history.entries} accounts={accounts} handleOpenRevertDialog={openRevertDialog}/>
+                        <Link
+                            component="button"
+                            variant="body2"
+                            sx={{ml: 2, mt: 4}}
+                            onClick={showMore}
+                        >
+                            Show more rows...
+                        </Link>
+                    </main>
+                </HotKeys>
             </Container>
             <Footer
                 description="Accounting it's easy!"
@@ -177,14 +263,17 @@ const HistoryPage: React.FC<HistoryPageProps> = (
 const mapStateToProps = (state: ApplicationState) => {
     return {
         history: state.history,
-        report: state.report
+        report: state.report,
+        accounts: state.accounts.items
     }
 };
 
 // noinspection JSUnusedGlobalSymbols
 const mapDispatchToProps = {
     getRecentlyPostedRequest,
+    getAccountsRequest,
     generateReportRequest,
+    revertOperationRequest,
     reportPeriodExceeded
 };
 

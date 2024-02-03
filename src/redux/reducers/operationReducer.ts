@@ -55,6 +55,14 @@ export default function operationReducer(state = initialState.operations, action
                 ]
             };
 
+        case types.DELETE_OPERATION_SUCCESS:
+            return {
+                ...state,
+                items: [
+                    ... state.items.filter(it => it.id !== action.params.id)
+                ]
+            };
+
         default:
             return state;
     }

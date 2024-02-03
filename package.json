@@ -15,6 +15,7 @@
     "notistack": "^3.0.1",
     "react": "latest",
     "react-dom": "latest",
+    "react-hotkeys": "^2.0.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.9.0",
     "react-scripts": "^2.1.3",

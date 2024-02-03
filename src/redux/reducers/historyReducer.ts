@@ -20,11 +20,32 @@ export default function historyReducer(state = initialState.history, action: any
                             equivalent: posted.euro/100,
                             balance: posted.balance/100,
                             sum: posted.sum/100,
-                            tags: posted.tags
+                            tags: posted.tags,
+                            isReverted: posted.isReverted,
+                            isRevertOperation: posted.isRevertOperation
                         }
                     })
                 ],
                 cursor: action.data.cursor
+            };
+
+        case types.REVERT_OPERATION_REQUEST:
+            return {
+                ...state,
+                entries: [],
+                isReverting: true
+            };
+
+        case types.REVERT_OPERATION_SUCCESS:
+            return {
+                ...state,
+                isReverting: false
+            };
+
+        case types.REVERT_OPERATION_FAILURE:
+            return {
+                ...state,
+                isReverting: false
             };
 
         default:

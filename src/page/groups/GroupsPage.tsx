@@ -20,6 +20,9 @@ import {connect} from "react-redux";
 import {ApplicationState} from "../../redux/reducers/types";
 import {useEffect} from "react";
 import GroupDialog from "./GroupDialog";
+import {getHandlers, keyMap} from "../../component/KeyMapHandlers";
+import {HotKeys} from "react-hotkeys";
+import {useNavigate} from "react-router-dom";
 
 type GroupDialogStatus = {
     isOpen: boolean,
@@ -85,6 +88,8 @@ const GroupsPage: React.FC<GroupsPageProps> = (
         margin: theme.spacing(1.5),
     }));
 
+    const navigate = useNavigate();
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>
@@ -96,35 +101,37 @@ const GroupsPage: React.FC<GroupsPageProps> = (
                     onCancel={handleGroupDialogCancel}
                     deleteGroup={deleteGroup}
                 />
-                <Header title="MANETTA" menuItems={menuItems}/>
-                <main>
-                    <ButtonPanel buttons={[]}/>
-                    <Grid item xs={12} md={6}>
-                        <Paper
-                            sx={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                flexWrap: 'wrap',
-                                listStyle: 'none',
-                                p: 2.5,
-                                m: 0,
-                            }}
-                            component="ul"
-                        >
-                            {
-                                groups.map((group, index) => (
-                                    <ListItem key={group.name}>
-                                        <Chip
-                                            label={group.name}
-                                            onClick={() => openGroupDialog(group)}
-                                            variant={(index % 2 == 0) ? "outlined" : "filled"}
-                                        />
-                                    </ListItem>
-                                ))
-                            }
-                        </Paper>
-                    </Grid>
-                </main>
+                <HotKeys handlers={getHandlers(navigate, null)} keyMap={keyMap}>
+                    <Header title="MANETTA" menuItems={menuItems}/>
+                    <main>
+                        <ButtonPanel buttons={[]}/>
+                        <Grid item xs={12} md={6}>
+                            <Paper
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    flexWrap: 'wrap',
+                                    listStyle: 'none',
+                                    p: 2.5,
+                                    m: 0,
+                                }}
+                                component="ul"
+                            >
+                                {
+                                    groups.map((group, index) => (
+                                        <ListItem key={group.name}>
+                                            <Chip
+                                                label={group.name}
+                                                onClick={() => openGroupDialog(group)}
+                                                variant={(index % 2 == 0) ? "outlined" : "filled"}
+                                            />
+                                        </ListItem>
+                                    ))
+                                }
+                            </Paper>
+                        </Grid>
+                    </main>
+                </HotKeys>
             </Container>
             <Footer
                 description="Accounting it's easy!"
