@@ -5,10 +5,12 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import {connect} from "react-redux";
 import {logoutRequest, LogoutAction} from "../redux/actions/authenticationActions";
+import {Tooltip} from "@mui/material";
 
 interface HeaderProps {
     menuItems: ReadonlyArray<{
         title: string;
+        tooltip: string;
         url: string;
     }>;
     title: string;
@@ -49,16 +51,18 @@ const Header = (props: HeaderProps) => {
                 sx={{ justifyContent: 'space-between', overflowX: 'auto' }}
             >
                 {menuItems.map((section) => (
-                    <Link
-                        color="inherit"
-                        noWrap
-                        key={section.title}
-                        variant="body2"
-                        href={section.url}
-                        sx={{ p: 1, flexShrink: 0 }}
-                    >
-                        {section.title}
-                    </Link>
+                    <Tooltip title={section.tooltip}>
+                        <Link
+                            color="inherit"
+                            noWrap
+                            key={section.title}
+                            variant="body2"
+                            href={section.url}
+                            sx={{ p: 1, flexShrink: 0 }}
+                        >
+                            {section.title}
+                        </Link>
+                    </Tooltip>
                 ))}
             </Toolbar>
         </React.Fragment>

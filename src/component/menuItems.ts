@@ -1,9 +1,9 @@
 const menuItems = [
-    { title: 'Home', url: '/' },
-    { title: 'Operations', url: '/operations' },
-    { title: 'Groups', url: '/groups' },
-    { title: 'History', url: '/history' },
-    { title: 'Rates', url: '/rates' }
+    { title: 'Home', url: '/', tooltip: 'hot key: 1' },
+    { title: 'Operations', url: '/operations', tooltip: 'hot key: 2' },
+    { title: 'Groups', url: '/groups', tooltip: 'hot key: 3' },
+    { title: 'History', url: '/history', tooltip: 'hot key: 4' },
+    { title: 'Rates', url: '/rates', tooltip: 'hot key: 5' }
 ];
 
 export default menuItems;

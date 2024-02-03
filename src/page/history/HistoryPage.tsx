@@ -77,6 +77,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
     const reportPeriodLimitDays = 180;
     const panelButtons: PanelButton[] = [{
         btnText: "REPORT",
+        tooltip: "Hot key: Alt (option) + P",
         disabled: false,
         onClick: () => {
             openReportDialog();

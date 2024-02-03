@@ -7,7 +7,7 @@ import Header from "../../component/Header";
 import Footer from "../../component/Footer";
 import {styled} from '@mui/material/styles';
 import ButtonPanel from "../../component/ButtonPanel";
-import {Chip, ListItem, Paper, Stack} from "@mui/material";
+import {Chip, ListItem, Paper} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import menuItems from "../../component/menuItems";
 import {getHandlers, keyMap} from "../../component/KeyMapHandlers";
@@ -21,6 +21,7 @@ export default function RatesPage() {
     }));
     const panelButtons: PanelButton[] = [{
         btnText: "NEW RATE",
+        tooltip: "Hot key: Alt (option) + P",
         disabled: false,
         onClick: () => {
         }

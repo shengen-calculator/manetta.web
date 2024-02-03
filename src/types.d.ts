@@ -98,6 +98,7 @@ interface Account  {
 
 interface PanelButton {
     btnText: string,
+    tooltip: string,
     disabled: boolean,
     onClick: () => void
 }
