@@ -5,7 +5,8 @@ import {useState} from "react";
 
 interface OperationTagsSelectorProps {
     onChange: (tags: string[]) => void
-    tags: string[][]
+    tags: string[]
+    allTags: string[][]
 }
 
 interface OperationTags {
@@ -18,12 +19,13 @@ interface OperationTags {
 const OperationTagsSelector: React.FC<OperationTagsSelectorProps> = (
     {
         onChange,
-        tags
+        tags,
+        allTags
     }
 ) => {
 
     const [operationTags, setOperationTags] = useState<OperationTags>({
-        baseTags: [],
+        baseTags: tags,
         extraTags: [],
         inputBaseTag: "",
         inputExtraTag: "",
@@ -32,7 +34,7 @@ const OperationTagsSelector: React.FC<OperationTagsSelectorProps> = (
     const getBaseTags = () => {
         const index = operationTags.baseTags.length;
         let filtered: string[][] = [];
-        filtered = tags.filter((coll) => coll.length > index);
+        filtered = allTags.filter((coll) => coll.length > index);
         operationTags.baseTags.forEach((tag, index) => {
             filtered = filtered.filter(coll => coll[index] === tag);
         });
@@ -41,7 +43,7 @@ const OperationTagsSelector: React.FC<OperationTagsSelectorProps> = (
     };
 
     const getExtraTags = () => {
-        return tags.reduce(
+        return allTags.reduce(
             (accumulator: string[], currentValue) => [...accumulator, ...currentValue], []);
     };
 
@@ -68,7 +70,7 @@ const OperationTagsSelector: React.FC<OperationTagsSelectorProps> = (
                 margin="dense"
                 error={false}
                 variant={"outlined"}
-                value={operationTags.baseTags || []}
+                value={operationTags.baseTags}
                 inputValue={operationTags.inputBaseTag}
                 onChange={(e, newVal) => handleAutocompleteChange(e, newVal, "baseTags")}
                 onInputChange={(e, newVal) => handleAutocompleteChange(e, newVal, "inputBaseTag")}
@@ -83,7 +85,7 @@ const OperationTagsSelector: React.FC<OperationTagsSelectorProps> = (
                 margin="dense"
                 error={false}
                 variant={"outlined"}
-                value={operationTags.extraTags || []}
+                value={operationTags.extraTags}
                 inputValue={operationTags.inputExtraTag}
                 onChange={(e, newVal) => handleAutocompleteChange(e, newVal, "extraTags")}
                 onInputChange={(e, newVal) => handleAutocompleteChange(e, newVal, "inputExtraTag")}
@@ -91,3 +93,5 @@ const OperationTagsSelector: React.FC<OperationTagsSelectorProps> = (
         </React.Fragment>
     )
 };
+
+export default OperationTagsSelector;
