@@ -51,12 +51,19 @@ const OperationTagsSelector: React.FC<OperationTagsSelectorProps> = (
         return array.indexOf(value) === index;
     };
 
-    const handleAutocompleteChange = (event: React.SyntheticEvent, newValue: string | null, inputId: string): void => {
+    const handleAutocompleteChange = (event: React.SyntheticEvent, newValue: string[] | string | null, inputId: string): void => {
         setOperationTags(prev => ({
             ...prev,
             [inputId]: newValue
         }));
-        onChange([...operationTags.baseTags, ...operationTags.extraTags]);
+
+        if (inputId === "baseTags" && Array.isArray(newValue)) {
+            onChange([...newValue, ...operationTags.extraTags]);
+        }
+
+        if (inputId === "extraTags" && Array.isArray(newValue)) {
+            onChange([...operationTags.baseTags, ...newValue]);
+        }
     };
 
     return (
