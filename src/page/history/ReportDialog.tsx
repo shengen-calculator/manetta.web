@@ -8,12 +8,15 @@ import Button from "@mui/material/Button";
 import {DemoContainer} from "@mui/x-date-pickers/internals/demo";
 import {Dayjs} from "dayjs";
 import DateInput from "../operations/DateInput";
+import OperationTagsSelector from "../operations/OperationTagsSelector";
 
 interface ReportDialogProps {
     isOpen: boolean
+    allTags: string [][]
     startDate: number
     endDate: number
     onCancel: () => void
+    onTagsChange: (tags: string[]) => void
     onChange: (value: Dayjs | null, name: string) => void
     onReport: (startDate: number, endDate: number) => void
 }
@@ -21,8 +24,10 @@ interface ReportDialogProps {
 const ReportDialog: React.FC<ReportDialogProps> = (
     {
         isOpen,
+        allTags,
         startDate,
         endDate,
+        onTagsChange,
         onCancel,
         onChange,
         onReport
@@ -51,6 +56,11 @@ const ReportDialog: React.FC<ReportDialogProps> = (
                             onChange={(val) => onChange(val, "endDate")}
                         />
                     </DemoContainer>
+                    <OperationTagsSelector
+                        onChange={onTagsChange}
+                        tags={[]}
+                        allTags={allTags}
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onCancel}>Cancel</Button>

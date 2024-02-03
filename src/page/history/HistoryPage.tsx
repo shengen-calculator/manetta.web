@@ -33,6 +33,10 @@ import {
     GetAccountsAction,
     getAccountsRequest
 } from "../../redux/actions/accountActions";
+import {
+    GetTagsAction,
+    getTagsRequest
+} from "../../redux/actions/tagActions";
 import {getHandlers, keyMap} from "../../component/KeyMapHandlers";
 import {HotKeys} from "react-hotkeys";
 import {useNavigate} from "react-router-dom";
@@ -43,16 +47,19 @@ interface HistoryPageProps {
     revertOperationRequest: (params: RevertOperationParams) => RevertOperationAction,
     generateReportRequest: (params: GenerateExpensesReportParams) => GenerateReportAction,
     reportPeriodExceeded: (params: ReportPeriodExceededParams) => ReportPeriodExceededAction,
-    getAccountsRequest: () => GetAccountsAction
+    getAccountsRequest: () => GetAccountsAction,
+    getTagsRequest: () => GetTagsAction,
     report: ReportState,
     history: HistoryState,
+    allTags: string[][],
     accounts: Array<Account>
 }
 
 type ReportDialogStatus = {
     isOpen: boolean,
     startDate: number,
-    endDate: number
+    endDate: number,
+    tags: string[]
 }
 
 type RevertDialogStatus = {
@@ -66,15 +73,17 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         generateReportRequest,
         revertOperationRequest,
         getAccountsRequest,
+        getTagsRequest,
         reportPeriodExceeded,
         history,
         report,
+        allTags,
         accounts
     }
 ) => {
 
     const switchDay = 12;
-    const reportPeriodLimitDays = 180;
+    const reportPeriodLimitDays = 365;
     const panelButtons: PanelButton[] = [{
         btnText: "REPORT",
         tooltip: "Hot key: Alt (option) + P",
@@ -93,6 +102,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                 startCursor: ""
             });
             getAccountsRequest();
+            getTagsRequest();
         }
     }, []);
 
@@ -115,7 +125,8 @@ const HistoryPage: React.FC<HistoryPageProps> = (
     const [reportDialogStatus, setReportDialogStatus] = React.useState<ReportDialogStatus>({
         isOpen: false,
         startDate: 0,
-        endDate: 0
+        endDate: 0,
+        tags: []
     });
 
     const [revertDialogStatus, setRevertDialogStatus] = React.useState<RevertDialogStatus>({
@@ -192,6 +203,13 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         }));
     };
 
+    const handleTagsChange = (tags: string[]): void => {
+        setReportDialogStatus(prev => ({
+            ...prev,
+            tags
+        }))
+    };
+
     const revertOperation = (row: PostedOperation) => {
         revertOperationRequest({
             docNumber: row.docNumber
@@ -210,7 +228,8 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         } else {
             generateReportRequest({
                 startDate: new Date(reportDialogStatus.startDate).toISOString().slice(0, 10),
-                endDate: new Date(reportDialogStatus.endDate).toISOString().slice(0, 10)
+                endDate: new Date(reportDialogStatus.endDate).toISOString().slice(0, 10),
+                tags: reportDialogStatus.tags
             });
             setReportDialogStatus({
                 ...reportDialogStatus,
@@ -229,7 +248,9 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                     endDate={reportDialogStatus.endDate}
                     onCancel={handleReportDialogCancel}
                     onChange={handleDateChange}
+                    onTagsChange={handleTagsChange}
                     onReport={generateReport}
+                    allTags={allTags}
                 />
                 <RevertDialog
                     isOpen={revertDialogStatus.isOpen}
@@ -264,7 +285,8 @@ const mapStateToProps = (state: ApplicationState) => {
     return {
         history: state.history,
         report: state.report,
-        accounts: state.accounts.items
+        accounts: state.accounts.items,
+        allTags: state.tags
     }
 };
 
@@ -272,6 +294,7 @@ const mapStateToProps = (state: ApplicationState) => {
 const mapDispatchToProps = {
     getRecentlyPostedRequest,
     getAccountsRequest,
+    getTagsRequest,
     generateReportRequest,
     revertOperationRequest,
     reportPeriodExceeded
