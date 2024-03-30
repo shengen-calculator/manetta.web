@@ -8,7 +8,6 @@ import OperationsPage from "../page/operations/OperationsPage";
 import ProTip from "../ProTip";
 import GroupsPage from "../page/groups/GroupsPage";
 import LoginPage from "../page/auth/LoginPage";
-import RatesPage from "../page/rates/RatesPage";
 import HistoryPage from "../page/history/HistoryPage";
 import RegistrationPage from "../page/auth/RegistrationPage";
 
@@ -49,10 +48,6 @@ const AppRouts = createBrowserRouter(
                 {
                     path: "/groups",
                     element: <GroupsPage/>
-                },
-                {
-                    path: "/rates",
-                    element: <RatesPage/>
                 }
             ]
         },
