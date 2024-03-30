@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import {ChangeEvent, useEffect, useState} from "react";
 import AutoCompleteInput from "./AutoCompleteInput";
+import OperationTagsSelector from "./OperationTagsSelector";
 
 interface TagDialogProps {
     isOpen: boolean
@@ -24,8 +25,7 @@ interface TagDialogProps {
 }
 
 interface OperationTags {
-    baseTags: string[],
-    extraTags: string[],
+    tags: string[],
     groupName: string,
     saveAsGroup: boolean,
     inputGroupName: string,
@@ -50,17 +50,14 @@ const TagDialog: React.FC<TagDialogProps> = (
         if(isOpen) {
             setOperationTags(prev => ({
                 ...prev,
-                baseTags: tags,
-                extraTags: [],
                 groupName: "",
                 saveAsGroup: false
             }));
         }
-    }, [tags, isOpen]);
+    }, [isOpen]);
 
     const [operationTags, setOperationTags] = useState<OperationTags>({
-        baseTags: [],
-        extraTags: [],
+        tags: [],
         groupName: "",
         saveAsGroup: false,
         inputGroupName: "",
@@ -70,10 +67,16 @@ const TagDialog: React.FC<TagDialogProps> = (
 
     const handleSave = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        save(operationId,
-            [...operationTags.baseTags, ...operationTags.extraTags],
+        save(operationId, operationTags.tags,
             operationTags.saveAsGroup ? operationTags.inputGroupName : groupName,
             operationTags.saveAsGroup);
+    };
+
+    const handleChange = (tags: string[]): void => {
+        setOperationTags(prev => ({
+            ...prev,
+            tags
+        }))
     };
 
     const handleAutocompleteChange = (event: React.SyntheticEvent, newValue: string | null, inputId: string): void => {
@@ -91,26 +94,6 @@ const TagDialog: React.FC<TagDialogProps> = (
         }));
     };
 
-    const getBaseTags = () => {
-        const index = operationTags.baseTags.length;
-        let filtered: string[][] = [];
-        filtered = allTags.filter((coll) => coll.length > index);
-        operationTags.baseTags.forEach((tag, index) => {
-            filtered = filtered.filter(coll => coll[index] === tag);
-        });
-        return filtered.reduce(
-            (accumulator, currentValue) => [...accumulator, currentValue[index]], []);
-    };
-
-    const getExtraTags = () => {
-        return allTags.reduce(
-            (accumulator: string[], currentValue) => [...accumulator, ...currentValue], []);
-    };
-
-    const onlyUnique = (value: string, index: number, array: string[]) => {
-        return array.indexOf(value) === index;
-    };
-
     return (
         <div>
             <Dialog
@@ -123,34 +106,10 @@ const TagDialog: React.FC<TagDialogProps> = (
                             Don't forget that tag order is important for reports. Please find more information in
                             provided documentation.
                         </DialogContentText>
-                        <AutoCompleteInput
-                            id="baseTags"
-                            label="Base Tags"
-                            multiple={true}
-                            options={getBaseTags().filter(onlyUnique)}
-                            placeholder="Limited by existing tag order"
-                            margin="dense"
-                            error={false}
-                            variant={"outlined"}
-                            value={operationTags.baseTags || []}
-                            inputValue={operationTags.inputBaseTag}
-                            onChange={(e, newVal) => handleAutocompleteChange(e, newVal, "baseTags")}
-                            onInputChange={(e, newVal) => handleAutocompleteChange(e, newVal, "inputBaseTag")}
-                        />
-                        <AutoCompleteInput
-                            id="extraTags"
-                            label="Extra Tags"
-                            freeSolo={true}
-                            multiple={true}
-                            options={getExtraTags().filter(onlyUnique)}
-                            placeholder="Any value allowed"
-                            margin="dense"
-                            error={false}
-                            variant={"outlined"}
-                            value={operationTags.extraTags || []}
-                            inputValue={operationTags.inputExtraTag}
-                            onChange={(e, newVal) => handleAutocompleteChange(e, newVal, "extraTags")}
-                            onInputChange={(e, newVal) => handleAutocompleteChange(e, newVal, "inputExtraTag")}
+                        <OperationTagsSelector
+                            onChange={handleChange}
+                            tags={tags}
+                            allTags={allTags}
                         />
                         <FormControlLabel control={
                             <Checkbox id="saveAsGroup" checked={operationTags.saveAsGroup} onChange={handleCheckBoxChange}/>
