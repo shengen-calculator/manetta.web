@@ -91,6 +91,10 @@ interface DeleteGroupParams {
     name: string
 }
 
+interface CreateRateParams {
+    rate: number
+}
+
 interface Account  {
     name: string,
     isActive: boolean,
