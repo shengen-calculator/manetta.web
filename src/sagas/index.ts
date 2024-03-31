@@ -26,6 +26,10 @@ import {
 import {
     generateExpensesReport
 } from "./reportSaga";
+import {
+    createRate,
+    getRates
+} from "./rateSaga";
 
 function* mySaga() {
     yield takeLatest(types.LOG_OUT_REQUEST, logOut);
@@ -43,6 +47,8 @@ function* mySaga() {
     yield takeLatest(types.CREATE_GROUP_REQUEST, createGroup);
     yield takeLatest(types.DELETE_GROUP_REQUEST, deleteGroup);
     yield takeLatest(types.UPDATE_GROUP_REQUEST, updateGroup);
+    yield takeLatest(types.GET_CURRENCY_RATES_REQUEST, getRates);
+    yield takeLatest(types.CREATE_CURRENCY_RATE_REQUEST, createRate);
     yield takeLatest(types.GET_TAGS_REQUEST, getTags);
     yield takeLatest(types.GENERATE_EXPENSES_REPORT_REQUEST, generateExpensesReport);
     yield takeEvery(types.GET_ACCOUNT_BALANCE_REQUEST, getAccountBalance);
