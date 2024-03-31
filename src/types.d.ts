@@ -92,7 +92,8 @@ interface DeleteGroupParams {
 }
 
 interface CreateRateParams {
-    rate: number
+    rate: number,
+    currency: string
 }
 
 interface Account  {
