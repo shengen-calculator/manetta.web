@@ -6,6 +6,7 @@ import Link from '@mui/material/Link';
 import {connect} from "react-redux";
 import {logoutRequest, LogoutAction} from "../redux/actions/authenticationActions";
 import {Tooltip} from "@mui/material";
+import {GetRatesAction, getRatesRequest} from "../redux/actions/rateActions";
 
 interface HeaderProps {
     menuItems: ReadonlyArray<{
@@ -14,7 +15,7 @@ interface HeaderProps {
         url: string;
     }>;
     title: string;
-    logoutRequest: () => LogoutAction | undefined
+    logoutRequest: () => LogoutAction | undefined;
 }
 
 const Header = (props: HeaderProps) => {

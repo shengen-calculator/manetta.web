@@ -3,12 +3,12 @@ import { httpsCallable } from "firebase/functions";
 
 class RateApi {
     static getRates()  {
-        const func = httpsCallable(functions, 'currency-getAllGroups');
+        const func = httpsCallable(functions, 'currency-getCurrencyRate');
         return func();
     }
 
     static createRate(params: CreateRateParams) {
-        const func = httpsCallable(functions, 'currency-saveGroup');
+        const func = httpsCallable(functions, 'currency-addCurrencyRate');
         return func(params);
     }
 }
