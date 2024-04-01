@@ -26,6 +26,7 @@ const initialState: ApplicationState = {
     },
     groups: [],
     tags: [],
+    rates: {},
     report: {
         url: ""
     },

@@ -102,6 +102,19 @@ interface Account  {
     currency: string
 }
 
+interface Rate {
+    rate: number,
+    date: number
+}
+
+interface CurrencyRate extends Rate {
+    currency: string
+}
+
+interface Rates {
+    [currency: string]: Rate
+}
+
 interface PanelButton {
     btnText: string,
     tooltip: string,

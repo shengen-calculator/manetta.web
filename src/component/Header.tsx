@@ -7,6 +7,8 @@ import {connect} from "react-redux";
 import {logoutRequest, LogoutAction} from "../redux/actions/authenticationActions";
 import {Tooltip} from "@mui/material";
 import {GetRatesAction, getRatesRequest} from "../redux/actions/rateActions";
+import {useEffect} from "react";
+import {ApplicationState} from "../redux/reducers/types";
 
 interface HeaderProps {
     menuItems: ReadonlyArray<{
@@ -15,11 +17,21 @@ interface HeaderProps {
         url: string;
     }>;
     title: string;
+    rates: Rates;
+    getRatesRequest: () => GetRatesAction;
     logoutRequest: () => LogoutAction | undefined;
 }
 
 const Header = (props: HeaderProps) => {
-    const { menuItems, title, logoutRequest } = props;
+    const { menuItems, title, logoutRequest, getRatesRequest, rates } = props;
+    let isDataRequested = false;
+
+    useEffect(() => {
+        if(!isDataRequested && Object.keys(rates).length === 0) {
+            isDataRequested = true;
+            getRatesRequest();
+        }
+    }, []);
 
     return (
         <React.Fragment>
@@ -34,8 +46,12 @@ const Header = (props: HeaderProps) => {
                 >
                     {title}
                 </Typography>
-                <Button size="small">$ 37.60</Button>
-                <Button size="small">€ 40.60</Button>
+                <Button size="small">$ {
+                    rates["USD"] ? rates["USD"].rate/100 : 0.00
+                }</Button>
+                <Button size="small">€ {
+                    rates["UAH"] ? rates["UAH"].rate/100 : 0.00
+                }</Button>
                 <Button
                     variant="outlined"
                     size="small"
@@ -70,12 +86,19 @@ const Header = (props: HeaderProps) => {
     );
 };
 
+const mapStateToProps = (state: ApplicationState) => {
+    return {
+        rates: state.rates
+    }
+};
+
 // noinspection JSUnusedGlobalSymbols
 const mapDispatchToProps = {
-    logoutRequest
+    logoutRequest,
+    getRatesRequest
 };
 
 export default connect(
-    undefined,
+    mapStateToProps,
     mapDispatchToProps
 )(Header);
