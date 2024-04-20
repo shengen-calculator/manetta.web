@@ -9,6 +9,7 @@ import {Tooltip} from "@mui/material";
 import {GetRatesAction, getRatesRequest} from "../redux/actions/rateActions";
 import {useEffect} from "react";
 import {ApplicationState} from "../redux/reducers/types";
+import Rate from "./Rate";
 
 interface HeaderProps {
     menuItems: ReadonlyArray<{
@@ -46,12 +47,7 @@ const Header = (props: HeaderProps) => {
                 >
                     {title}
                 </Typography>
-                <Button size="small">$ {
-                    rates["USD"] ? rates["USD"].rate/100 : 0.00
-                }</Button>
-                <Button size="small">€ {
-                    rates["UAH"] ? rates["UAH"].rate/100 : 0.00
-                }</Button>
+                <Rate abbreviations={["USD", "UAH", "HUF"]} rates={rates}/>
                 <Button
                     variant="outlined"
                     size="small"
