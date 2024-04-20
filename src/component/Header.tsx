@@ -47,7 +47,7 @@ const Header = (props: HeaderProps) => {
                 >
                     {title}
                 </Typography>
-                <Rate abbreviations={["USD", "UAH", "HUF"]} rates={rates}/>
+                <Rate abbreviations={["USD", "UAH"]} rates={rates}/>
                 <Button
                     variant="outlined"
                     size="small"
