@@ -10,8 +10,9 @@ interface RateProps {
 
 type RateDialogStatus = {
     isOpen: boolean,
+    isError: boolean,
     abbr: string,
-    rate: number
+    rate: string
 }
 
 const Rate: React.FC<RateProps> = (
@@ -23,14 +24,26 @@ const Rate: React.FC<RateProps> = (
 
     const [rateDialogStatus, setRateDialogStatus] = React.useState<RateDialogStatus>({
         isOpen: false,
+        isError: false,
         abbr: "",
-        rate: 0
+        rate: ""
     });
 
-    const openRateDialog = () => {
+    const openRateDialog = (abbr: string, rate: string) => {
         setRateDialogStatus({
             ...rateDialogStatus,
-            isOpen: true
+            isOpen: true,
+            isError: false,
+            abbr,
+            rate
+        });
+    };
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+        const {value} = event.target;
+        setRateDialogStatus({
+            ...rateDialogStatus,
+            rate: value
         });
     };
 
@@ -41,18 +54,34 @@ const Rate: React.FC<RateProps> = (
         });
     };
 
+    const handleSave = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (isNaN(Number(rateDialogStatus.rate)) || Number(rateDialogStatus.rate) === 0) {
+            setRateDialogStatus({
+                ...rateDialogStatus,
+                isError: true
+            });
+            return;
+        }
+        console.log(`Abbr -> ${rateDialogStatus.abbr}`);
+        console.log(`Rate -> ${rateDialogStatus.rate}`);
+        setRateDialogStatus({
+            ...rateDialogStatus,
+            isOpen: false
+        });
+    }
+
     return (
         <React.Fragment>
             {
                 abbreviations.map(abbr => {
                     const labelAbbr = abbr === "UAH" ? "EUR" : abbr;
                     const currency = currencies.find(c => c.value === labelAbbr);
+                    const rate = rates[abbr] ? rates[abbr].rate / 100 : 0.00;
                     return (
-                        <Button onClick={openRateDialog} size="small">
-                            {`${currency ?
-                                currency.label : labelAbbr} ${
-                                rates[abbr] ?
-                                    rates[abbr].rate / 100 : 0.00}`}
+                        <Button onClick={() =>
+                            openRateDialog(labelAbbr, rate.toString())} size="small">
+                            {`${currency ? currency.label : labelAbbr} ${rate}`}
                         </Button>
                     )
                 })
@@ -60,7 +89,13 @@ const Rate: React.FC<RateProps> = (
             <RateDialog
                 isOpen={rateDialogStatus.isOpen}
                 onCancel={handleRateDialogCancel}
-                save={()=>{}}
+                onChange={handleChange}
+                isError={rateDialogStatus.isError}
+                abbr={rateDialogStatus.abbr}
+                rate={rateDialogStatus.rate}
+                onSave={(event: React.FormEvent<HTMLFormElement>) => {
+                    handleSave(event);
+                }}
             />
         </React.Fragment>
     )

@@ -13,33 +13,37 @@ import {
 interface CurrencyDialogProps {
     isOpen: boolean
     onCancel: () => void
-    save: (rate: number, abbr: string) => void
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+    abbr: string
+    rate: string
+    isError: boolean
+    onSave: (event: React.FormEvent<HTMLFormElement>) => void
 }
 
 const RateDialog: React.FC<CurrencyDialogProps> = (
     {
         isOpen,
         onCancel,
-        save
+        onChange,
+        abbr,
+        rate,
+        isError,
+        onSave
     }
 ) => {
-
-    const handleSave = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        console.log(event);
-    };
-
     return (
         <Dialog
             open={isOpen}
             onClose={onCancel}>
-            <DialogTitle>Actual USD exchange rate</DialogTitle>
-            <form onSubmit={handleSave}>
+            <DialogTitle>Actual {abbr} exchange rate</DialogTitle>
+            <form onSubmit={onSave}>
                 <DialogContent>
                     <DialogContentText>
-                        Please enter the actual USD exchange rate. This will affect settlements against the main currency.
+                        Please enter the actual {abbr} exchange rate.
+                        This will affect settlements against the main currency.
                     </DialogContentText>
                     <TextField
+                        error={isError}
                         autoFocus
                         required
                         margin="dense"
@@ -49,6 +53,8 @@ const RateDialog: React.FC<CurrencyDialogProps> = (
                         type="text"
                         fullWidth
                         variant="standard"
+                        value={rate}
+                        onChange={onChange}
                     />
                 </DialogContent>
                 <DialogActions>
