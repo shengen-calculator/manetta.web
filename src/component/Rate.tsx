@@ -2,23 +2,27 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import {currencies} from "../util/currencies";
 import RateDialog from "./RateDialog";
+import {CreateRateAction} from "../redux/actions/rateActions";
 
 interface RateProps {
     rates: Rates,
-    abbreviations: string[]
+    abbreviations: string[],
+    createRate: (params: CreateRateParams) => CreateRateAction
 }
 
 type RateDialogStatus = {
     isOpen: boolean,
     isError: boolean,
     abbr: string,
+    currency: string,
     rate: string
 }
 
 const Rate: React.FC<RateProps> = (
     {
         rates,
-        abbreviations
+        abbreviations,
+        createRate,
     }
 ) => {
 
@@ -26,15 +30,17 @@ const Rate: React.FC<RateProps> = (
         isOpen: false,
         isError: false,
         abbr: "",
+        currency: "",
         rate: ""
     });
 
-    const openRateDialog = (abbr: string, rate: string) => {
+    const openRateDialog = (abbr: string, currency: string, rate: string) => {
         setRateDialogStatus({
             ...rateDialogStatus,
             isOpen: true,
             isError: false,
             abbr,
+            currency,
             rate
         });
     };
@@ -63,8 +69,10 @@ const Rate: React.FC<RateProps> = (
             });
             return;
         }
-        console.log(`Abbr -> ${rateDialogStatus.abbr}`);
-        console.log(`Rate -> ${rateDialogStatus.rate}`);
+        createRate({
+            rate: Math.round(Number(rateDialogStatus.rate) * 100),
+            currency: rateDialogStatus.currency
+        });
         setRateDialogStatus({
             ...rateDialogStatus,
             isOpen: false
@@ -80,7 +88,7 @@ const Rate: React.FC<RateProps> = (
                     const rate = rates[abbr] ? rates[abbr].rate / 100 : 0.00;
                     return (
                         <Button onClick={() =>
-                            openRateDialog(labelAbbr, rate.toString())} size="small">
+                            openRateDialog(labelAbbr, abbr, rate.toString())} size="small">
                             {`${currency ? currency.label : labelAbbr} ${rate}`}
                         </Button>
                     )

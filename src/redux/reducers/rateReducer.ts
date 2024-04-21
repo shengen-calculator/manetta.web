@@ -11,7 +11,7 @@ export default function rateReducer(state = initialState.rates, action: any): Ra
                     date: c.date
                 }, acc),{});
 
-        case types.CREATE_CURRENCY_RATE_SUCCESS:
+        case types.CREATE_CURRENCY_RATE_REQUEST:
             return {};
 
         default:

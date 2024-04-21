@@ -6,7 +6,12 @@ import Link from '@mui/material/Link';
 import {connect} from "react-redux";
 import {logoutRequest, LogoutAction} from "../redux/actions/authenticationActions";
 import {Tooltip} from "@mui/material";
-import {GetRatesAction, getRatesRequest} from "../redux/actions/rateActions";
+import {
+    GetRatesAction,
+    getRatesRequest,
+    createRateRequest,
+    CreateRateAction
+} from "../redux/actions/rateActions";
 import {useEffect} from "react";
 import {ApplicationState} from "../redux/reducers/types";
 import Rate from "./Rate";
@@ -20,11 +25,12 @@ interface HeaderProps {
     title: string;
     rates: Rates;
     getRatesRequest: () => GetRatesAction;
+    createRateRequest: (params: CreateRateParams) => CreateRateAction;
     logoutRequest: () => LogoutAction | undefined;
 }
 
 const Header = (props: HeaderProps) => {
-    const { menuItems, title, logoutRequest, getRatesRequest, rates } = props;
+    const { menuItems, title, logoutRequest, getRatesRequest, createRateRequest, rates } = props;
     let isDataRequested = false;
 
     useEffect(() => {
@@ -47,7 +53,7 @@ const Header = (props: HeaderProps) => {
                 >
                     {title}
                 </Typography>
-                <Rate abbreviations={["USD", "UAH"]} rates={rates}/>
+                <Rate abbreviations={["USD", "UAH"]} rates={rates} createRate={createRateRequest}/>
                 <Button
                     variant="outlined"
                     size="small"
@@ -91,7 +97,8 @@ const mapStateToProps = (state: ApplicationState) => {
 // noinspection JSUnusedGlobalSymbols
 const mapDispatchToProps = {
     logoutRequest,
-    getRatesRequest
+    getRatesRequest,
+    createRateRequest
 };
 
 export default connect(
