@@ -19,6 +19,10 @@ export function* createRate(action: CreateRateAction) {
         yield put({type: types.BEGIN_API_CALL});
         yield call(RateApi.createRate, action.params);
         yield put({type: types.CREATE_CURRENCY_RATE_SUCCESS, params: {...action.params}});
+        // refresh rate
+        yield put({type: types.BEGIN_API_CALL});
+        const {data} = yield call(RateApi.getRates);
+        yield put({type: types.GET_CURRENCY_RATES_SUCCESS, data});
     } catch (e: any) {
         yield put({type: types.API_CALL_ERROR});
         yield put({type: types.CREATE_CURRENCY_RATE_FAILURE, params: {...action.params, error: e.message}});
