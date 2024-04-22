@@ -102,6 +102,8 @@ interface Account  {
     currency: string
 }
 
+type RateStatus = "DEFINED" | "NOT_DEFINED" | "REQUESTED"
+
 interface Rate {
     rate: number,
     date: number
@@ -112,7 +114,8 @@ interface CurrencyRate extends Rate {
 }
 
 interface Rates {
-    [currency: string]: Rate
+    status: RateStatus,
+    items: CurrencyRate[]
 }
 
 interface PanelButton {

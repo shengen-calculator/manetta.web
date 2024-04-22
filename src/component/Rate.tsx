@@ -82,14 +82,15 @@ const Rate: React.FC<RateProps> = (
     return (
         <React.Fragment>
             {
-                abbreviations.map(abbr => {
-                    const labelAbbr = abbr === "UAH" ? "EUR" : abbr;
-                    const currency = currencies.find(c => c.value === labelAbbr);
-                    const rate = rates[abbr] ? rates[abbr].rate / 100 : 0.00;
+                abbreviations.map(curAbbr => {
+                    const label = curAbbr === "UAH" ? "EUR" : curAbbr;
+                    const symbol = currencies.find(c => c.value === label);
+                    const item = rates.items.find(r => r.currency === curAbbr);
+                    const rate = item ? item.rate / 100 : "--.--";
                     return (
                         <Button onClick={() =>
-                            openRateDialog(labelAbbr, abbr, rate.toString())} size="small">
-                            {`${currency ? currency.label : labelAbbr} ${rate}`}
+                            openRateDialog(label, curAbbr, rate.toString())} size="small">
+                            {`${symbol ? symbol.label : label} ${rate}`}
                         </Button>
                     )
                 })

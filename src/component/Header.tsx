@@ -34,11 +34,14 @@ const Header = (props: HeaderProps) => {
     let isDataRequested = false;
 
     useEffect(() => {
-        if(!isDataRequested && Object.keys(rates).length === 0) {
-            isDataRequested = true;
+        if (rates.status === "NOT_DEFINED" && !isDataRequested) {
             getRatesRequest();
+            isDataRequested = true;
         }
-    }, []);
+        if (rates.status === "DEFINED") {
+            isDataRequested = false;
+        }
+    }, [rates.status]);
 
     return (
         <React.Fragment>

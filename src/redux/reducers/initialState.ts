@@ -26,7 +26,10 @@ const initialState: ApplicationState = {
     },
     groups: [],
     tags: [],
-    rates: {},
+    rates: {
+        status: "NOT_DEFINED",
+        items: []
+    },
     report: {
         url: ""
     },
