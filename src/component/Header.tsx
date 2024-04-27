@@ -3,6 +3,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
+import {Link as RouterLink} from 'react-router-dom';
 import {connect} from "react-redux";
 import {logoutRequest, LogoutAction} from "../redux/actions/authenticationActions";
 import {Tooltip} from "@mui/material";
@@ -76,10 +77,11 @@ const Header = (props: HeaderProps) => {
                     <Tooltip title={section.tooltip}>
                         <Link
                             color="inherit"
+                            component={RouterLink}
                             noWrap
                             key={section.title}
                             variant="body2"
-                            href={section.url}
+                            to={section.url}
                             sx={{ p: 1, flexShrink: 0 }}
                         >
                             {section.title}
