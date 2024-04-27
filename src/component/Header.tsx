@@ -6,6 +6,15 @@ import Link from '@mui/material/Link';
 import {connect} from "react-redux";
 import {logoutRequest, LogoutAction} from "../redux/actions/authenticationActions";
 import {Tooltip} from "@mui/material";
+import {
+    GetRatesAction,
+    getRatesRequest,
+    createRateRequest,
+    CreateRateAction
+} from "../redux/actions/rateActions";
+import {useEffect} from "react";
+import {ApplicationState} from "../redux/reducers/types";
+import Rate from "./Rate";
 
 interface HeaderProps {
     menuItems: ReadonlyArray<{
@@ -14,11 +23,25 @@ interface HeaderProps {
         url: string;
     }>;
     title: string;
-    logoutRequest: () => LogoutAction | undefined
+    rates: Rates;
+    getRatesRequest: () => GetRatesAction;
+    createRateRequest: (params: CreateRateParams) => CreateRateAction;
+    logoutRequest: () => LogoutAction | undefined;
 }
 
 const Header = (props: HeaderProps) => {
-    const { menuItems, title, logoutRequest } = props;
+    const { menuItems, title, logoutRequest, getRatesRequest, createRateRequest, rates } = props;
+    let isDataRequested = false;
+
+    useEffect(() => {
+        if (rates.status === "NOT_DEFINED" && !isDataRequested) {
+            getRatesRequest();
+            isDataRequested = true;
+        }
+        if (rates.status === "DEFINED") {
+            isDataRequested = false;
+        }
+    }, [rates.status]);
 
     return (
         <React.Fragment>
@@ -33,8 +56,7 @@ const Header = (props: HeaderProps) => {
                 >
                     {title}
                 </Typography>
-                <Button size="small">$ 37.60</Button>
-                <Button size="small">€ 40.60</Button>
+                <Rate abbreviations={["USD", "UAH"]} rates={rates} createRate={createRateRequest}/>
                 <Button
                     variant="outlined"
                     size="small"
@@ -69,12 +91,20 @@ const Header = (props: HeaderProps) => {
     );
 };
 
+const mapStateToProps = (state: ApplicationState) => {
+    return {
+        rates: state.rates
+    }
+};
+
 // noinspection JSUnusedGlobalSymbols
 const mapDispatchToProps = {
-    logoutRequest
+    logoutRequest,
+    getRatesRequest,
+    createRateRequest
 };
 
 export default connect(
-    undefined,
+    mapStateToProps,
     mapDispatchToProps
 )(Header);

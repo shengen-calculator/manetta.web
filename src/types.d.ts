@@ -91,10 +91,31 @@ interface DeleteGroupParams {
     name: string
 }
 
+interface CreateRateParams {
+    rate: number,
+    currency: string
+}
+
 interface Account  {
     name: string,
     isActive: boolean,
     currency: string
+}
+
+type RateStatus = "DEFINED" | "NOT_DEFINED" | "REQUESTED"
+
+interface Rate {
+    rate: number,
+    date: number
+}
+
+interface CurrencyRate extends Rate {
+    currency: string
+}
+
+interface Rates {
+    status: RateStatus,
+    items: CurrencyRate[]
 }
 
 interface PanelButton {

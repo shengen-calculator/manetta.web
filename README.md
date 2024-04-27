@@ -13,3 +13,10 @@ Install it and run:
 npm install
 npm start
 ```
+
+For debugging in Google Chrome browser <br /> 
+**command line options**:
+```sh
+--remote-allow-origins=*
+```
+

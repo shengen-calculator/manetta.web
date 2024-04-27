@@ -44,6 +44,7 @@ type ApplicationState = {
     operations: OperationState,
     accounts: AccountState,
     groups: Array<Group>,
+    rates: Rates,
     tags: Array<Array<string>>,
     history: HistoryState,
     message: MessageState,
