@@ -18,7 +18,13 @@ export default function groupReducer(state = initialState.group, action: any): G
                 items: action.data
             }
 
-        case types.CREATE_GROUP_SUCCESS:
+        case types.GET_GROUPS_FAILURE:
+            return {
+                ...state,
+                status: "NOT_DEFINED"
+            }
+
+        case types.CREATE_GROUP_REQUEST:
             return {
                 ...state,
                 items: [
