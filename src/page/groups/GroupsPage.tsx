@@ -17,7 +17,7 @@ import {
     getGroupsRequest
 } from "../../redux/actions/groupActions";
 import {connect} from "react-redux";
-import {ApplicationState} from "../../redux/reducers/types";
+import {ApplicationState, GroupState} from "../../redux/reducers/types";
 import {useEffect} from "react";
 import GroupDialog from "./GroupDialog";
 import {getHandlers, keyMap} from "../../component/KeyMapHandlers";
@@ -33,24 +33,27 @@ type GroupDialogStatus = {
 interface GroupsPageProps {
     deleteGroupRequest: (params: DeleteGroupParams) => DeleteGroupAction,
     getGroupsRequest: () => GetGroupsAction
-    groups: Array<Group>
+    group: GroupState
 }
 
 const GroupsPage: React.FC<GroupsPageProps> = (
     {
         deleteGroupRequest,
         getGroupsRequest,
-        groups
+        group
     }
 ) => {
 
-    let isDataRequested = false;
+    let initStatus: InitStatus = "NOT_STARTED";
     useEffect(() => {
-        if (!isDataRequested) {
-            isDataRequested = true;
+        if (group.status === "NOT_DEFINED" && initStatus === "NOT_STARTED") {
             getGroupsRequest();
+            initStatus = "STARTED";
         }
-    }, []);
+        if (group.status === "DEFINED") {
+            initStatus = "FINISHED";
+        }
+    }, [group.status]);
 
     const [groupDialogStatus, setGroupDialogStatus] = React.useState<GroupDialogStatus>({
         isOpen: false,
@@ -118,7 +121,7 @@ const GroupsPage: React.FC<GroupsPageProps> = (
                                 component="ul"
                             >
                                 {
-                                    groups.map((group, index) => (
+                                    group.items.map((group, index) => (
                                         <ListItem key={group.name}>
                                             <Chip
                                                 label={group.name}
@@ -142,7 +145,7 @@ const GroupsPage: React.FC<GroupsPageProps> = (
 
 const mapStateToProps = (state: ApplicationState) => {
     return {
-        groups: state.groups
+        group: state.group
     }
 };
 

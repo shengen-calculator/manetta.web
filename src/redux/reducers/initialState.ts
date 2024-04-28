@@ -24,7 +24,10 @@ const initialState: ApplicationState = {
         items: [],
         balances: []
     },
-    groups: [],
+    group: {
+        status: "NOT_DEFINED",
+        items: []
+    },
     tags: [],
     rate: {
         status: "NOT_DEFINED",

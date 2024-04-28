@@ -8,7 +8,7 @@ import Paper from '@mui/material/Paper';
 import OperationTableRow from "./OperationTableRow";
 import {
     AccountState,
-    ApplicationState,
+    ApplicationState, GroupState,
     OperationState
 } from "../../redux/reducers/types";
 import {
@@ -48,7 +48,7 @@ interface OperationTableProps {
     operations: OperationState
     accounts: AccountState
     allTags: string[][]
-    groups: Group[]
+    group: GroupState
 }
 
 type TagDialogStatus = {
@@ -73,7 +73,7 @@ const OperationTable: React.FC<OperationTableProps> = (
         operations,
         accounts,
         allTags,
-        groups,
+        group,
     }
 ) => {
     let isDataRequested = false;
@@ -129,14 +129,14 @@ const OperationTable: React.FC<OperationTableProps> = (
             });
         }
         if (saveAsGroup) {
-            const group = groups.find(el => el.name === groupName);
-            if (group && group.tags !== tags) {
+            const groupItem = group.items.find(el => el.name === groupName);
+            if (groupItem && groupItem.tags !== tags) {
                 updateGroupRequest({
                     name: groupName,
                     tags
                 })
             }
-            if (!group && groupName) {
+            if (!groupItem && groupName) {
                 createGroupRequest({
                     name: groupName,
                     tags
@@ -180,7 +180,7 @@ const OperationTable: React.FC<OperationTableProps> = (
             <TagDialog
                 isOpen={tagDialogStatus.isOpen}
                 onCancel={handleTagDialogCancel}
-                groups={groups}
+                groups={group.items}
                 allTags={allTags}
                 operationId={tagDialogStatus.operationId}
                 tags={tagDialogStatus.tags}
@@ -194,7 +194,7 @@ const OperationTable: React.FC<OperationTableProps> = (
                             key={row.id}
                             operation={row}
                             accounts={accounts.items}
-                            groups={groups}
+                            groups={group.items}
                             save={save}
                             saveRowStatus={saveRowStatus}
                             tagDialogOpen={openTagDialog}
@@ -211,7 +211,7 @@ const mapStateToProps = (state: ApplicationState) => {
     return {
         operations: state.operations,
         accounts: state.accounts,
-        groups: state.groups,
+        group: state.group,
         allTags: state.tags,
     }
 };

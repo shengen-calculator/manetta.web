@@ -40,6 +40,11 @@ interface RateState {
     items: CurrencyRate[]
 }
 
+interface GroupState {
+    status: ItemStatus,
+    items: Array<Group>
+}
+
 type ReportState = {
     url: string
 }
@@ -48,7 +53,7 @@ type ApplicationState = {
     authentication: AuthenticationState,
     operations: OperationState,
     accounts: AccountState,
-    groups: Array<Group>,
+    group: GroupState,
     rate: RateState,
     tags: Array<Array<string>>,
     history: HistoryState,

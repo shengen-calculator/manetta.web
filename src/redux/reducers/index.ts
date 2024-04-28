@@ -3,7 +3,7 @@ import {combineReducers} from 'redux';
 import authentication from './authenticationReducer';
 import message from "./messageReducer";
 import operations from "./operationReducer";
-import groups from "./groupReducer";
+import group from "./groupReducer";
 import history from "./historyReducer";
 import tags from "./tagReducer";
 import rate from "./rateReducer";
@@ -23,7 +23,7 @@ export const persistConfig = {
         'accounts',
         'history',
         'report',
-        'groups',
+        'group',
         'rate',
         'tags'
     ]
@@ -43,7 +43,7 @@ const rootReducer = combineReducers({
     history,
     accounts,
     report,
-    groups,
+    group,
     rate,
     tags
 });

@@ -156,8 +156,6 @@ interface PostedOperationResult {
     isRevertOperation: boolean
 }
 
-
-
 interface HeadCell {
     disablePadding: boolean;
     id: keyof PostedOperation;
