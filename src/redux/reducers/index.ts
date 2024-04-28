@@ -6,7 +6,7 @@ import operations from "./operationReducer";
 import groups from "./groupReducer";
 import history from "./historyReducer";
 import tags from "./tagReducer";
-import rates from "./rateReducer";
+import rate from "./rateReducer";
 import report from "./reportReducer";
 import accounts from "./accountReducer";
 import apiCallsInProgress from "./apiStatusReducer";
@@ -24,7 +24,7 @@ export const persistConfig = {
         'history',
         'report',
         'groups',
-        'rates',
+        'rate',
         'tags'
     ]
 };
@@ -44,7 +44,7 @@ const rootReducer = combineReducers({
     accounts,
     report,
     groups,
-    rates,
+    rate,
     tags
 });
 

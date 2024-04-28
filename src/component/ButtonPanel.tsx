@@ -42,9 +42,8 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (
                 {
                     buttons.map(btn => {
                             return (
-                                <Tooltip title={btn.tooltip}>
+                                <Tooltip key={btnId++} title={btn.tooltip}>
                                     <Button
-                                        key={btnId++}
                                         onClick={btn.onClick}
                                         disabled={btn.disabled}
                                         variant="outlined"

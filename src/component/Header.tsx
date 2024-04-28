@@ -14,7 +14,7 @@ import {
     CreateRateAction
 } from "../redux/actions/rateActions";
 import {useEffect} from "react";
-import {ApplicationState} from "../redux/reducers/types";
+import {ApplicationState, RateState} from "../redux/reducers/types";
 import Rate from "./Rate";
 
 interface HeaderProps {
@@ -24,25 +24,25 @@ interface HeaderProps {
         url: string;
     }>;
     title: string;
-    rates: Rates;
+    rate: RateState;
     getRatesRequest: () => GetRatesAction;
     createRateRequest: (params: CreateRateParams) => CreateRateAction;
     logoutRequest: () => LogoutAction | undefined;
 }
 
 const Header = (props: HeaderProps) => {
-    const { menuItems, title, logoutRequest, getRatesRequest, createRateRequest, rates } = props;
-    let isDataRequested = false;
+    const { menuItems, title, logoutRequest, getRatesRequest, createRateRequest, rate } = props;
+    let initStatus: InitStatus = "NOT_STARTED";
 
     useEffect(() => {
-        if (rates.status === "NOT_DEFINED" && !isDataRequested) {
+        if (rate.status === "NOT_DEFINED" && initStatus !== "STARTED") {
             getRatesRequest();
-            isDataRequested = true;
+            initStatus = "STARTED";
         }
-        if (rates.status === "DEFINED") {
-            isDataRequested = false;
+        if (rate.status === "DEFINED") {
+            initStatus = "FINISHED";
         }
-    }, [rates.status]);
+    }, [rate.status]);
 
     return (
         <React.Fragment>
@@ -57,7 +57,7 @@ const Header = (props: HeaderProps) => {
                 >
                     {title}
                 </Typography>
-                <Rate abbreviations={["USD", "UAH"]} rates={rates} createRate={createRateRequest}/>
+                <Rate abbreviations={["USD", "UAH"]} rates={rate.items} createRate={createRateRequest}/>
                 <Button
                     variant="outlined"
                     size="small"
@@ -74,12 +74,11 @@ const Header = (props: HeaderProps) => {
                 sx={{ justifyContent: 'space-between', overflowX: 'auto' }}
             >
                 {menuItems.map((section) => (
-                    <Tooltip title={section.tooltip}>
+                    <Tooltip key={section.title} title={section.tooltip}>
                         <Link
                             color="inherit"
                             component={RouterLink}
                             noWrap
-                            key={section.title}
                             variant="body2"
                             to={section.url}
                             sx={{ p: 1, flexShrink: 0 }}
@@ -95,7 +94,7 @@ const Header = (props: HeaderProps) => {
 
 const mapStateToProps = (state: ApplicationState) => {
     return {
-        rates: state.rates
+        rate: state.rate
     }
 };
 

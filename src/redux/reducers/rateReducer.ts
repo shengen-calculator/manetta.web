@@ -1,7 +1,8 @@
 import initialState from "./initialState";
 import {types} from "../actions/types";
+import {RateState} from "./types";
 
-export default function rateReducer(state = initialState.rates, action: any): Rates {
+export default function rateReducer(state = initialState.rate, action: any): RateState {
     switch (action.type) {
 
         case types.GET_CURRENCY_RATES_REQUEST:

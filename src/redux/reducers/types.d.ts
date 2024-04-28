@@ -35,6 +35,11 @@ type HistoryState = {
     cursor: string
 }
 
+interface RateState {
+    status: ItemStatus,
+    items: CurrencyRate[]
+}
+
 type ReportState = {
     url: string
 }
@@ -44,7 +49,7 @@ type ApplicationState = {
     operations: OperationState,
     accounts: AccountState,
     groups: Array<Group>,
-    rates: Rates,
+    rate: RateState,
     tags: Array<Array<string>>,
     history: HistoryState,
     message: MessageState,

@@ -5,7 +5,7 @@ import RateDialog from "./RateDialog";
 import {CreateRateAction} from "../redux/actions/rateActions";
 
 interface RateProps {
-    rates: Rates,
+    rates: CurrencyRate[],
     abbreviations: string[],
     createRate: (params: CreateRateParams) => CreateRateAction
 }
@@ -85,10 +85,10 @@ const Rate: React.FC<RateProps> = (
                 abbreviations.map(curAbbr => {
                     const label = curAbbr === "UAH" ? "EUR" : curAbbr;
                     const symbol = currencies.find(c => c.value === label);
-                    const item = rates.items.find(r => r.currency === curAbbr);
+                    const item = rates.find(r => r.currency === curAbbr);
                     const rate = item ? item.rate / 100 : "--.--";
                     return (
-                        <Button onClick={() =>
+                        <Button key={curAbbr} onClick={() =>
                             openRateDialog(label, curAbbr, rate.toString())} size="small">
                             {`${symbol ? symbol.label : label} ${rate}`}
                         </Button>
