@@ -8,7 +8,7 @@ import history from "./historyReducer";
 import tags from "./tagReducer";
 import rate from "./rateReducer";
 import report from "./reportReducer";
-import accounts from "./accountReducer";
+import account from "./accountReducer";
 import apiCallsInProgress from "./apiStatusReducer";
 import {persistReducer} from "redux-persist";
 
@@ -20,7 +20,7 @@ export const persistConfig = {
         'authentication',
         'apiCallsInProgress',
         'operations',
-        'accounts',
+        'account',
         'history',
         'report',
         'group',
@@ -41,7 +41,7 @@ const rootReducer = combineReducers({
     apiCallsInProgress,
     operations,
     history,
-    accounts,
+    account,
     report,
     group,
     rate,

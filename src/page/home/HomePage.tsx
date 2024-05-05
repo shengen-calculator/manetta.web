@@ -71,8 +71,8 @@ export default function HomePage() {
                     <main>
                         <MainPanel post={mainFeaturedPost} />
                         <Grid container spacing={4}>
-                            {accountsInfo.map((acc) => (
-                                <AccountSummary key={acc.accountName} account={acc} />
+                            {accountsInfo.map((accountInfo) => (
+                                <AccountSummary key={accountInfo.accountName} accountInfo={accountInfo} />
                             ))}
                         </Grid>
                         <Grid container spacing={5} sx={{ mt: 3 }}>

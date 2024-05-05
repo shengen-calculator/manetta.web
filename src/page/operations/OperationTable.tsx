@@ -46,7 +46,7 @@ interface OperationTableProps {
     getTagsRequest: () => GetTagsAction
     saveRowStatus: (key: number, isValid: boolean) => void
     operations: OperationState
-    accounts: AccountState
+    account: AccountState
     allTags: string[][]
     group: GroupState
 }
@@ -71,7 +71,7 @@ const OperationTable: React.FC<OperationTableProps> = (
         getTagsRequest,
         saveRowStatus,
         operations,
-        accounts,
+        account,
         allTags,
         group,
     }
@@ -89,13 +89,13 @@ const OperationTable: React.FC<OperationTableProps> = (
     }, []);
 
     useEffect(() => {
-        if(operations.isLoaded && accounts.items.length) {
+        if(operations.isLoaded && account.items.length) {
             const zeroOperation = operations.items.filter(oi => oi.sum === 0);
             if(!zeroOperation.length) {
                 createOperationRequest({
                     id: undefined,
                     date: OperationHelper.getActualDate(operations.items),
-                    account: OperationHelper.getActualAccount(operations.items, accounts.items),
+                    account: OperationHelper.getActualAccount(operations.items, account.items),
                     group: "",
                     created: 0,
                     description: "",
@@ -104,7 +104,7 @@ const OperationTable: React.FC<OperationTableProps> = (
                 })
             }
         }
-    }, [operations, accounts]);
+    }, [operations, account]);
 
     const [tagDialogStatus, setTagDialogStatus] = React.useState<TagDialogStatus>({
         operationId: 0,
@@ -193,7 +193,7 @@ const OperationTable: React.FC<OperationTableProps> = (
                         <OperationTableRow
                             key={row.id}
                             operation={row}
-                            accounts={accounts.items}
+                            accounts={account.items}
                             groups={group.items}
                             save={save}
                             saveRowStatus={saveRowStatus}
@@ -210,7 +210,7 @@ const OperationTable: React.FC<OperationTableProps> = (
 const mapStateToProps = (state: ApplicationState) => {
     return {
         operations: state.operations,
-        accounts: state.accounts,
+        account: state.account,
         group: state.group,
         allTags: state.tags,
     }

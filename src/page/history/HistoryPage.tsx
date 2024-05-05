@@ -8,6 +8,7 @@ import HistoryTable from "./HistoryTable";
 import Header from "../../component/Header";
 import Footer from "../../component/Footer";
 import {
+    AccountState,
     ApplicationState,
     HistoryState,
     ReportState
@@ -52,7 +53,7 @@ interface HistoryPageProps {
     report: ReportState,
     history: HistoryState,
     allTags: string[][],
-    accounts: Array<Account>
+    account: AccountState
 }
 
 type ReportDialogStatus = {
@@ -78,7 +79,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         history,
         report,
         allTags,
-        accounts
+        account
     }
 ) => {
 
@@ -262,7 +263,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                     <Header title="MANETTA" menuItems={menuItems}/>
                     <main>
                         <ButtonPanel buttons={panelButtons}/>
-                        <HistoryTable rows={history.entries} accounts={accounts} handleOpenRevertDialog={openRevertDialog}/>
+                        <HistoryTable rows={history.entries} accounts={account.items} handleOpenRevertDialog={openRevertDialog}/>
                         <Link
                             component="button"
                             variant="body2"
@@ -285,7 +286,7 @@ const mapStateToProps = (state: ApplicationState) => {
     return {
         history: state.history,
         report: state.report,
-        accounts: state.accounts.items,
+        account: state.account,
         allTags: state.tags
     }
 };

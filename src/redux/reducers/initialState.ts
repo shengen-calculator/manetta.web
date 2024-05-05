@@ -20,9 +20,9 @@ const initialState: ApplicationState = {
         entries: [],
         cursor: ""
     },
-    accounts: {
-        items: [],
-        balances: []
+    account: {
+        status: "NOT_DEFINED",
+        items: []
     },
     group: {
         status: "NOT_DEFINED",

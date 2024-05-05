@@ -99,7 +99,8 @@ interface CreateRateParams {
 interface Account  {
     name: string,
     isActive: boolean,
-    currency: string
+    currency: string,
+    balance: number
 }
 
 type ItemStatus = "DEFINED" | "NOT_DEFINED" | "REQUESTED"

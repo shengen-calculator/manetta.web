@@ -19,14 +19,9 @@ type OperationState = {
     isLoaded: boolean
 }
 
-type AccountBalance = {
-    accountName: string
-    balance: number
-}
-
 type AccountState = {
+    status: ItemStatus,
     items: Array<Account>
-    balances: AccountBalance[]
 }
 
 type HistoryState = {
@@ -52,7 +47,7 @@ type ReportState = {
 type ApplicationState = {
     authentication: AuthenticationState,
     operations: OperationState,
-    accounts: AccountState,
+    account: AccountState,
     group: GroupState,
     rate: RateState,
     tags: Array<Array<string>>,
