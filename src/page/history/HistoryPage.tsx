@@ -11,7 +11,7 @@ import {
     AccountState,
     ApplicationState,
     HistoryState,
-    ReportState
+    ReportState, TagState
 } from "../../redux/reducers/types";
 import {
     GetRecentlyPostedAction,
@@ -52,7 +52,7 @@ interface HistoryPageProps {
     getTagsRequest: () => GetTagsAction,
     report: ReportState,
     history: HistoryState,
-    allTags: string[][],
+    tag: TagState,
     account: AccountState
 }
 
@@ -78,7 +78,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         reportPeriodExceeded,
         history,
         report,
-        allTags,
+        tag,
         account
     }
 ) => {
@@ -251,7 +251,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                     onChange={handleDateChange}
                     onTagsChange={handleTagsChange}
                     onReport={generateReport}
-                    allTags={allTags}
+                    allTags={tag.items}
                 />
                 <RevertDialog
                     isOpen={revertDialogStatus.isOpen}
@@ -287,7 +287,7 @@ const mapStateToProps = (state: ApplicationState) => {
         history: state.history,
         report: state.report,
         account: state.account,
-        allTags: state.tags
+        tag: state.tag
     }
 };
 

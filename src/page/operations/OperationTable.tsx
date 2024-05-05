@@ -9,7 +9,7 @@ import OperationTableRow from "./OperationTableRow";
 import {
     AccountState,
     ApplicationState, GroupState,
-    OperationState
+    OperationState, TagState
 } from "../../redux/reducers/types";
 import {
     CreateOperationAction,
@@ -47,7 +47,7 @@ interface OperationTableProps {
     saveRowStatus: (key: number, isValid: boolean) => void
     operations: OperationState
     account: AccountState
-    allTags: string[][]
+    tag: TagState
     group: GroupState
 }
 
@@ -72,21 +72,30 @@ const OperationTable: React.FC<OperationTableProps> = (
         saveRowStatus,
         operations,
         account,
-        allTags,
+        tag,
         group,
     }
 ) => {
-    let isDataRequested = false;
+    let initStatus: InitStatus = "NOT_STARTED";
 
     useEffect(() => {
-        if (!isDataRequested) {
-            isDataRequested = true;
+        if (initStatus === "NOT_STARTED") {
             getOperationsRequest();
-            getAccountsRequest();
-            getGroupsRequest();
-            getTagsRequest();
+            if (account.status === "NOT_DEFINED") {
+                getAccountsRequest();
+            }
+            if (group.status === "NOT_DEFINED") {
+                getGroupsRequest();
+            }
+            if (tag.status === "NOT_DEFINED") {
+                getTagsRequest();
+            }
+            initStatus = "STARTED";
         }
-    }, []);
+        if (group.status === "DEFINED" && tag.status === "DEFINED" && account.status === "DEFINED") {
+            initStatus = "FINISHED";
+        }
+    }, [group.status, tag.status, account.status]);
 
     useEffect(() => {
         if(operations.isLoaded && account.items.length) {
@@ -181,7 +190,7 @@ const OperationTable: React.FC<OperationTableProps> = (
                 isOpen={tagDialogStatus.isOpen}
                 onCancel={handleTagDialogCancel}
                 groups={group.items}
-                allTags={allTags}
+                allTags={tag.items}
                 operationId={tagDialogStatus.operationId}
                 tags={tagDialogStatus.tags}
                 groupName={tagDialogStatus.groupName}
@@ -212,7 +221,7 @@ const mapStateToProps = (state: ApplicationState) => {
         operations: state.operations,
         account: state.account,
         group: state.group,
-        allTags: state.tags,
+        tag: state.tag
     }
 };
 

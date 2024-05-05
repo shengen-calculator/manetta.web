@@ -5,7 +5,7 @@ import message from "./messageReducer";
 import operations from "./operationReducer";
 import group from "./groupReducer";
 import history from "./historyReducer";
-import tags from "./tagReducer";
+import tag from "./tagReducer";
 import rate from "./rateReducer";
 import report from "./reportReducer";
 import account from "./accountReducer";
@@ -25,7 +25,7 @@ export const persistConfig = {
         'report',
         'group',
         'rate',
-        'tags'
+        'tag'
     ]
 };
 
@@ -45,7 +45,7 @@ const rootReducer = combineReducers({
     report,
     group,
     rate,
-    tags
+    tag
 });
 
 export default rootReducer;

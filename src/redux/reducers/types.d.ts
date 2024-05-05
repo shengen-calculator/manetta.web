@@ -44,13 +44,18 @@ type ReportState = {
     url: string
 }
 
+type TagState = {
+    status: ItemStatus,
+    items: Array<Array<string>>
+}
+
 type ApplicationState = {
     authentication: AuthenticationState,
     operations: OperationState,
     account: AccountState,
     group: GroupState,
     rate: RateState,
-    tags: Array<Array<string>>,
+    tag: TagState,
     history: HistoryState,
     message: MessageState,
     report: ReportState,

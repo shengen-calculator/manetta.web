@@ -28,7 +28,10 @@ const initialState: ApplicationState = {
         status: "NOT_DEFINED",
         items: []
     },
-    tags: [],
+    tag: {
+        status: "NOT_DEFINED",
+        items: []
+    },
     rate: {
         status: "NOT_DEFINED",
         items: []
