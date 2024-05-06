@@ -5,11 +5,17 @@ import {HistoryState} from "./types";
 export default function historyReducer(state = initialState.history, action: any): HistoryState {
     switch (action.type) {
 
+        case types.GET_RECENTLY_POSTED_REQUEST:
+            return {
+                ...state,
+                status: "REQUESTED"
+            }
+
         case types.GET_RECENTLY_POSTED_SUCCESS:
             return {
                 ...state,
-                entries: [
-                    ...state.entries,
+                items: [
+                    ...state.items,
                     ...action.data.entries.map((posted: PostedOperationResult) => {
                         return {
                             id: Number(posted.id),
@@ -29,23 +35,25 @@ export default function historyReducer(state = initialState.history, action: any
                 cursor: action.data.cursor
             };
 
-        case types.REVERT_OPERATION_REQUEST:
+        case types.GET_RECENTLY_POSTED_FAILURE:
             return {
                 ...state,
-                entries: [],
-                isReverting: true
+                status: "NOT_DEFINED"
+            }
+
+        case types.REVERT_OPERATION_REQUEST:
+            return {
+                ...state
             };
 
         case types.REVERT_OPERATION_SUCCESS:
             return {
-                ...state,
-                isReverting: false
+                ...state
             };
 
         case types.REVERT_OPERATION_FAILURE:
             return {
-                ...state,
-                isReverting: false
+                ...state
             };
 
         default:

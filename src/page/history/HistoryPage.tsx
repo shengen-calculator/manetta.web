@@ -94,26 +94,28 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         }
     }];
 
-    let isDataRequested = false;
 
+    let initStatus: InitStatus = "NOT_STARTED";
     useEffect(() => {
-        if (!isDataRequested) {
-            isDataRequested = true;
-            getRecentlyPostedRequest({
-                startCursor: ""
-            });
-            getAccountsRequest();
-            getTagsRequest();
+        if (initStatus === "NOT_STARTED") {
+            if (history.status === "NOT_DEFINED") {
+                getRecentlyPostedRequest({
+                    startCursor: ""
+                });
+            }
+            if (account.status === "NOT_DEFINED") {
+                getAccountsRequest();
+            }
+            if (tag.status === "NOT_DEFINED") {
+                getTagsRequest();
+            }
+            initStatus = "STARTED";
         }
-    }, []);
+        if (tag.status === "DEFINED" && account.status === "DEFINED" && history.status === "DEFINED") {
+            initStatus = "FINISHED";
+        }
+    }, [account.status, tag.status, history.status]);
 
-    useEffect(() => {
-        if (!history.isReverting && !isDataRequested) {
-            getRecentlyPostedRequest({
-                startCursor: ""
-            })
-        }
-    }, [history.isReverting]);
 
     useEffect(() => {
         if(report.url) {
@@ -263,7 +265,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                     <Header title="MANETTA" menuItems={menuItems}/>
                     <main>
                         <ButtonPanel buttons={panelButtons}/>
-                        <HistoryTable rows={history.entries} accounts={account.items} handleOpenRevertDialog={openRevertDialog}/>
+                        <HistoryTable rows={history.items} accounts={account.items} handleOpenRevertDialog={openRevertDialog}/>
                         <Link
                             component="button"
                             variant="body2"

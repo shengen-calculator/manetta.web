@@ -16,8 +16,8 @@ const initialState: ApplicationState = {
         items: []
     },
     history: {
-        isReverting: false,
-        entries: [],
+        status: "NOT_DEFINED",
+        items: [],
         cursor: ""
     },
     account: {

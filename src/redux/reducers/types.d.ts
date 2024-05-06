@@ -25,8 +25,8 @@ type AccountState = {
 }
 
 type HistoryState = {
-    isReverting: boolean
-    entries: Array<PostedOperation>
+    status: ItemStatus,
+    items: Array<PostedOperation>
     cursor: string
 }
 
