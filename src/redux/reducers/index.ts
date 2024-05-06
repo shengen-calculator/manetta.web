@@ -2,7 +2,7 @@ import storage from 'redux-persist/lib/storage';
 import {combineReducers} from 'redux';
 import authentication from './authenticationReducer';
 import message from "./messageReducer";
-import operations from "./operationReducer";
+import operation from "./operationReducer";
 import group from "./groupReducer";
 import history from "./historyReducer";
 import tag from "./tagReducer";
@@ -19,7 +19,7 @@ export const persistConfig = {
         'message',
         'authentication',
         'apiCallsInProgress',
-        'operations',
+        'operation',
         'account',
         'history',
         'report',
@@ -39,7 +39,7 @@ const rootReducer = combineReducers({
     authentication: persistReducer(authPersistConfig, authentication),
     message,
     apiCallsInProgress,
-    operations,
+    operation,
     history,
     account,
     report,

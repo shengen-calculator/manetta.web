@@ -16,7 +16,7 @@ type MessageState = {
 
 type OperationState = {
     items: Array<Operation>
-    isLoaded: boolean
+    status: ItemStatus,
 }
 
 type AccountState = {
@@ -51,7 +51,7 @@ type TagState = {
 
 type ApplicationState = {
     authentication: AuthenticationState,
-    operations: OperationState,
+    operation: OperationState,
     account: AccountState,
     group: GroupState,
     rate: RateState,

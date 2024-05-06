@@ -3,13 +3,19 @@ import {types} from "../actions/types";
 import {OperationState} from "./types";
 import ApiHelper from "../../util/ApiHelper";
 
-export default function operationReducer(state = initialState.operations, action: any): OperationState {
+export default function operationReducer(state = initialState.operation, action: any): OperationState {
     switch (action.type) {
+
+        case types.GET_OPERATIONS_REQUEST:
+            return {
+                ...state,
+                status: "REQUESTED"
+            }
 
         case types.GET_OPERATIONS_SUCCESS:
             return {
                 ...state,
-                isLoaded: true,
+                status: "DEFINED",
                 items: [
                     ...action.data.map((op: Operation) => {
                         return {
@@ -19,6 +25,12 @@ export default function operationReducer(state = initialState.operations, action
                     })
                 ]
             };
+
+        case types.GET_OPERATIONS_FAILURE:
+            return {
+                ...state,
+                status: "NOT_DEFINED"
+            }
 
         case types.CREATE_OPERATION_SUCCESS:
         return {

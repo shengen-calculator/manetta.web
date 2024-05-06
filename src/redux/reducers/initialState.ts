@@ -11,8 +11,8 @@ const initialState: ApplicationState = {
         type: "info",
         text: ""
     },
-    operations: {
-        isLoaded: false,
+    operation: {
+        status: "NOT_DEFINED",
         items: []
     },
     history: {

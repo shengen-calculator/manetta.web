@@ -45,7 +45,7 @@ interface OperationTableProps {
     getGroupsRequest: () => GetGroupsAction
     getTagsRequest: () => GetTagsAction
     saveRowStatus: (key: number, isValid: boolean) => void
-    operations: OperationState
+    operation: OperationState
     account: AccountState
     tag: TagState
     group: GroupState
@@ -70,7 +70,7 @@ const OperationTable: React.FC<OperationTableProps> = (
         getGroupsRequest,
         getTagsRequest,
         saveRowStatus,
-        operations,
+        operation,
         account,
         tag,
         group,
@@ -80,7 +80,9 @@ const OperationTable: React.FC<OperationTableProps> = (
 
     useEffect(() => {
         if (initStatus === "NOT_STARTED") {
-            getOperationsRequest();
+            if(operation.status === "NOT_DEFINED") {
+                getOperationsRequest();
+            }
             if (account.status === "NOT_DEFINED") {
                 getAccountsRequest();
             }
@@ -92,19 +94,20 @@ const OperationTable: React.FC<OperationTableProps> = (
             }
             initStatus = "STARTED";
         }
-        if (group.status === "DEFINED" && tag.status === "DEFINED" && account.status === "DEFINED") {
+        if (group.status === "DEFINED" && tag.status === "DEFINED" &&
+            account.status === "DEFINED" && operation.status === "DEFINED") {
             initStatus = "FINISHED";
         }
-    }, [group.status, tag.status, account.status]);
+    }, [group.status, tag.status, account.status, operation.status]);
 
     useEffect(() => {
-        if(operations.isLoaded && account.items.length) {
-            const zeroOperation = operations.items.filter(oi => oi.sum === 0);
+        if(operation.status === "DEFINED" && account.items.length) {
+            const zeroOperation = operation.items.filter(oi => oi.sum === 0);
             if(!zeroOperation.length) {
                 createOperationRequest({
                     id: undefined,
-                    date: OperationHelper.getActualDate(operations.items),
-                    account: OperationHelper.getActualAccount(operations.items, account.items),
+                    date: OperationHelper.getActualDate(operation.items),
+                    account: OperationHelper.getActualAccount(operation.items, account.items),
                     group: "",
                     created: 0,
                     description: "",
@@ -113,7 +116,7 @@ const OperationTable: React.FC<OperationTableProps> = (
                 })
             }
         }
-    }, [operations, account]);
+    }, [operation.status, account]);
 
     const [tagDialogStatus, setTagDialogStatus] = React.useState<TagDialogStatus>({
         operationId: 0,
@@ -124,16 +127,16 @@ const OperationTable: React.FC<OperationTableProps> = (
 
     const saveTags = (operationId: number, tags: string[], groupName: string, saveAsGroup: boolean) => {
         handleTagDialogCancel();
-        const operation = operations.items.find(o => o.id === operationId);
-        if (operation) {
+        const operationItem = operation.items.find(o => o.id === operationId);
+        if (operationItem) {
             save({
                 id: operationId,
-                date: operation.date,
-                account: operation.account,
+                date: operationItem.date,
+                account: operationItem.account,
                 group: groupName,
-                created: operation.created,
-                description: operation.description,
-                sum: operation.sum,
+                created: operationItem.created,
+                description: operationItem.description,
+                sum: operationItem.sum,
                 tags: tags
             });
         }
@@ -181,7 +184,7 @@ const OperationTable: React.FC<OperationTableProps> = (
         updateOperationRequest(operationParams);
     });
 
-    const rows = [...operations.items];
+    const rows = [...operation.items];
     rows.sort((a, b) => a.created - b.created);
 
     return (
@@ -218,7 +221,7 @@ const OperationTable: React.FC<OperationTableProps> = (
 
 const mapStateToProps = (state: ApplicationState) => {
     return {
-        operations: state.operations,
+        operation: state.operation,
         account: state.account,
         group: state.group,
         tag: state.tag

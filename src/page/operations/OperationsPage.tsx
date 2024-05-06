@@ -31,13 +31,13 @@ type PostDialogStatus = {
 
 interface OperationsPageProps {
     postOperationsRequest: (params: PostOperationsParams) => PostOperationsAction,
-    operations: OperationState
+    operation: OperationState
 }
 
 const OperationsPage: React.FC<OperationsPageProps> = (
     {
         postOperationsRequest,
-        operations
+        operation
     }
 ) => {
 
@@ -60,7 +60,7 @@ const OperationsPage: React.FC<OperationsPageProps> = (
 
     const navigate = useNavigate();
 
-    const nonZeroOperations = [...operations.items].filter(opr => opr.sum);
+    const nonZeroOperations = [...operation.items].filter(opr => opr.sum);
 
     const dialog = (asSingle: boolean) => {
         const disabled = rowStatuses.some(rs => !rs.isValid) || nonZeroOperations.length === 0;
@@ -138,7 +138,7 @@ const OperationsPage: React.FC<OperationsPageProps> = (
 
 const mapStateToProps = (state: ApplicationState) => {
     return {
-        operations: state.operations
+        operation: state.operation
     }
 };
 
