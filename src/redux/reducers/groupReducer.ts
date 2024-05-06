@@ -30,7 +30,8 @@ export default function groupReducer(state = initialState.group, action: any): G
                 items: [
                     ...state.items,
                     action.params
-                ]
+                ].sort((a,b) =>
+                    (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
             }
 
         case types.UPDATE_GROUP_REQUEST:
@@ -39,7 +40,8 @@ export default function groupReducer(state = initialState.group, action: any): G
                 items: [
                     ...state.items.filter(gr => gr.name !== action.params.name),
                     action.params
-                ]
+                ].sort((a,b) =>
+                    (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
             }
 
         case types.DELETE_GROUP_REQUEST:
