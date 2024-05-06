@@ -38,7 +38,7 @@ function* mySaga() {
     yield takeLatest(types.GET_OPERATIONS_REQUEST, getOperations);
     yield takeLatest(types.GET_RECENTLY_POSTED_REQUEST, getRecentlyPosted);
     yield takeLatest(types.CREATE_OPERATION_REQUEST, createOperation);
-    yield takeLatest(types.DELETE_OPERATION_REQUEST, deleteOperation);
+    yield takeEvery(types.DELETE_OPERATION_REQUEST, deleteOperation);
     yield takeLatest(types.REVERT_OPERATION_REQUEST, revertOperation);
     yield takeLatest(types.UPDATE_OPERATION_REQUEST, updateOperation);
     yield takeLatest(types.POST_OPERATIONS_REQUEST, postOperations);

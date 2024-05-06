@@ -109,14 +109,14 @@ const OperationTable: React.FC<OperationTableProps> = (
                     date: OperationHelper.getActualDate(operation.items),
                     account: OperationHelper.getActualAccount(operation.items, account.items),
                     group: "",
-                    created: 0,
+                    created: new Date().getTime(),
                     description: "",
                     sum: 0,
                     tags: []
                 })
             }
         }
-    }, [operation.status, account]);
+    }, [operation.items, account]);
 
     const [tagDialogStatus, setTagDialogStatus] = React.useState<TagDialogStatus>({
         operationId: 0,

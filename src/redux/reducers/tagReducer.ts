@@ -24,6 +24,19 @@ export default function tagReducer(state = initialState.tag, action: any): TagSt
                 status: "NOT_DEFINED"
             }
 
+        case types.UPDATE_OPERATION_REQUEST:
+            return state.items.find(x => x.join("|") === action.params.tags.join("|")) ?
+                {
+                    ...state
+                } :
+                {
+                    ...state,
+                    items: [
+                        ...state.items,
+                        action.params.tags
+                    ]
+                }
+
         default:
             return state;
     }

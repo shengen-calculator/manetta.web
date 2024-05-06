@@ -32,22 +32,33 @@ export default function operationReducer(state = initialState.operation, action:
                 status: "NOT_DEFINED"
             }
 
-        case types.CREATE_OPERATION_SUCCESS:
-        return {
+        case types.CREATE_OPERATION_REQUEST:
+                return {
                 ...state,
                 items: [
                     ...state.items,
                     {
                         ...action.params,
+                        created: action.params.created
+                    }
+                ]
+            };
+
+        case types.CREATE_OPERATION_SUCCESS:
+        return {
+                ...state,
+                items: [
+                    ...state.items.filter(it => it.created !== action.params.created),
+                    {
+                        ...action.params,
                         id: ApiHelper.getIdFromResult(action.params.data),
-                        date: new Date(action.params.date).getTime(),
-                        created: new Date().getTime()
+                        date: new Date(action.params.date).getTime()
                     }
                 ]
             };
 
         case types.UPDATE_OPERATION_REQUEST:
-            return {
+                return {
                 ...state,
                 items: [
                     ...state.items.filter(it => it.id !== action.params.id),
@@ -67,11 +78,11 @@ export default function operationReducer(state = initialState.operation, action:
                 ]
             };
 
-        case types.DELETE_OPERATION_SUCCESS:
+        case types.DELETE_OPERATION_REQUEST:
             return {
                 ...state,
                 items: [
-                    ... state.items.filter(it => it.id !== action.params.id)
+                    ... state.items.filter(it => Number(it.id) !== action.params.id)
                 ]
             };
 
