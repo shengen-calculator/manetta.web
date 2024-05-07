@@ -30,7 +30,7 @@ export default function groupReducer(state = initialState.group, action: any): G
                 items: [
                     ...state.items,
                     action.params
-                ].sort((a,b) =>
+                ].sort((a, b) =>
                     (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
             }
 
@@ -40,7 +40,7 @@ export default function groupReducer(state = initialState.group, action: any): G
                 items: [
                     ...state.items.filter(gr => gr.name !== action.params.name),
                     action.params
-                ].sort((a,b) =>
+                ].sort((a, b) =>
                     (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
             }
 
