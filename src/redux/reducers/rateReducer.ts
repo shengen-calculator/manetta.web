@@ -28,16 +28,14 @@ export default function rateReducer(state = initialState.rate, action: any): Rat
         case types.CREATE_CURRENCY_RATE_REQUEST:
             return {
                 ...state,
-                status: "REQUESTED",
-                items: []
+                items: [
+                    ...state.items.filter(it => it.currency !== action.params.currency),
+                    {
+                        ...action.params, date: new Date().getTime()
+                    }
+                ]
             };
 
-        case types.CREATE_CURRENCY_RATE_SUCCESS:
-            return {
-                ...state,
-                status: "NOT_DEFINED",
-                items: []
-            };
         default:
             return state;
     }
