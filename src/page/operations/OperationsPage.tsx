@@ -20,7 +20,7 @@ import {getHandlers, keyMap} from "../../component/KeyMapHandlers";
 import {useNavigate} from "react-router-dom";
 
 type RowStatus = {
-    key: number
+    id: number
     isValid: boolean
 }
 
@@ -44,7 +44,7 @@ const OperationsPage: React.FC<OperationsPageProps> = (
     const post = (postAsSingle: boolean) => {
         postOperationsRequest({
             postAsSingle: postAsSingle,
-            ids: rowStatuses.filter(st => st.isValid).map(rs => rs.key.toString())
+            ids: rowStatuses.filter(st => st.isValid).map(rs => rs.id.toString())
         });
         setPostDialogStatus({
             ...postDialogStatus,
@@ -97,11 +97,11 @@ const OperationsPage: React.FC<OperationsPageProps> = (
         });
     };
 
-    const saveRowStatus = (key: number, isValid: boolean) => {
+    const saveRowStatus = (id: number, isValid: boolean) => {
         setRowStatuses((prev) => [
-            ...prev.filter(rs => rs.key !== key),
+            ...prev.filter(rs => rs.id !== id),
             {
-                key,
+                id,
                 isValid
             }
         ]);

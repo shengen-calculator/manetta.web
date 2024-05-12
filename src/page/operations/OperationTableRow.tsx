@@ -14,7 +14,7 @@ import TableDateInput from "./TableDateInput";
 import {useEffect} from "react";
 
 interface OperationTableRowProps {
-    saveRowStatus: (key: number, isValid: boolean) => void
+    saveRowStatus: (id: number, isValid: boolean) => void
     tagDialogOpen: (operationId: number, tags: string[], groupName: string) => void
     operation: Operation
     accounts: Account[]
@@ -71,10 +71,11 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
     useEffect(() => {
         setOperationRow(prev => ({
             ...prev,
+            id: operation.id,
             tags: operation.tags,
             group: operation.group
         }));
-    }, [operation.tags, operation.group]);
+    }, [operation.tags, operation.group, operation.id]);
 
     const handleTagDialogOpen = (): void => {
         tagDialogOpen(operationRow.id, operationRow.tags, operationRow.group);
@@ -157,7 +158,7 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
         }
     };
 
-    const account = accounts.find(acc => acc. name === operationRow.account);
+    const account = accounts.find(acc => acc.name === operationRow.account);
 
     return (
         <TableRow onBlur={handleFocusLost} sx={{'&:last-child td, &:last-child th': {border: 0}}}>

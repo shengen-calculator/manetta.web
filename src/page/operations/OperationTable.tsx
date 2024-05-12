@@ -44,7 +44,7 @@ interface OperationTableProps {
     updateGroupRequest: (params: UpdateGroupParams) => UpdateGroupAction
     getGroupsRequest: () => GetGroupsAction
     getTagsRequest: () => GetTagsAction
-    saveRowStatus: (key: number, isValid: boolean) => void
+    saveRowStatus: (id: number, isValid: boolean) => void
     operation: OperationState
     account: AccountState
     tag: TagState
@@ -101,9 +101,9 @@ const OperationTable: React.FC<OperationTableProps> = (
     }, [group.status, tag.status, account.status, operation.status]);
 
     useEffect(() => {
-        if(operation.status === "DEFINED" && account.items.length) {
+        if (operation.status === "DEFINED" && account.items.length) {
             const zeroOperation = operation.items.filter(oi => oi.sum === 0);
-            if(!zeroOperation.length) {
+            if (!zeroOperation.length) {
                 createOperationRequest({
                     id: undefined,
                     date: OperationHelper.getActualDate(operation.items),
@@ -203,7 +203,7 @@ const OperationTable: React.FC<OperationTableProps> = (
                 <TableBody>
                     {rows.map((row) => (
                         <OperationTableRow
-                            key={row.id}
+                            key={row.created}
                             operation={row}
                             accounts={account.items}
                             groups={group.items}

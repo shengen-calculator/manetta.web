@@ -39,6 +39,7 @@ export default function operationReducer(state = initialState.operation, action:
                     ...state.items,
                     {
                         ...action.params,
+                        date: new Date(action.params.date).getTime(),
                         created: action.params.created
                     }
                 ]
