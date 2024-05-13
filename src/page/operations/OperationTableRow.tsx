@@ -72,8 +72,8 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
         setOperationRow(prev => ({
             ...prev,
             id: operation.id,
-            tags: operation.tags,
-            group: operation.group
+            tags: prev.id ? operation.tags : operationRow.tags,
+            group: prev.id ? operation.group : operationRow.group
         }));
     }, [operation.tags, operation.group, operation.id]);
 
