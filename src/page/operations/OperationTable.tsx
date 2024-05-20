@@ -175,6 +175,9 @@ const OperationTable: React.FC<OperationTableProps> = (
     };
 
     const save = ((operation: Operation): void => {
+        if (!operation.id) {
+            return;
+        }
         const date = new Date(operation.date);
         const operationParams = {
             ...operation,
