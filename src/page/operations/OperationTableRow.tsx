@@ -193,8 +193,8 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
                 <AutoCompleteInput
                     id="group"
                     label="Group"
-                    options={(groupValue ? groups : [...groups, {name: "", tags: []}]).map(gr => gr.name)}
-                    width={200} 
+                    options={(groupValue ? groups : [{name: "", tags: []}, ...groups]).map(gr => gr.name)}
+                    width={200}
                     error={!errors.isGroupValid}
                     value={groupValue}
                     inputValue={operationRow.inputGroup}
