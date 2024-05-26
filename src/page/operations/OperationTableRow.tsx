@@ -159,6 +159,7 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
     };
 
     const account = accounts.find(acc => acc.name === operationRow.account);
+    const groupValue = (groups.length && operationRow.group) ? operationRow.group : "";
 
     return (
         <TableRow onBlur={handleFocusLost} sx={{'&:last-child td, &:last-child th': {border: 0}}}>
@@ -192,10 +193,10 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
                 <AutoCompleteInput
                     id="group"
                     label="Group"
-                    options={groups.map(gr => gr.name)}
-                    width={200}
+                    options={(groupValue ? groups : [...groups, {name: "", tags: []}]).map(gr => gr.name)}
+                    width={200} 
                     error={!errors.isGroupValid}
-                    value={operationRow.group || ''}
+                    value={groupValue}
                     inputValue={operationRow.inputGroup}
                     onChange={(e, newVal) => handleAutocompleteChange(e, newVal, "group")}
                     onInputChange={(e, newVal) => handleAutocompleteChange(e, newVal, "inputGroup")}
