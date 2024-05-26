@@ -15,10 +15,10 @@ export default function historyReducer(state = initialState.history, action: any
             return {
                 ...state,
                 items: [
-                    ...state.items,
+                    ...state.cursor ? state.items : [],
                     ...action.data.entries.map((posted: PostedOperationResult) => {
                         return {
-                            id: Number(posted.id),
+                            created: posted.created,
                             account: posted.account,
                             date: posted.date,
                             description: posted.description,
@@ -34,6 +34,30 @@ export default function historyReducer(state = initialState.history, action: any
                 ],
                 cursor: action.data.cursor
             };
+
+        case types.POST_OPERATIONS_SUCCESS:
+            return {
+                ...state,
+                status: "REQUESTED",
+                items: [
+                    ...action.params.data.map((posted: any) => {
+                        return {
+                            account: posted.account.name,
+                            date: posted.date,
+                            created: posted.created,
+                            description: posted.description,
+                            docNumber: posted.docNumber,
+                            equivalent: posted.equivalent/100,
+                            balance: posted.balance/100,
+                            sum: posted.sum/100,
+                            tags: posted.tags,
+                            isReverted: posted.isReverted,
+                            isRevertOperation: posted.isRevertOperation
+                        }
+                    }),
+                    ...state.items
+                ]
+            }
 
         case types.GET_RECENTLY_POSTED_FAILURE:
             return {

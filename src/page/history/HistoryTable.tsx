@@ -60,7 +60,7 @@ const HistoryTable: React.FC<HistoryTableProps> = (
                                         onClick={(event) => handleClick(event, row)}
                                         role="checkbox"
                                         tabIndex={-1}
-                                        key={row.id}
+                                        key={row.created}
                                         sx={sx}
                                     >
                                         <TableCell

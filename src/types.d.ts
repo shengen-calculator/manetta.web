@@ -132,6 +132,7 @@ interface AccountInfo {
 interface PostedOperation {
     id: number,
     date: string,
+    created: number,
     account: string,
     docNumber: number,
     equivalent: number,
@@ -146,6 +147,7 @@ interface PostedOperation {
 interface PostedOperationResult {
     id: string,
     date: number,
+    created: number,
     account: string,
     docNumber: number,
     euro: number,

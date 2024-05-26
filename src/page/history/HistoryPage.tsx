@@ -137,6 +137,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         row: {
             id: 0,
             date: "",
+            created: 0,
             account: "",
             docNumber: 0,
             equivalent: 0,
