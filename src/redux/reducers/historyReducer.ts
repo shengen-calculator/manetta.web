@@ -67,12 +67,39 @@ export default function historyReducer(state = initialState.history, action: any
 
         case types.REVERT_OPERATION_REQUEST:
             return {
-                ...state
+                ...state,
+                items: state.items.map(item => {
+                    if(item.docNumber !== action.params.docNumber) {
+                        return item;
+                    }
+                    return {
+                        ...item,
+                        isReverted: true
+                    }
+                })
             };
 
         case types.REVERT_OPERATION_SUCCESS:
             return {
-                ...state
+                ...state,
+                items: [
+                    ...action.data.map((item: any) => {
+                        return {
+                            account: item.account.name,
+                            date: item.date,
+                            created: item.created,
+                            description: item.description,
+                            docNumber: item.docNumber,
+                            equivalent: item.equivalent/100,
+                            balance: item.balance/100,
+                            sum: item.sum/100,
+                            tags: item.tags,
+                            isReverted: item.isReverted,
+                            isRevertOperation: item.isRevertOperation
+                        }
+                    }),
+                    ...state.items
+                ]
             };
 
         case types.REVERT_OPERATION_FAILURE:
