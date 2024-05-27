@@ -69,7 +69,7 @@ export default function historyReducer(state = initialState.history, action: any
             return {
                 ...state,
                 items: state.items.map(item => {
-                    if(item.docNumber !== action.params.docNumber) {
+                    if (item.docNumber !== action.params.docNumber) {
                         return item;
                     }
                     return {

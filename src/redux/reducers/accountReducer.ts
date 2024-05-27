@@ -41,6 +41,36 @@ export default function accountReducer(state = initialState.account, action: any
                 ]
             };
 
+        case types.POST_OPERATIONS_SUCCESS:
+            return {
+                ...state,
+                items: state.items.map(item => {
+                    const postedRec = action.params.data.find((rec: any) => rec.account.name === item.name);
+                    if (!postedRec) {
+                        return item;
+                    }
+                    return {
+                        ...item,
+                        balance: postedRec.balance
+                    }
+                })
+            }
+
+        case types.REVERT_OPERATION_SUCCESS:
+            return {
+                ...state,
+                items: state.items.map(item => {
+                    const revertedRec = action.data.find((rec: any) => rec.account.name === item.name);
+                    if (!revertedRec) {
+                        return item;
+                    }
+                    return {
+                        ...item,
+                        balance: revertedRec.balance
+                    }
+                })
+            }
+
         default:
             return state;
     }
