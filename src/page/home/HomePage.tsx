@@ -19,7 +19,7 @@ const mainFeaturedPost = {
     title: 'Manetta Accounting',
     description:
         "The newest accounting system based on tags",
-    image: 'https://source.unsplash.com/featured',
+    image: 'https://firebasestorage.googleapis.com/v0/b/manetta-2023.appspot.com/o/bg%2Fthivagaran-lRtQOlk1uMo-unsplash.jpg?alt=media&token=e989869f-d85d-44d0-909f-7a971bc294ac',
     imageText: 'Manetta Accounting',
 };
 
