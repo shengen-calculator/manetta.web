@@ -64,7 +64,8 @@ const ReportDialog: React.FC<ReportDialogProps> = (
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onCancel}>Cancel</Button>
-                    <Button onClick={() => onReport(startDate, endDate)}>Submit</Button>
+                    <Button onClick={() => onReport(startDate, endDate)}>Preview</Button>
+                    <Button onClick={() => onReport(startDate, endDate)}>Save file</Button>
                 </DialogActions>
             </Dialog>
         </div>
