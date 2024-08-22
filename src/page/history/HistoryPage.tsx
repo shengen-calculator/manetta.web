@@ -11,11 +11,14 @@ import {
     AccountState,
     ApplicationState,
     HistoryState,
-    ReportState, TagState
+    ReportState,
+    TagState
 } from "../../redux/reducers/types";
 import {
     GetRecentlyPostedAction,
     getRecentlyPostedRequest,
+    GetReportRecordsAction,
+    getReportRecordsRequest,
     RevertOperationAction,
     revertOperationRequest
 } from "../../redux/actions/operationActions";
@@ -85,15 +88,16 @@ const HistoryPage: React.FC<HistoryPageProps> = (
 
     const switchDay = 12;
     const reportPeriodLimitDays = 365;
+
     const panelButtons: PanelButton[] = [{
         btnText: "REPORT",
         tooltip: "Hot key: Alt (option) + P",
         disabled: false,
+        isMarked: !history.isRecentlyPosted,
         onClick: () => {
             openReportDialog();
         }
     }];
-
 
     let initStatus: InitStatus = "NOT_STARTED";
     useEffect(() => {
@@ -224,6 +228,20 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         });
     };
 
+    const applyFilter = () => {
+        setReportDialogStatus({
+            ...reportDialogStatus,
+            isOpen: false
+        });
+    };
+
+    const resetFilter = () => {
+        setReportDialogStatus({
+            ...reportDialogStatus,
+            isOpen: false
+        });
+    };
+
     const generateReport = () => {
         if (reportDialogStatus.endDate - reportDialogStatus.startDate > reportPeriodLimitDays * 24 * 60 * 60 * 1000) {
             reportPeriodExceeded({
@@ -254,6 +272,8 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                     onChange={handleDateChange}
                     onTagsChange={handleTagsChange}
                     onReport={generateReport}
+                    onFilter={applyFilter}
+                    onReset={resetFilter}
                     allTags={tag.items}
                 />
                 <RevertDialog

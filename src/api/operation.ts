@@ -37,6 +37,11 @@ class OperationApi {
         const func = httpsCallable(functions, 'operation-getRecentlyPosted');
         return func(params);
     }
+
+    static getReportRecords(params: GetReportRecordsParams)  {
+        const func = httpsCallable(functions, 'operation-getReportRecords');
+        return func(params);
+    }
 }
 
 export default OperationApi;

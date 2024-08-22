@@ -9,6 +9,7 @@ import {
     getRecentlyPosted,
     postOperations,
     updateOperation,
+    getReportRecords,
 } from "./operationSaga";
 import {
     getAccountBalance,
@@ -37,6 +38,7 @@ function* mySaga() {
     yield takeLatest(types.REGISTRATION_REQUEST, register);
     yield takeLatest(types.GET_OPERATIONS_REQUEST, getOperations);
     yield takeLatest(types.GET_RECENTLY_POSTED_REQUEST, getRecentlyPosted);
+    yield takeLatest(types.GET_REPORT_RECORDS_REQUEST, getReportRecords);
     yield takeEvery(types.CREATE_OPERATION_REQUEST, createOperation);
     yield takeEvery(types.DELETE_OPERATION_REQUEST, deleteOperation);
     yield takeLatest(types.REVERT_OPERATION_REQUEST, revertOperation);

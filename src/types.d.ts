@@ -3,6 +3,12 @@ type RouteError = {
     message: string,
 }
 
+type FilterParams = {
+    startDate: number,
+    endDate: number,
+    tags: string []
+}
+
 interface AuthenticationParams {
     email: string
     password: string
@@ -26,6 +32,11 @@ interface PostOperationsParams {
 
 interface GetRecentlyPostedParams {
     startCursor: string
+}
+
+interface GetReportRecordsParams {
+    startCursor: string,
+    filter: FilterParams
 }
 
 interface DeleteOperationParams {
@@ -119,6 +130,7 @@ interface PanelButton {
     btnText: string,
     tooltip: string,
     disabled: boolean,
+    isMarked: boolean,
     onClick: () => void
 }
 
