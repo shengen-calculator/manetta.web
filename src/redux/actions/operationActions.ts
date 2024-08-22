@@ -47,8 +47,8 @@ export function getRecentlyPostedRequest(params: GetRecentlyPostedParams): GetRe
     return {type: types.GET_RECENTLY_POSTED_REQUEST, params}
 }
 
-export function getReportRecordsRequest(params: GetRecentlyPostedParams): GetRecentlyPostedAction {
-    return {type: types.GET_RECENTLY_POSTED_REQUEST, params}
+export function getReportRecordsRequest(params: GetReportRecordsParams): GetReportRecordsAction {
+    return {type: types.GET_REPORT_RECORDS_REQUEST, params}
 }
 
 export function postOperationsRequest(params: PostOperationsParams): PostOperationsAction {

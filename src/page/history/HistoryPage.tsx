@@ -48,6 +48,7 @@ import {useNavigate} from "react-router-dom";
 
 interface HistoryPageProps {
     getRecentlyPostedRequest: (params: GetRecentlyPostedParams) => GetRecentlyPostedAction,
+    getReportRecordsRequest: (params: GetReportRecordsParams) => GetReportRecordsAction,
     revertOperationRequest: (params: RevertOperationParams) => RevertOperationAction,
     generateReportRequest: (params: GenerateExpensesReportParams) => GenerateReportAction,
     reportPeriodExceeded: (params: ReportPeriodExceededParams) => ReportPeriodExceededAction,
@@ -74,6 +75,7 @@ type RevertDialogStatus = {
 const HistoryPage: React.FC<HistoryPageProps> = (
     {
         getRecentlyPostedRequest,
+        getReportRecordsRequest,
         generateReportRequest,
         revertOperationRequest,
         getAccountsRequest,
@@ -88,6 +90,16 @@ const HistoryPage: React.FC<HistoryPageProps> = (
 
     const switchDay = 12;
     const reportPeriodLimitDays = 365;
+
+    const getDefaultDate = (): [number, number] => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getDate() < switchDay ? date.getMonth() - 1 : date.getMonth();
+        const firstDay = new Date(year, month, 1, 16);
+        const lastDay = date.getDate() < switchDay ?
+            new Date(year, month + 1, 0, 16) : date;
+        return [firstDay.getTime(), lastDay.getTime()];
+    };
 
     const panelButtons: PanelButton[] = [{
         btnText: "REPORT",
@@ -131,9 +143,9 @@ const HistoryPage: React.FC<HistoryPageProps> = (
 
     const [reportDialogStatus, setReportDialogStatus] = React.useState<ReportDialogStatus>({
         isOpen: false,
-        startDate: 0,
-        endDate: 0,
-        tags: []
+        startDate: history.filter.startDate || getDefaultDate()[0],
+        endDate: history.filter.endDate || getDefaultDate()[1],
+        tags: history.filter.tags
     });
 
     const [revertDialogStatus, setRevertDialogStatus] = React.useState<RevertDialogStatus>({
@@ -160,22 +172,13 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         })
     };
 
-    const getDefaultDate = (): [number, number] => {
-        const date = new Date();
-        const year = date.getFullYear();
-        const month = date.getDate() < switchDay ? date.getMonth() - 1 : date.getMonth();
-        const firstDay = new Date(year, month, 1, 16);
-        const lastDay = date.getDate() < switchDay ?
-            new Date(year, month + 1, 0, 16) : date;
-        return [firstDay.getTime(), lastDay.getTime()];
-    };
-
     const openReportDialog = () => {
         setReportDialogStatus({
             ...reportDialogStatus,
             isOpen: true,
-            startDate: getDefaultDate()[0],
-            endDate: getDefaultDate()[1]
+            startDate: history.filter.startDate || getDefaultDate()[0],
+            endDate: history.filter.endDate || getDefaultDate()[1],
+            tags: history.filter.tags
         });
     };
 
@@ -229,6 +232,14 @@ const HistoryPage: React.FC<HistoryPageProps> = (
     };
 
     const applyFilter = () => {
+        getReportRecordsRequest({
+            startCursor: "",
+            filter: {
+                startDate: reportDialogStatus.startDate,
+                endDate: reportDialogStatus.endDate,
+                tags: reportDialogStatus.tags || []
+            }
+        });
         setReportDialogStatus({
             ...reportDialogStatus,
             isOpen: false
@@ -236,6 +247,12 @@ const HistoryPage: React.FC<HistoryPageProps> = (
     };
 
     const resetFilter = () => {
+        if (!history.isRecentlyPosted) {
+            getRecentlyPostedRequest({
+                startCursor: ""
+            });
+        }
+
         setReportDialogStatus({
             ...reportDialogStatus,
             isOpen: false
@@ -268,6 +285,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                     isOpen={reportDialogStatus.isOpen}
                     startDate={reportDialogStatus.startDate}
                     endDate={reportDialogStatus.endDate}
+                    tags={reportDialogStatus.tags}
                     onCancel={handleReportDialogCancel}
                     onChange={handleDateChange}
                     onTagsChange={handleTagsChange}
@@ -317,6 +335,7 @@ const mapStateToProps = (state: ApplicationState) => {
 // noinspection JSUnusedGlobalSymbols
 const mapDispatchToProps = {
     getRecentlyPostedRequest,
+    getReportRecordsRequest,
     getAccountsRequest,
     getTagsRequest,
     generateReportRequest,

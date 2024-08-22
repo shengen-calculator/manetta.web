@@ -15,6 +15,7 @@ interface ReportDialogProps {
     allTags: string [][]
     startDate: number
     endDate: number
+    tags: string []
     onCancel: () => void
     onTagsChange: (tags: string[]) => void
     onChange: (value: Dayjs | null, name: string) => void
@@ -29,6 +30,7 @@ const ReportDialog: React.FC<ReportDialogProps> = (
         allTags,
         startDate,
         endDate,
+        tags,
         onTagsChange,
         onCancel,
         onChange,
@@ -62,7 +64,7 @@ const ReportDialog: React.FC<ReportDialogProps> = (
                     </DemoContainer>
                     <OperationTagsSelector
                         onChange={onTagsChange}
-                        tags={[]}
+                        tags={tags}
                         allTags={allTags}
                     />
                 </DialogContent>

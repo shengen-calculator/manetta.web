@@ -8,9 +8,34 @@ export default function historyReducer(state = initialState.history, action: any
         case types.GET_RECENTLY_POSTED_REQUEST:
             return {
                 ...state,
-                status: "REQUESTED"
+                status: "REQUESTED",
+                isRecentlyPosted: true,
+                filter: {
+                    startDate: 0,
+                    endDate: 0,
+                    tags: []
+                },
+                items: [
+                    ...state.isRecentlyPosted ? state.items : []
+                ]
             }
 
+        case types.GET_REPORT_RECORDS_REQUEST:
+            return {
+                ...state,
+                status: "REQUESTED",
+                isRecentlyPosted: false,
+                filter: {
+                    startDate: action.params.filter.startDate,
+                    endDate: action.params.filter.endDate,
+                    tags: action.params.filter.tags
+                },
+                cursor: action.params.startCursor,
+                items: [
+                    ...state.isRecentlyPosted ? [] : state.items
+                ]
+            }
+        case types.GET_REPORT_RECORDS_SUCCESS:
         case types.GET_RECENTLY_POSTED_SUCCESS:
             return {
                 ...state,
@@ -60,6 +85,12 @@ export default function historyReducer(state = initialState.history, action: any
             }
 
         case types.GET_RECENTLY_POSTED_FAILURE:
+            return {
+                ...state,
+                status: "NOT_DEFINED"
+            }
+
+        case types.GET_REPORT_RECORDS_FAILURE:
             return {
                 ...state,
                 status: "NOT_DEFINED"
