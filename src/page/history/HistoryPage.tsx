@@ -167,9 +167,20 @@ const HistoryPage: React.FC<HistoryPageProps> = (
     });
 
     const showMore = (): void => {
-        getRecentlyPostedRequest({
-            startCursor: history.cursor
-        })
+        if (history.isRecentlyPosted) {
+            getRecentlyPostedRequest({
+                startCursor: history.cursor
+            })
+        } else {
+            getReportRecordsRequest({
+                startCursor: history.cursor,
+                filter: {
+                    startDate: reportDialogStatus.startDate,
+                    endDate: reportDialogStatus.endDate,
+                    tags: reportDialogStatus.tags || []
+                }
+            });
+        }
     };
 
     const openReportDialog = () => {
@@ -305,14 +316,17 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                     <main>
                         <ButtonPanel buttons={panelButtons}/>
                         <HistoryTable rows={history.items} accounts={account.items} handleOpenRevertDialog={openRevertDialog}/>
-                        <Link
-                            component="button"
-                            variant="body2"
-                            sx={{ml: 2, mt: 4}}
-                            onClick={showMore}
-                        >
-                            Show more rows...
-                        </Link>
+                        {
+                            history.items.length && history.items.length % 20 === 0 ?
+                                <Link
+                                    component="button"
+                                    variant="body2"
+                                    sx={{ml: 2, mt: 4}}
+                                    onClick={showMore}
+                                >
+                                    Show more rows...
+                                </Link> : null
+                        }
                     </main>
                 </HotKeys>
             </Container>
