@@ -89,7 +89,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
 ) => {
 
     const switchDay = 12;
-    const reportPeriodLimitDays = 365;
+    const reportPeriodLimitDays = 1000;
 
     const getDefaultDate = (): [number, number] => {
         const date = new Date();
