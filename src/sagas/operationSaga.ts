@@ -3,7 +3,9 @@ import {
     DeleteOperationAction,
     GetOperationsAction,
     GetRecentlyPostedAction,
-    PostOperationsAction, RevertOperationAction,
+    GetReportRecordsAction,
+    PostOperationsAction,
+    RevertOperationAction,
     UpdateOperationAction
 } from "../redux/actions/operationActions";
 import {call, put} from 'redux-saga/effects';
@@ -27,6 +29,16 @@ export function* getRecentlyPosted(action: GetRecentlyPostedAction) {
     } catch (e: any) {
         yield put({type: types.API_CALL_ERROR});
         yield put({type: types.GET_RECENTLY_POSTED_FAILURE, text: e.message});
+    }
+}
+
+export function* getReportRecords(action: GetReportRecordsAction) {
+    try {yield put({type: types.BEGIN_API_CALL});
+        const {data} = yield call(OperationApi.getReportRecords, action.params);
+        yield put({type: types.GET_REPORT_RECORDS_SUCCESS, data});
+    } catch (e: any) {
+        yield put({type: types.API_CALL_ERROR});
+        yield put({type: types.GET_REPORT_RECORDS_FAILURE, text: e.message});
     }
 }
 

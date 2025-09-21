@@ -5,6 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import {LinearProgress, Tooltip} from "@mui/material";
 import {ApplicationState} from "../redux/reducers/types";
 import {connect} from "react-redux";
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 interface ButtonPanelProps {
     buttons: PanelButton[],
@@ -24,11 +25,11 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (
                 sx={{
                     position: 'relative',
                     backgroundColor: 'grey.800',
-                    color: '#fff',
+                    color: 'white',
                     backgroundSize: 'cover',
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center',
-                    backgroundImage: `url('https://source.unsplash.com/featured')`,
+                    backgroundImage: `url('https://firebasestorage.googleapis.com/v0/b/manetta-2023.appspot.com/o/bg%2Fkc-shum-wxVh8BPIc4Y-unsplash.jpg?alt=media&token=769c1715-7595-48fa-b563-eb75cab18010')`,
                 }}>
                 <Typography
                     component="h2"
@@ -53,6 +54,7 @@ const ButtonPanel: React.FC<ButtonPanelProps> = (
                                             sx={{ml: 3}}
                                         >
                                             {btn.btnText}
+                                            {btn.isMarked ? <FiberManualRecordIcon style={{ color: 'white' }} /> : null}
                                         </Button>
                                     </span>
                                 </Tooltip>

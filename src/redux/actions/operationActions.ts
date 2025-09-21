@@ -9,6 +9,11 @@ export type GetRecentlyPostedAction = {
     params: GetRecentlyPostedParams
 }
 
+export type GetReportRecordsAction = {
+    type: types.GET_REPORT_RECORDS_REQUEST
+    params: GetReportRecordsParams
+}
+
 export type PostOperationsAction = {
     type: types.POST_OPERATIONS_REQUEST
     params: PostOperationsParams
@@ -40,6 +45,10 @@ export function getOperationsRequest(): GetOperationsAction {
 
 export function getRecentlyPostedRequest(params: GetRecentlyPostedParams): GetRecentlyPostedAction {
     return {type: types.GET_RECENTLY_POSTED_REQUEST, params}
+}
+
+export function getReportRecordsRequest(params: GetReportRecordsParams): GetReportRecordsAction {
+    return {type: types.GET_REPORT_RECORDS_REQUEST, params}
 }
 
 export function postOperationsRequest(params: PostOperationsParams): PostOperationsAction {

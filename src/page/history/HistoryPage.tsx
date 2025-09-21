@@ -11,11 +11,14 @@ import {
     AccountState,
     ApplicationState,
     HistoryState,
-    ReportState, TagState
+    ReportState,
+    TagState
 } from "../../redux/reducers/types";
 import {
     GetRecentlyPostedAction,
     getRecentlyPostedRequest,
+    GetReportRecordsAction,
+    getReportRecordsRequest,
     RevertOperationAction,
     revertOperationRequest
 } from "../../redux/actions/operationActions";
@@ -45,6 +48,7 @@ import {useNavigate} from "react-router-dom";
 
 interface HistoryPageProps {
     getRecentlyPostedRequest: (params: GetRecentlyPostedParams) => GetRecentlyPostedAction,
+    getReportRecordsRequest: (params: GetReportRecordsParams) => GetReportRecordsAction,
     revertOperationRequest: (params: RevertOperationParams) => RevertOperationAction,
     generateReportRequest: (params: GenerateExpensesReportParams) => GenerateReportAction,
     reportPeriodExceeded: (params: ReportPeriodExceededParams) => ReportPeriodExceededAction,
@@ -71,6 +75,7 @@ type RevertDialogStatus = {
 const HistoryPage: React.FC<HistoryPageProps> = (
     {
         getRecentlyPostedRequest,
+        getReportRecordsRequest,
         generateReportRequest,
         revertOperationRequest,
         getAccountsRequest,
@@ -84,16 +89,27 @@ const HistoryPage: React.FC<HistoryPageProps> = (
 ) => {
 
     const switchDay = 12;
-    const reportPeriodLimitDays = 365;
+    const reportPeriodLimitDays = 1000;
+
+    const getDefaultDate = (): [number, number] => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getDate() < switchDay ? date.getMonth() - 1 : date.getMonth();
+        const firstDay = new Date(year, month, 1, 16);
+        const lastDay = date.getDate() < switchDay ?
+            new Date(year, month + 1, 0, 16) : date;
+        return [firstDay.getTime(), lastDay.getTime()];
+    };
+
     const panelButtons: PanelButton[] = [{
         btnText: "REPORT",
         tooltip: "Hot key: Alt (option) + P",
         disabled: false,
+        isMarked: !history.isRecentlyPosted,
         onClick: () => {
             openReportDialog();
         }
     }];
-
 
     let initStatus: InitStatus = "NOT_STARTED";
     useEffect(() => {
@@ -127,9 +143,9 @@ const HistoryPage: React.FC<HistoryPageProps> = (
 
     const [reportDialogStatus, setReportDialogStatus] = React.useState<ReportDialogStatus>({
         isOpen: false,
-        startDate: 0,
-        endDate: 0,
-        tags: []
+        startDate: history.filter.startDate || getDefaultDate()[0],
+        endDate: history.filter.endDate || getDefaultDate()[1],
+        tags: history.filter.tags
     });
 
     const [revertDialogStatus, setRevertDialogStatus] = React.useState<RevertDialogStatus>({
@@ -151,27 +167,29 @@ const HistoryPage: React.FC<HistoryPageProps> = (
     });
 
     const showMore = (): void => {
-        getRecentlyPostedRequest({
-            startCursor: history.cursor
-        })
-    };
-
-    const getDefaultDate = (): [number, number] => {
-        const date = new Date();
-        const year = date.getFullYear();
-        const month = date.getDate() < switchDay ? date.getMonth() - 1 : date.getMonth();
-        const firstDay = new Date(year, month, 1, 16);
-        const lastDay = date.getDate() < switchDay ?
-            new Date(year, month + 1, 0, 16) : date;
-        return [firstDay.getTime(), lastDay.getTime()];
+        if (history.isRecentlyPosted) {
+            getRecentlyPostedRequest({
+                startCursor: history.cursor
+            })
+        } else {
+            getReportRecordsRequest({
+                startCursor: history.cursor,
+                filter: {
+                    startDate: reportDialogStatus.startDate,
+                    endDate: reportDialogStatus.endDate,
+                    tags: reportDialogStatus.tags || []
+                }
+            });
+        }
     };
 
     const openReportDialog = () => {
         setReportDialogStatus({
             ...reportDialogStatus,
             isOpen: true,
-            startDate: getDefaultDate()[0],
-            endDate: getDefaultDate()[1]
+            startDate: history.filter.startDate || getDefaultDate()[0],
+            endDate: history.filter.endDate || getDefaultDate()[1],
+            tags: history.filter.tags
         });
     };
 
@@ -224,6 +242,34 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         });
     };
 
+    const applyFilter = () => {
+        getReportRecordsRequest({
+            startCursor: "",
+            filter: {
+                startDate: reportDialogStatus.startDate,
+                endDate: reportDialogStatus.endDate,
+                tags: reportDialogStatus.tags || []
+            }
+        });
+        setReportDialogStatus({
+            ...reportDialogStatus,
+            isOpen: false
+        });
+    };
+
+    const resetFilter = () => {
+        if (!history.isRecentlyPosted) {
+            getRecentlyPostedRequest({
+                startCursor: ""
+            });
+        }
+
+        setReportDialogStatus({
+            ...reportDialogStatus,
+            isOpen: false
+        });
+    };
+
     const generateReport = () => {
         if (reportDialogStatus.endDate - reportDialogStatus.startDate > reportPeriodLimitDays * 24 * 60 * 60 * 1000) {
             reportPeriodExceeded({
@@ -250,10 +296,13 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                     isOpen={reportDialogStatus.isOpen}
                     startDate={reportDialogStatus.startDate}
                     endDate={reportDialogStatus.endDate}
+                    tags={reportDialogStatus.tags}
                     onCancel={handleReportDialogCancel}
                     onChange={handleDateChange}
                     onTagsChange={handleTagsChange}
                     onReport={generateReport}
+                    onFilter={applyFilter}
+                    onReset={resetFilter}
                     allTags={tag.items}
                 />
                 <RevertDialog
@@ -267,14 +316,17 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                     <main>
                         <ButtonPanel buttons={panelButtons}/>
                         <HistoryTable rows={history.items} accounts={account.items} handleOpenRevertDialog={openRevertDialog}/>
-                        <Link
-                            component="button"
-                            variant="body2"
-                            sx={{ml: 2, mt: 4}}
-                            onClick={showMore}
-                        >
-                            Show more rows...
-                        </Link>
+                        {
+                            history.items.length && history.items.length % 20 === 0 ?
+                                <Link
+                                    component="button"
+                                    variant="body2"
+                                    sx={{ml: 2, mt: 4}}
+                                    onClick={showMore}
+                                >
+                                    Show more rows...
+                                </Link> : null
+                        }
                     </main>
                 </HotKeys>
             </Container>
@@ -297,6 +349,7 @@ const mapStateToProps = (state: ApplicationState) => {
 // noinspection JSUnusedGlobalSymbols
 const mapDispatchToProps = {
     getRecentlyPostedRequest,
+    getReportRecordsRequest,
     getAccountsRequest,
     getTagsRequest,
     generateReportRequest,
