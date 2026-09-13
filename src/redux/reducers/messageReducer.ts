@@ -89,6 +89,16 @@ export default function messageReducer(state = initialState.message, action: any
                 text: action.params.error
             };
 
+        case types.GET_ACCOUNTS_FAILURE:
+        case types.GET_TAGS_FAILURE:
+        case types.GET_RECENTLY_POSTED_FAILURE:
+        case types.GET_REPORT_RECORDS_FAILURE:
+            return {
+                ...state,
+                type: 'error',
+                text: `Load data ERROR`
+            }
+
         case types.REPORT_PERIOD_EXCEEDED:
             return {
                 ...state,
