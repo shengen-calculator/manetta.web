@@ -21,7 +21,7 @@ export default function tagReducer(state = initialState.tag, action: any): TagSt
         case types.GET_TAGS_FAILURE:
             return {
                 ...state,
-                status: "NOT_DEFINED"
+                status: "LOADING_ERROR"
             }
 
         case types.UPDATE_OPERATION_REQUEST:

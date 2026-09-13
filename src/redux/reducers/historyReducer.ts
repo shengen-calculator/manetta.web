@@ -87,13 +87,13 @@ export default function historyReducer(state = initialState.history, action: any
         case types.GET_RECENTLY_POSTED_FAILURE:
             return {
                 ...state,
-                status: "NOT_DEFINED"
+                status: "LOADING_ERROR"
             }
 
         case types.GET_REPORT_RECORDS_FAILURE:
             return {
                 ...state,
-                status: "NOT_DEFINED"
+                status: "LOADING_ERROR"
             }
 
         case types.REVERT_OPERATION_REQUEST:

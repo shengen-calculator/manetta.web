@@ -26,6 +26,12 @@ export default function accountReducer(state = initialState.account, action: any
                 })
             };
 
+        case types.GET_ACCOUNTS_FAILURE:
+            return {
+                ...state,
+                status: "LOADING_ERROR"
+            }
+
         case types.GET_ACCOUNT_BALANCE_SUCCESS:
             const item = state.items.find(it => it.name === action.data.accountName);
             return {

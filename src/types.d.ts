@@ -114,7 +114,7 @@ interface Account  {
     balance: number
 }
 
-type ItemStatus = "DEFINED" | "NOT_DEFINED" | "REQUESTED"
+type ItemStatus = "DEFINED" | "NOT_DEFINED" | "REQUESTED" | "LOADING_ERROR"
 type InitStatus = "NOT_STARTED" | "STARTED" | "FINISHED"
 
 interface Rate {
