@@ -81,11 +81,12 @@ const HistoryTable: React.FC<HistoryTableProps> = ({
                       {new Date(row.date).toISOString().slice(0, 10)}
                     </TableCell>
                     <TableCell align="left">{row.account}</TableCell>
-                    <Tooltip title={row.tags.join(" => ")}>
-                      <TableCell align="left">
-                        {`${row.tags[row.tags.length - 1]} ${row.description ? "->" : ""} ${row.description}`}
-                      </TableCell>
-                    </Tooltip>
+                    <TableCell align="left">
+                      <Tooltip title={row.tags.join(" => ")}>
+                        <span>{`${row.tags[row.tags.length - 1]} `}</span>
+                      </Tooltip>
+                      {`${row.description ? "->" : ""} ${row.description}`}
+                    </TableCell>
                     <TableCell align="right">{row.docNumber}</TableCell>
                     <TableCell align="right">
                       {`${rowCurrency ? rowCurrency.label : ""}${row.sum}`}
