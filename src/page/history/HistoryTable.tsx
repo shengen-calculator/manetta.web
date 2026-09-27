@@ -15,19 +15,19 @@ import { Tooltip } from "@mui/material";
 interface HistoryTableProps {
   rows: Array<PostedOperation>;
   accounts: Array<Account>;
-  handleOpenRevertDialog: (operation: PostedOperation) => void;
+  onRowClick: (operation: PostedOperation) => void;
 }
 
 const HistoryTable: React.FC<HistoryTableProps> = ({
   rows,
   accounts,
-  handleOpenRevertDialog,
+  onRowClick,
 }) => {
-  const handleClick = (
+  const onClick = (
     event: React.MouseEvent<unknown>,
     operation: PostedOperation,
   ) => {
-    handleOpenRevertDialog(operation);
+    onRowClick(operation);
   };
 
   return (
@@ -65,7 +65,7 @@ const HistoryTable: React.FC<HistoryTableProps> = ({
                 return (
                   <TableRow
                     hover={!row.isRevertOperation && !row.isReverted}
-                    onClick={(event) => handleClick(event, row)}
+                    onClick={(event) => onClick(event, row)}
                     role="checkbox"
                     tabIndex={-1}
                     key={row.created}

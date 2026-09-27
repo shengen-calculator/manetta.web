@@ -193,7 +193,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         });
     };
 
-    const openRevertDialog = (row: PostedOperation) => {
+    const handleOnRowClick = (row: PostedOperation) => {
         if (row.isReverted || row.isRevertOperation) {
             return;
         }
@@ -315,7 +315,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                     <Header title="MANETTA" menuItems={menuItems}/>
                     <main>
                         <ButtonPanel buttons={panelButtons}/>
-                        <HistoryTable rows={history.items} accounts={account.items} handleOpenRevertDialog={openRevertDialog}/>
+                        <HistoryTable rows={history.items} accounts={account.items} onRowClick={handleOnRowClick}/>
                         {
                             history.items.length && history.items.length % 20 === 0 ?
                                 <Link
