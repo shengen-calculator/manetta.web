@@ -93,6 +93,7 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
 }) => {
     const switchDay = 12;
     const reportPeriodLimitDays = 1000;
+    const panelButtons: PanelButton[] = [];
 
     const getDefaultDate = (): [number, number] => {
         const date = new Date();
@@ -106,18 +107,6 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
                 : date;
         return [firstDay.getTime(), lastDay.getTime()];
     };
-
-    const panelButtons: PanelButton[] = [
-        {
-            btnText: "REPORT",
-            tooltip: "Hot key: Alt (option) + P",
-            disabled: false,
-            isMarked: !history.isRecentlyPosted,
-            onClick: () => {
-                openReportDialog();
-            },
-        },
-    ];
 
     let initStatus: InitStatus = "NOT_STARTED";
     useEffect(() => {
@@ -181,6 +170,39 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
             },
         });
 
+    if (selected.length === 0) {
+        panelButtons.push({
+            btnText: "REPORT",
+            tooltip: "Hot key: Alt (option) + P",
+            disabled: false,
+            isMarked: !history.isRecentlyPosted,
+            onClick: () => {
+                openReportDialog();
+            },
+        });
+    } else if (selected.length === 1) {
+        panelButtons.push({
+            btnText: "REVERT",
+            tooltip: "Hot key: Alt (option) + P",
+            disabled: false,
+            isMarked: !history.isRecentlyPosted,
+            onClick: () => {
+                openRevertDialog();
+            },
+        });
+    }
+    if (selected.length > 0) {
+        panelButtons.push({
+            btnText: "EDIT",
+            tooltip: "Hot key: Alt (option) + P",
+            disabled: false,
+            isMarked: !history.isRecentlyPosted,
+            onClick: () => {
+                openReportDialog();
+            },
+        });
+    }
+
     const showMore = (): void => {
         if (history.isRecentlyPosted) {
             getRecentlyPostedRequest({
@@ -194,6 +216,18 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
                     endDate: reportDialogStatus.endDate,
                     tags: reportDialogStatus.tags || [],
                 },
+            });
+        }
+    };
+
+    const openRevertDialog = () => {
+        const id = selected[0];
+        const row = history.items.find((rec) => rec.id === id);
+        if (row) {
+            setRevertDialogStatus({
+                ...revertDialogStatus,
+                isOpen: true,
+                row,
             });
         }
     };
@@ -218,11 +252,6 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
         } else {
             setSelected([...selected, row.id]);
         }
-        // setRevertDialogStatus({
-        //     ...revertDialogStatus,
-        //     isOpen: true,
-        //     row
-        // });
     };
 
     const handleReportDialogCancel = () => {
