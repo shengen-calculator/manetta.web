@@ -43,6 +43,7 @@ export default function historyReducer(state = initialState.history, action: any
                     ...state.cursor ? state.items : [],
                     ...action.data.entries.map((posted: PostedOperationResult) => {
                         return {
+                            id: posted.id,
                             created: posted.created,
                             account: posted.account,
                             date: posted.date,

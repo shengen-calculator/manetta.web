@@ -8,19 +8,21 @@ import TableCell from "@mui/material/TableCell";
 import { Box } from "@mui/material";
 import EnhancedTableHead from "../../component/EnhancedTableHead";
 import headCells from "./headCells";
-import { deepOrange, yellow } from "@mui/material/colors";
+import { deepOrange, yellow, green} from "@mui/material/colors";
 import { currencies } from "../../util/currencies";
 import { Tooltip } from "@mui/material";
 
 interface HistoryTableProps {
   rows: Array<PostedOperation>;
   accounts: Array<Account>;
+  selected: Array<number>;
   onRowClick: (operation: PostedOperation) => void;
 }
 
 const HistoryTable: React.FC<HistoryTableProps> = ({
   rows,
   accounts,
+  selected,
   onRowClick,
 }) => {
   const onClick = (
@@ -29,6 +31,26 @@ const HistoryTable: React.FC<HistoryTableProps> = ({
   ) => {
     onRowClick(operation);
   };
+  const isRowSelected = (id: number) => ~selected.indexOf(id);
+  const getRowStyle = (row: PostedOperation) => {
+    if(row.isRevertOperation) {
+      return {
+        backgroundColor: yellow[50]
+      }
+    } else if(row.isReverted) {
+      return {
+        backgroundColor: deepOrange[50]
+      }
+    } else if(isRowSelected(row.id)) {
+      return {
+        backgroundColor: green[50],
+        cursor: "pointer"
+      }
+    }
+    return {
+      cursor: "pointer"
+    }
+  }
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -43,16 +65,6 @@ const HistoryTable: React.FC<HistoryTableProps> = ({
             <TableBody>
               {rows.map((row, index) => {
                 const labelId = `enhanced-table-checkbox-${index}`;
-                const sx =
-                  row.isRevertOperation || row.isReverted
-                    ? {
-                        backgroundColor: row.isReverted
-                          ? deepOrange[50]
-                          : yellow[50],
-                      }
-                    : {
-                        cursor: "pointer",
-                      };
                 let rowCurrency;
                 const account = accounts.find(
                   (acc) => acc.name === row.account,
@@ -64,12 +76,12 @@ const HistoryTable: React.FC<HistoryTableProps> = ({
                 }
                 return (
                   <TableRow
-                    hover={!row.isRevertOperation && !row.isReverted}
+                    hover={!row.isRevertOperation && !row.isReverted && !isRowSelected(row.id)}
                     onClick={(event) => onClick(event, row)}
                     role="checkbox"
                     tabIndex={-1}
                     key={row.created}
-                    sx={sx}
+                    sx={getRowStyle(row)}
                   >
                     <TableCell
                       component="th"

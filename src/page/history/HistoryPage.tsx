@@ -141,6 +141,8 @@ const HistoryPage: React.FC<HistoryPageProps> = (
 
     const navigate = useNavigate();
 
+    const [selected, setSelected] = React.useState<Array<number>>([]);
+
     const [reportDialogStatus, setReportDialogStatus] = React.useState<ReportDialogStatus>({
         isOpen: false,
         startDate: history.filter.startDate || getDefaultDate()[0],
@@ -197,11 +199,17 @@ const HistoryPage: React.FC<HistoryPageProps> = (
         if (row.isReverted || row.isRevertOperation) {
             return;
         }
-        setRevertDialogStatus({
-            ...revertDialogStatus,
-            isOpen: true,
-            row
-        });
+
+        if (~selected.indexOf(row.id)) {
+          setSelected(selected.filter(id => id !== row.id));
+        } else {
+          setSelected([...selected, row.id]);
+        }
+        // setRevertDialogStatus({
+        //     ...revertDialogStatus,
+        //     isOpen: true,
+        //     row
+        // });
     };
 
     const handleReportDialogCancel = () => {
@@ -315,7 +323,7 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                     <Header title="MANETTA" menuItems={menuItems}/>
                     <main>
                         <ButtonPanel buttons={panelButtons}/>
-                        <HistoryTable rows={history.items} accounts={account.items} onRowClick={handleOnRowClick}/>
+                        <HistoryTable rows={history.items} accounts={account.items} selected={selected} onRowClick={handleOnRowClick}/>
                         {
                             history.items.length && history.items.length % 20 === 0 ?
                                 <Link
