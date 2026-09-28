@@ -41,6 +41,7 @@ import {GetTagsAction, getTagsRequest} from "../../redux/actions/tagActions";
 import {getHandlers, keyMap} from "../../component/KeyMapHandlers";
 import {HotKeys} from "react-hotkeys";
 import {useNavigate} from "react-router-dom";
+import EditDialog from "./EditDialog";
 
 interface HistoryPageProps {
     getRecentlyPostedRequest: (
@@ -76,6 +77,10 @@ type ReportDialogStatus = {
 type RevertDialogStatus = {
     isOpen: boolean;
     row: PostedOperation;
+};
+
+type EditDialogStatus = {
+    isOpen: boolean;
 };
 
 const HistoryPage: React.FC<HistoryPageProps> = ({
@@ -151,6 +156,11 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
             tags: history.filter.tags,
         });
 
+    const [editDialogStatus, setEditDialogStatus] =
+        React.useState<EditDialogStatus>({
+            isOpen: false,
+        });
+
     const [revertDialogStatus, setRevertDialogStatus] =
         React.useState<RevertDialogStatus>({
             isOpen: false,
@@ -198,7 +208,7 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
             disabled: false,
             isMarked: !history.isRecentlyPosted,
             onClick: () => {
-                openReportDialog();
+                openEditDialog();
             },
         });
     }
@@ -218,6 +228,12 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
                 },
             });
         }
+    };
+
+    const openEditDialog = () => {
+        setEditDialogStatus({
+            isOpen: true,
+        });
     };
 
     const openRevertDialog = () => {
@@ -252,6 +268,13 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
         } else {
             setSelected([...selected, row.id]);
         }
+    };
+
+    const handleEditDialogCancel = () => {
+        setEditDialogStatus({
+            ...setEditDialogStatus,
+            isOpen: false,
+        });
     };
 
     const handleReportDialogCancel = () => {
@@ -349,6 +372,17 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Container maxWidth="lg">
+                <EditDialog
+                    isOpen={editDialogStatus.isOpen}
+                    startDate={reportDialogStatus.startDate}
+                    endDate={reportDialogStatus.endDate}
+                    tags={reportDialogStatus.tags}
+                    onCancel={handleEditDialogCancel}
+                    onChange={handleDateChange}
+                    onTagsChange={handleTagsChange}
+                    onReset={resetFilter}
+                    allTags={tag.items}
+                />
                 <ReportDialog
                     isOpen={reportDialogStatus.isOpen}
                     startDate={reportDialogStatus.startDate}
