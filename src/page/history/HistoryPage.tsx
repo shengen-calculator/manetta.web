@@ -81,6 +81,9 @@ type RevertDialogStatus = {
 
 type EditDialogStatus = {
     isOpen: boolean;
+    date: number;
+    tags: string[];
+    description: string;
 };
 
 const HistoryPage: React.FC<HistoryPageProps> = ({
@@ -159,6 +162,9 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
     const [editDialogStatus, setEditDialogStatus] =
         React.useState<EditDialogStatus>({
             isOpen: false,
+            date: 0,
+            tags: [],
+            description: "",
         });
 
     const [revertDialogStatus, setRevertDialogStatus] =
@@ -232,7 +238,9 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
 
     const openEditDialog = () => {
         setEditDialogStatus({
+            ...editDialogStatus,
             isOpen: true,
+            date: new Date().getTime(),
         });
     };
 
@@ -272,7 +280,7 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
 
     const handleEditDialogCancel = () => {
         setEditDialogStatus({
-            ...setEditDialogStatus,
+            ...editDialogStatus,
             isOpen: false,
         });
     };
@@ -298,11 +306,42 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
         }));
     };
 
+    const handleEditDialogDateChange = (
+        value: Dayjs | null,
+        name: string,
+    ): void => {
+        setEditDialogStatus((prev) => ({
+            ...prev,
+            [name]: value && value.isValid() ? value.valueOf() : null,
+        }));
+    };
+
+    const handleEditDialogTagsChange = (tags: string[]): void => {
+        setEditDialogStatus((prev) => ({
+            ...prev,
+            tags,
+        }));
+    };
+
     const handleTagsChange = (tags: string[]): void => {
         setReportDialogStatus((prev) => ({
             ...prev,
             tags,
         }));
+    };
+
+    const handleDescriptionChange = (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ): void => {
+        const {name, value} = event.target;
+        setEditDialogStatus((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const handleUpdateOperation = (): void => {
+        alert("Start Update => " + JSON.stringify(editDialogStatus));
     };
 
     const revertOperation = (row: PostedOperation) => {
@@ -374,13 +413,14 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
             <Container maxWidth="lg">
                 <EditDialog
                     isOpen={editDialogStatus.isOpen}
-                    startDate={reportDialogStatus.startDate}
-                    endDate={reportDialogStatus.endDate}
-                    tags={reportDialogStatus.tags}
+                    date={editDialogStatus.date}
+                    description={editDialogStatus.description}
+                    tags={editDialogStatus.tags}
                     onCancel={handleEditDialogCancel}
-                    onChange={handleDateChange}
-                    onTagsChange={handleTagsChange}
-                    onReset={resetFilter}
+                    onDateChange={handleEditDialogDateChange}
+                    onDescriptionChange={handleDescriptionChange}
+                    onTagsChange={handleEditDialogTagsChange}
+                    onUpdateOperation={handleUpdateOperation}
                     allTags={tag.items}
                 />
                 <ReportDialog
