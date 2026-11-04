@@ -90,7 +90,7 @@ export function* bulkUpdate(action: BulkUpdateAction) {
         const {data} = yield call(OperationApi.bulkUpdate, action.params);
         yield put({
             type: types.BULK_UPDATE_SUCCESS,
-            params: {...action.params, data},
+            data,
         });
     } catch (e: any) {
         yield put({type: types.API_CALL_ERROR});

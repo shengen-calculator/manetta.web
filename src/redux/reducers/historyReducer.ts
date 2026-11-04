@@ -97,6 +97,29 @@ export default function historyReducer(
                 status: "LOADING_ERROR",
             };
 
+        case types.BULK_UPDATE_SUCCESS:
+            return {
+                ...state,
+                items: state.items.map((item) =>
+                    action.data.entries
+                        .map((rec) => String(rec.id))
+                        .includes(item.id)
+                        ? {
+                              ...item,
+                              description: action.data.entries.find(
+                                  (entry) => entry.id == item.id,
+                              ).description,
+                              tags: action.data.entries.find(
+                                  (entry) => entry.id == item.id,
+                              ).tags,
+                              date: action.data.entries.find(
+                                  (entry) => entry.id == item.id,
+                              ).date,
+                          }
+                        : item,
+                ),
+            };
+
         case types.REVERT_OPERATION_REQUEST:
             return {
                 ...state,
