@@ -102,18 +102,18 @@ export default function historyReducer(
                 ...state,
                 items: state.items.map((item) =>
                     action.data.entries
-                        .map((rec) => String(rec.id))
+                        .map((rec: any) => String(rec.id))
                         .includes(item.id)
                         ? {
                               ...item,
                               description: action.data.entries.find(
-                                  (entry) => entry.id == item.id,
+                                  (entry: any) => entry.id == item.id,
                               ).description,
                               tags: action.data.entries.find(
-                                  (entry) => entry.id == item.id,
+                                  (entry: any) => entry.id == item.id,
                               ).tags,
                               date: action.data.entries.find(
-                                  (entry) => entry.id == item.id,
+                                  (entry: any) => entry.id == item.id,
                               ).date,
                           }
                         : item,
