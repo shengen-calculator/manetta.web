@@ -21,6 +21,8 @@ import {
     getReportRecordsRequest,
     RevertOperationAction,
     revertOperationRequest,
+    BulkUpdateAction,
+    bulkUpdateRequest,
 } from "../../redux/actions/operationActions";
 import {connect} from "react-redux";
 import {useEffect} from "react";
@@ -59,6 +61,7 @@ interface HistoryPageProps {
     reportPeriodExceeded: (
         params: ReportPeriodExceededParams,
     ) => ReportPeriodExceededAction;
+    bulkUpdateRequest: (params: BulkUpdateParams) => BulkUpdateAction;
     getAccountsRequest: () => GetAccountsAction;
     getTagsRequest: () => GetTagsAction;
     report: ReportState;
@@ -94,6 +97,7 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
     getReportRecordsRequest,
     generateReportRequest,
     revertOperationRequest,
+    bulkUpdateRequest,
     getAccountsRequest,
     getTagsRequest,
     reportPeriodExceeded,
@@ -364,7 +368,19 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
     };
 
     const handleUpdateOperation = (): void => {
-        alert("Start Update => " + JSON.stringify(editDialogStatus));
+        bulkUpdateRequest({
+            description: editDialogStatus.description,
+            tags: editDialogStatus.tags,
+            date:
+                editDialogStatus.description || editDialogStatus.tags.length
+                    ? 0
+                    : editDialogStatus.date,
+            ids: selected.map(Number),
+        });
+        setEditDialogStatus({
+            ...editDialogStatus,
+            isOpen: false,
+        });
     };
 
     const revertOperation = (row: PostedOperation) => {
@@ -511,6 +527,7 @@ const mapDispatchToProps = {
     getRecentlyPostedRequest,
     getReportRecordsRequest,
     getAccountsRequest,
+    bulkUpdateRequest,
     getTagsRequest,
     generateReportRequest,
     revertOperationRequest,
