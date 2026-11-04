@@ -79,6 +79,7 @@ const EditDialog: React.FC<EditDialogProps> = ({
                         onChange={onTagsChange}
                         tags={tags}
                         allTags={allTags}
+                        disabled={true}
                     />
                 </DialogContent>
                 <DialogActions>
