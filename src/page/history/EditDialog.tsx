@@ -16,8 +16,11 @@ interface EditDialogProps {
     isOpen: boolean;
     allTags: string[][];
     date: number;
+    dateDisabled: boolean;
     description: string;
+    descriptionDisabled: boolean;
     tags: string[];
+    tagsDisabled: boolean;
     onCancel: () => void;
     onDescriptionChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     onTagsChange: (tags: string[]) => void;
@@ -29,8 +32,11 @@ const EditDialog: React.FC<EditDialogProps> = ({
     isOpen,
     allTags,
     description,
+    descriptionDisabled,
     date,
+    dateDisabled,
     tags,
+    tagsDisabled,
     onTagsChange,
     onDescriptionChange,
     onCancel,
@@ -60,7 +66,7 @@ const EditDialog: React.FC<EditDialogProps> = ({
                             format="DD-MM-YYYY"
                             onChange={(val) => onDateChange(val, "date")}
                             fullWidth
-                            disabled={true}
+                            disabled={dateDisabled}
                         />
                     </LocalizationProvider>
 
@@ -72,14 +78,14 @@ const EditDialog: React.FC<EditDialogProps> = ({
                         variant="outlined"
                         margin="dense"
                         onChange={onDescriptionChange}
-                        disabled={true}
+                        disabled={descriptionDisabled}
                         fullWidth
                     />
                     <OperationTagsSelector
                         onChange={onTagsChange}
                         tags={tags}
                         allTags={allTags}
-                        disabled={true}
+                        disabled={tagsDisabled}
                     />
                 </DialogContent>
                 <DialogActions>

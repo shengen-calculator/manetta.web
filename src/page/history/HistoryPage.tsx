@@ -82,8 +82,11 @@ type RevertDialogStatus = {
 type EditDialogStatus = {
     isOpen: boolean;
     date: number;
+    dateDisabled: boolean;
     tags: string[];
+    tagsDisabled: boolean;
     description: string;
+    descriptionDisabled: boolean;
 };
 
 const HistoryPage: React.FC<HistoryPageProps> = ({
@@ -162,9 +165,12 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
     const [editDialogStatus, setEditDialogStatus] =
         React.useState<EditDialogStatus>({
             isOpen: false,
-            date: 0,
+            date: new Date().getTime(),
+            dateDisabled: false,
             tags: [],
+            tagsDisabled: false,
             description: "",
+            descriptionDisabled: false,
         });
 
     const [revertDialogStatus, setRevertDialogStatus] =
@@ -241,6 +247,11 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
             ...editDialogStatus,
             isOpen: true,
             date: new Date().getTime(),
+            description: "",
+            dateDisabled: false,
+            descriptionDisabled: false,
+            tagsDisabled: false,
+            tags: [],
         });
     };
 
@@ -312,6 +323,10 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
     ): void => {
         setEditDialogStatus((prev) => ({
             ...prev,
+            description: "",
+            descriptionDisabled: true,
+            tags: [],
+            tagsDisabled: true,
             [name]: value && value.isValid() ? value.valueOf() : null,
         }));
     };
@@ -319,6 +334,10 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
     const handleEditDialogTagsChange = (tags: string[]): void => {
         setEditDialogStatus((prev) => ({
             ...prev,
+            description: "",
+            descriptionDisabled: true,
+            date: new Date().getTime(),
+            dateDisabled: true,
             tags,
         }));
     };
@@ -336,6 +355,10 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
         const {name, value} = event.target;
         setEditDialogStatus((prev) => ({
             ...prev,
+            dateDisabled: true,
+            date: new Date().getTime(),
+            tags: [],
+            tagsDisabled: true,
             [name]: value,
         }));
     };
@@ -414,8 +437,11 @@ const HistoryPage: React.FC<HistoryPageProps> = ({
                 <EditDialog
                     isOpen={editDialogStatus.isOpen}
                     date={editDialogStatus.date}
+                    dateDisabled={editDialogStatus.dateDisabled}
                     description={editDialogStatus.description}
+                    descriptionDisabled={editDialogStatus.descriptionDisabled}
                     tags={editDialogStatus.tags}
+                    tagsDisabled={editDialogStatus.tagsDisabled}
                     onCancel={handleEditDialogCancel}
                     onDateChange={handleEditDialogDateChange}
                     onDescriptionChange={handleDescriptionChange}
