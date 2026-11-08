@@ -23,6 +23,11 @@ class OperationApi {
         return func(params);
     }
 
+    static bulkUpdate(params: BulkUpdateParams) {
+        const func = httpsCallable(functions, 'operation-updateOperation');
+        return func(params);
+    }
+
     static postOperations(params: PostOperationsParams) {
         const func = httpsCallable(functions, 'operation-postOperations');
         return func(params);

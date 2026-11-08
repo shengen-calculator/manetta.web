@@ -1,7 +1,7 @@
 import {CssBaseline, Link, ThemeProvider} from "@mui/material";
 import * as React from "react";
 import theme from "../../theme";
-import Container from '@mui/material/Container';
+import Container from "@mui/material/Container";
 import ButtonPanel from "../../component/ButtonPanel";
 import menuItems from "../../component/menuItems";
 import HistoryTable from "./HistoryTable";
@@ -12,7 +12,7 @@ import {
     ApplicationState,
     HistoryState,
     ReportState,
-    TagState
+    TagState,
 } from "../../redux/reducers/types";
 import {
     GetRecentlyPostedAction,
@@ -20,7 +20,9 @@ import {
     GetReportRecordsAction,
     getReportRecordsRequest,
     RevertOperationAction,
-    revertOperationRequest
+    revertOperationRequest,
+    BulkUpdateAction,
+    bulkUpdateRequest,
 } from "../../redux/actions/operationActions";
 import {connect} from "react-redux";
 import {useEffect} from "react";
@@ -30,93 +32,103 @@ import {
     GenerateReportAction,
     ReportPeriodExceededAction,
     generateReportRequest,
-    reportPeriodExceeded
+    reportPeriodExceeded,
 } from "../../redux/actions/reportActions";
 import RevertDialog from "./RevertDialog";
 import {
     GetAccountsAction,
-    getAccountsRequest
+    getAccountsRequest,
 } from "../../redux/actions/accountActions";
-import {
-    GetTagsAction,
-    getTagsRequest
-} from "../../redux/actions/tagActions";
+import {GetTagsAction, getTagsRequest} from "../../redux/actions/tagActions";
 import {getHandlers, keyMap} from "../../component/KeyMapHandlers";
 import {HotKeys} from "react-hotkeys";
 import {useNavigate} from "react-router-dom";
-
+import EditDialog from "./EditDialog";
 
 interface HistoryPageProps {
-    getRecentlyPostedRequest: (params: GetRecentlyPostedParams) => GetRecentlyPostedAction,
-    getReportRecordsRequest: (params: GetReportRecordsParams) => GetReportRecordsAction,
-    revertOperationRequest: (params: RevertOperationParams) => RevertOperationAction,
-    generateReportRequest: (params: GenerateExpensesReportParams) => GenerateReportAction,
-    reportPeriodExceeded: (params: ReportPeriodExceededParams) => ReportPeriodExceededAction,
-    getAccountsRequest: () => GetAccountsAction,
-    getTagsRequest: () => GetTagsAction,
-    report: ReportState,
-    history: HistoryState,
-    tag: TagState,
-    account: AccountState
+    getRecentlyPostedRequest: (
+        params: GetRecentlyPostedParams,
+    ) => GetRecentlyPostedAction;
+    getReportRecordsRequest: (
+        params: GetReportRecordsParams,
+    ) => GetReportRecordsAction;
+    revertOperationRequest: (
+        params: RevertOperationParams,
+    ) => RevertOperationAction;
+    generateReportRequest: (
+        params: GenerateExpensesReportParams,
+    ) => GenerateReportAction;
+    reportPeriodExceeded: (
+        params: ReportPeriodExceededParams,
+    ) => ReportPeriodExceededAction;
+    bulkUpdateRequest: (params: BulkUpdateParams) => BulkUpdateAction;
+    getAccountsRequest: () => GetAccountsAction;
+    getTagsRequest: () => GetTagsAction;
+    report: ReportState;
+    history: HistoryState;
+    tag: TagState;
+    account: AccountState;
 }
 
 type ReportDialogStatus = {
-    isOpen: boolean,
-    startDate: number,
-    endDate: number,
-    tags: string[]
-}
+    isOpen: boolean;
+    startDate: number;
+    endDate: number;
+    tags: string[];
+};
 
 type RevertDialogStatus = {
-    isOpen: boolean,
-    row: PostedOperation
-}
+    isOpen: boolean;
+    row: PostedOperation;
+};
 
-const HistoryPage: React.FC<HistoryPageProps> = (
-    {
-        getRecentlyPostedRequest,
-        getReportRecordsRequest,
-        generateReportRequest,
-        revertOperationRequest,
-        getAccountsRequest,
-        getTagsRequest,
-        reportPeriodExceeded,
-        history,
-        report,
-        tag,
-        account
-    }
-) => {
+type EditDialogStatus = {
+    isOpen: boolean;
+    date: number;
+    dateDisabled: boolean;
+    tags: string[];
+    tagsDisabled: boolean;
+    description: string;
+    descriptionDisabled: boolean;
+};
 
+const HistoryPage: React.FC<HistoryPageProps> = ({
+    getRecentlyPostedRequest,
+    getReportRecordsRequest,
+    generateReportRequest,
+    revertOperationRequest,
+    bulkUpdateRequest,
+    getAccountsRequest,
+    getTagsRequest,
+    reportPeriodExceeded,
+    history,
+    report,
+    tag,
+    account,
+}) => {
     const switchDay = 12;
     const reportPeriodLimitDays = 1000;
+    const panelButtons: PanelButton[] = [];
 
     const getDefaultDate = (): [number, number] => {
         const date = new Date();
         const year = date.getFullYear();
-        const month = date.getDate() < switchDay ? date.getMonth() - 1 : date.getMonth();
+        const month =
+            date.getDate() < switchDay ? date.getMonth() - 1 : date.getMonth();
         const firstDay = new Date(year, month, 1, 16);
-        const lastDay = date.getDate() < switchDay ?
-            new Date(year, month + 1, 0, 16) : date;
+        const lastDay =
+            date.getDate() < switchDay
+                ? new Date(year, month + 1, 0, 16)
+                : date;
         return [firstDay.getTime(), lastDay.getTime()];
     };
-
-    const panelButtons: PanelButton[] = [{
-        btnText: "REPORT",
-        tooltip: "Hot key: Alt (option) + P",
-        disabled: false,
-        isMarked: !history.isRecentlyPosted,
-        onClick: () => {
-            openReportDialog();
-        }
-    }];
 
     let initStatus: InitStatus = "NOT_STARTED";
     useEffect(() => {
         if (initStatus === "NOT_STARTED") {
             if (history.status === "NOT_DEFINED") {
                 getRecentlyPostedRequest({
-                    startCursor: ""
+                    startCursor: "",
                 });
             }
             if (account.status === "NOT_DEFINED") {
@@ -127,58 +139,134 @@ const HistoryPage: React.FC<HistoryPageProps> = (
             }
             initStatus = "STARTED";
         }
-        if (tag.status === "DEFINED" && account.status === "DEFINED" && history.status === "DEFINED") {
+        if (
+            tag.status === "DEFINED" &&
+            account.status === "DEFINED" &&
+            history.status === "DEFINED"
+        ) {
             initStatus = "FINISHED";
         }
     }, [account.status, tag.status, history.status]);
 
-
     useEffect(() => {
-        if(report.url) {
+        if (report.url) {
             window.location.href = report.url;
         }
     }, [report.url]);
 
     const navigate = useNavigate();
 
-    const [reportDialogStatus, setReportDialogStatus] = React.useState<ReportDialogStatus>({
-        isOpen: false,
-        startDate: history.filter.startDate || getDefaultDate()[0],
-        endDate: history.filter.endDate || getDefaultDate()[1],
-        tags: history.filter.tags
-    });
+    const [selected, setSelected] = React.useState<Array<number>>([]);
 
-    const [revertDialogStatus, setRevertDialogStatus] = React.useState<RevertDialogStatus>({
-        isOpen: false,
-        row: {
-            id: 0,
-            date: "",
-            created: 0,
-            account: "",
-            docNumber: 0,
-            equivalent: 0,
-            balance: 0,
-            description: "",
-            sum: 0,
+    const [reportDialogStatus, setReportDialogStatus] =
+        React.useState<ReportDialogStatus>({
+            isOpen: false,
+            startDate: history.filter.startDate || getDefaultDate()[0],
+            endDate: history.filter.endDate || getDefaultDate()[1],
+            tags: history.filter.tags,
+        });
+
+    const [editDialogStatus, setEditDialogStatus] =
+        React.useState<EditDialogStatus>({
+            isOpen: false,
+            date: new Date().getTime(),
+            dateDisabled: false,
             tags: [],
-            isReverted: false,
-            isRevertOperation: false
-        }
-    });
+            tagsDisabled: false,
+            description: "",
+            descriptionDisabled: false,
+        });
+
+    const [revertDialogStatus, setRevertDialogStatus] =
+        React.useState<RevertDialogStatus>({
+            isOpen: false,
+            row: {
+                id: 0,
+                date: "",
+                created: 0,
+                account: "",
+                docNumber: 0,
+                equivalent: 0,
+                balance: 0,
+                description: "",
+                sum: 0,
+                tags: [],
+                isReverted: false,
+                isRevertOperation: false,
+            },
+        });
+
+    if (selected.length === 0) {
+        panelButtons.push({
+            btnText: "REPORT",
+            tooltip: "Hot key: Alt (option) + P",
+            disabled: false,
+            isMarked: !history.isRecentlyPosted,
+            onClick: () => {
+                openReportDialog();
+            },
+        });
+    } else if (selected.length === 1) {
+        panelButtons.push({
+            btnText: "REVERT",
+            tooltip: "Hot key: Alt (option) + P",
+            disabled: false,
+            isMarked: !history.isRecentlyPosted,
+            onClick: () => {
+                openRevertDialog();
+            },
+        });
+    }
+    if (selected.length > 0) {
+        panelButtons.push({
+            btnText: "EDIT",
+            tooltip: "Hot key: Alt (option) + P",
+            disabled: false,
+            isMarked: !history.isRecentlyPosted,
+            onClick: () => {
+                openEditDialog();
+            },
+        });
+    }
 
     const showMore = (): void => {
         if (history.isRecentlyPosted) {
             getRecentlyPostedRequest({
-                startCursor: history.cursor
-            })
+                startCursor: history.cursor,
+            });
         } else {
             getReportRecordsRequest({
                 startCursor: history.cursor,
                 filter: {
                     startDate: reportDialogStatus.startDate,
                     endDate: reportDialogStatus.endDate,
-                    tags: reportDialogStatus.tags || []
-                }
+                    tags: reportDialogStatus.tags || [],
+                },
+            });
+        }
+    };
+
+    const openEditDialog = () => {
+        setEditDialogStatus({
+            ...editDialogStatus,
+            isOpen: true,
+            date: new Date().getTime(),
+            description: "",
+            dateDisabled: false,
+            descriptionDisabled: false,
+            tagsDisabled: false,
+            tags: [],
+        });
+    };
+
+    const openRevertDialog = () => {
+        const id = selected[0];
+        const row = history.items.find((rec) => rec.id === id);
+        if (row) {
+            setRevertDialogStatus({
+                ...revertDialogStatus,
+                isOpen: true,
+                row,
             });
         }
     };
@@ -189,56 +277,119 @@ const HistoryPage: React.FC<HistoryPageProps> = (
             isOpen: true,
             startDate: history.filter.startDate || getDefaultDate()[0],
             endDate: history.filter.endDate || getDefaultDate()[1],
-            tags: history.filter.tags
+            tags: history.filter.tags,
         });
     };
 
-    const openRevertDialog = (row: PostedOperation) => {
+    const handleOnRowClick = (row: PostedOperation) => {
         if (row.isReverted || row.isRevertOperation) {
             return;
         }
-        setRevertDialogStatus({
-            ...revertDialogStatus,
-            isOpen: true,
-            row
+
+        if (~selected.indexOf(row.id)) {
+            setSelected(selected.filter((id) => id !== row.id));
+        } else {
+            setSelected([...selected, row.id]);
+        }
+    };
+
+    const handleEditDialogCancel = () => {
+        setEditDialogStatus({
+            ...editDialogStatus,
+            isOpen: false,
         });
     };
 
     const handleReportDialogCancel = () => {
         setReportDialogStatus({
             ...reportDialogStatus,
-            isOpen: false
+            isOpen: false,
         });
     };
 
     const handleRevertDialogCancel = () => {
         setRevertDialogStatus({
             ...revertDialogStatus,
-            isOpen: false
+            isOpen: false,
         });
     };
 
     const handleDateChange = (value: Dayjs | null, name: string): void => {
-        setReportDialogStatus(prev => ({
+        setReportDialogStatus((prev) => ({
             ...prev,
-            [name]: (value && value.isValid()) ? value.valueOf() : null
+            [name]: value && value.isValid() ? value.valueOf() : null,
+        }));
+    };
+
+    const handleEditDialogDateChange = (
+        value: Dayjs | null,
+        name: string,
+    ): void => {
+        setEditDialogStatus((prev) => ({
+            ...prev,
+            description: "",
+            descriptionDisabled: true,
+            tags: [],
+            tagsDisabled: true,
+            [name]: value && value.isValid() ? value.valueOf() : null,
+        }));
+    };
+
+    const handleEditDialogTagsChange = (tags: string[]): void => {
+        setEditDialogStatus((prev) => ({
+            ...prev,
+            description: "",
+            descriptionDisabled: true,
+            date: new Date().getTime(),
+            dateDisabled: true,
+            tags,
         }));
     };
 
     const handleTagsChange = (tags: string[]): void => {
-        setReportDialogStatus(prev => ({
+        setReportDialogStatus((prev) => ({
             ...prev,
-            tags
-        }))
+            tags,
+        }));
+    };
+
+    const handleDescriptionChange = (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ): void => {
+        const {name, value} = event.target;
+        setEditDialogStatus((prev) => ({
+            ...prev,
+            dateDisabled: true,
+            date: new Date().getTime(),
+            tags: [],
+            tagsDisabled: true,
+            [name]: value,
+        }));
+    };
+
+    const handleUpdateOperation = (): void => {
+        bulkUpdateRequest({
+            description: editDialogStatus.description,
+            tags: editDialogStatus.tags,
+            date:
+                editDialogStatus.description || editDialogStatus.tags.length
+                    ? 0
+                    : editDialogStatus.date,
+            ids: selected.map(Number),
+        });
+        setEditDialogStatus({
+            ...editDialogStatus,
+            isOpen: false,
+        });
     };
 
     const revertOperation = (row: PostedOperation) => {
         revertOperationRequest({
-            docNumber: row.docNumber
+            docNumber: row.docNumber,
         });
         setRevertDialogStatus({
             ...revertDialogStatus,
-            isOpen: false
+            isOpen: false,
         });
     };
 
@@ -248,50 +399,72 @@ const HistoryPage: React.FC<HistoryPageProps> = (
             filter: {
                 startDate: reportDialogStatus.startDate,
                 endDate: reportDialogStatus.endDate,
-                tags: reportDialogStatus.tags || []
-            }
+                tags: reportDialogStatus.tags || [],
+            },
         });
         setReportDialogStatus({
             ...reportDialogStatus,
-            isOpen: false
+            isOpen: false,
         });
     };
 
     const resetFilter = () => {
         if (!history.isRecentlyPosted) {
             getRecentlyPostedRequest({
-                startCursor: ""
+                startCursor: "",
             });
         }
 
         setReportDialogStatus({
             ...reportDialogStatus,
-            isOpen: false
+            isOpen: false,
         });
     };
 
     const generateReport = () => {
-        if (reportDialogStatus.endDate - reportDialogStatus.startDate > reportPeriodLimitDays * 24 * 60 * 60 * 1000) {
+        if (
+            reportDialogStatus.endDate - reportDialogStatus.startDate >
+            reportPeriodLimitDays * 24 * 60 * 60 * 1000
+        ) {
             reportPeriodExceeded({
-                daysLimit: reportPeriodLimitDays
-            })
+                daysLimit: reportPeriodLimitDays,
+            });
         } else {
             generateReportRequest({
-                startDate: new Date(reportDialogStatus.startDate).toISOString().slice(0, 10),
-                endDate: new Date(reportDialogStatus.endDate).toISOString().slice(0, 10),
-                tags: reportDialogStatus.tags
+                startDate: new Date(reportDialogStatus.startDate)
+                    .toISOString()
+                    .slice(0, 10),
+                endDate: new Date(reportDialogStatus.endDate)
+                    .toISOString()
+                    .slice(0, 10),
+                tags: reportDialogStatus.tags,
             });
             setReportDialogStatus({
                 ...reportDialogStatus,
-                isOpen: false
+                isOpen: false,
             });
         }
     };
 
     return (
         <ThemeProvider theme={theme}>
-            <CssBaseline/>
+            <CssBaseline />
             <Container maxWidth="lg">
+                <EditDialog
+                    isOpen={editDialogStatus.isOpen}
+                    date={editDialogStatus.date}
+                    dateDisabled={editDialogStatus.dateDisabled}
+                    description={editDialogStatus.description}
+                    descriptionDisabled={editDialogStatus.descriptionDisabled}
+                    tags={editDialogStatus.tags}
+                    tagsDisabled={editDialogStatus.tagsDisabled}
+                    onCancel={handleEditDialogCancel}
+                    onDateChange={handleEditDialogDateChange}
+                    onDescriptionChange={handleDescriptionChange}
+                    onTagsChange={handleEditDialogTagsChange}
+                    onUpdateOperation={handleUpdateOperation}
+                    allTags={tag.items}
+                />
                 <ReportDialog
                     isOpen={reportDialogStatus.isOpen}
                     startDate={reportDialogStatus.startDate}
@@ -312,27 +485,30 @@ const HistoryPage: React.FC<HistoryPageProps> = (
                     row={revertDialogStatus.row}
                 />
                 <HotKeys handlers={getHandlers(navigate, null)} keyMap={keyMap}>
-                    <Header title="MANETTA" menuItems={menuItems}/>
+                    <Header title="MANETTA" menuItems={menuItems} />
                     <main>
-                        <ButtonPanel buttons={panelButtons}/>
-                        <HistoryTable rows={history.items} accounts={account.items} handleOpenRevertDialog={openRevertDialog}/>
-                        {
-                            history.items.length && history.items.length % 20 === 0 ?
-                                <Link
-                                    component="button"
-                                    variant="body2"
-                                    sx={{ml: 2, mt: 4}}
-                                    onClick={showMore}
-                                >
-                                    Show more rows...
-                                </Link> : null
-                        }
+                        <ButtonPanel buttons={panelButtons} />
+                        <HistoryTable
+                            rows={history.items}
+                            accounts={account.items}
+                            selected={selected}
+                            onRowClick={handleOnRowClick}
+                        />
+                        {history.items.length &&
+                        history.items.length % 20 === 0 ? (
+                            <Link
+                                component="button"
+                                variant="body2"
+                                sx={{ml: 2, mt: 4}}
+                                onClick={showMore}
+                            >
+                                Show more rows...
+                            </Link>
+                        ) : null}
                     </main>
                 </HotKeys>
             </Container>
-            <Footer
-                description="Accounting it's easy!"
-            />
+            <Footer description="Accounting it's easy!" />
         </ThemeProvider>
     );
 };
@@ -342,8 +518,8 @@ const mapStateToProps = (state: ApplicationState) => {
         history: state.history,
         report: state.report,
         account: state.account,
-        tag: state.tag
-    }
+        tag: state.tag,
+    };
 };
 
 // noinspection JSUnusedGlobalSymbols
@@ -351,13 +527,11 @@ const mapDispatchToProps = {
     getRecentlyPostedRequest,
     getReportRecordsRequest,
     getAccountsRequest,
+    bulkUpdateRequest,
     getTagsRequest,
     generateReportRequest,
     revertOperationRequest,
-    reportPeriodExceeded
+    reportPeriodExceeded,
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(HistoryPage)
+export default connect(mapStateToProps, mapDispatchToProps)(HistoryPage);

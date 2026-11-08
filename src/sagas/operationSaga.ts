@@ -5,15 +5,17 @@ import {
     GetRecentlyPostedAction,
     GetReportRecordsAction,
     PostOperationsAction,
+    BulkUpdateAction,
     RevertOperationAction,
-    UpdateOperationAction
+    UpdateOperationAction,
 } from "../redux/actions/operationActions";
-import {call, put} from 'redux-saga/effects';
+import {call, put} from "redux-saga/effects";
 import OperationApi from "../api/operation";
 import {types} from "../redux/actions/types";
 
 export function* getOperations(action: GetOperationsAction) {
-    try {yield put({type: types.BEGIN_API_CALL});
+    try {
+        yield put({type: types.BEGIN_API_CALL});
         const {data} = yield call(OperationApi.getOperations);
         yield put({type: types.GET_OPERATIONS_SUCCESS, data});
     } catch (e: any) {
@@ -23,8 +25,12 @@ export function* getOperations(action: GetOperationsAction) {
 }
 
 export function* getRecentlyPosted(action: GetRecentlyPostedAction) {
-    try {yield put({type: types.BEGIN_API_CALL});
-        const {data} = yield call(OperationApi.getRecentlyPosted, action.params);
+    try {
+        yield put({type: types.BEGIN_API_CALL});
+        const {data} = yield call(
+            OperationApi.getRecentlyPosted,
+            action.params,
+        );
         yield put({type: types.GET_RECENTLY_POSTED_SUCCESS, data});
     } catch (e: any) {
         yield put({type: types.API_CALL_ERROR});
@@ -33,7 +39,8 @@ export function* getRecentlyPosted(action: GetRecentlyPostedAction) {
 }
 
 export function* getReportRecords(action: GetReportRecordsAction) {
-    try {yield put({type: types.BEGIN_API_CALL});
+    try {
+        yield put({type: types.BEGIN_API_CALL});
         const {data} = yield call(OperationApi.getReportRecords, action.params);
         yield put({type: types.GET_REPORT_RECORDS_SUCCESS, data});
     } catch (e: any) {
@@ -46,10 +53,16 @@ export function* createOperation(action: CreateOperationAction) {
     try {
         yield put({type: types.BEGIN_API_CALL});
         const {data} = yield call(OperationApi.createOperation, action.params);
-        yield put({type: types.CREATE_OPERATION_SUCCESS, params: {...action.params, data}});
+        yield put({
+            type: types.CREATE_OPERATION_SUCCESS,
+            params: {...action.params, data},
+        });
     } catch (e: any) {
         yield put({type: types.API_CALL_ERROR});
-        yield put({type: types.CREATE_OPERATION_FAILURE, params: {...action.params, error: e.message}});
+        yield put({
+            type: types.CREATE_OPERATION_FAILURE,
+            params: {...action.params, error: e.message},
+        });
     }
 }
 
@@ -57,11 +70,34 @@ export function* updateOperation(action: UpdateOperationAction) {
     try {
         yield put({type: types.BEGIN_API_CALL});
         const {data} = yield call(OperationApi.updateOperation, action.params);
-        yield put({type: types.UPDATE_OPERATION_SUCCESS, params: {...action.params, data}});
+        yield put({
+            type: types.UPDATE_OPERATION_SUCCESS,
+            params: {...action.params, data},
+        });
     } catch (e: any) {
         yield put({type: types.API_CALL_ERROR});
-        yield put({type: types.UPDATE_OPERATION_FAILURE, params: {...action.params, error: e.message}});
+        yield put({
+            type: types.UPDATE_OPERATION_FAILURE,
+            params: {...action.params, error: e.message},
+        });
         yield put({type: types.GET_OPERATIONS_REQUEST});
+    }
+}
+
+export function* bulkUpdate(action: BulkUpdateAction) {
+    try {
+        yield put({type: types.BEGIN_API_CALL});
+        const {data} = yield call(OperationApi.bulkUpdate, action.params);
+        yield put({
+            type: types.BULK_UPDATE_SUCCESS,
+            data,
+        });
+    } catch (e: any) {
+        yield put({type: types.API_CALL_ERROR});
+        yield put({
+            type: types.BULK_UPDATE_FAILURE,
+            params: {...action.params, error: e.message},
+        });
     }
 }
 
@@ -92,10 +128,16 @@ export function* postOperations(action: PostOperationsAction) {
     try {
         yield put({type: types.BEGIN_API_CALL});
         const {data} = yield call(OperationApi.postOperations, action.params);
-        yield put({type: types.POST_OPERATIONS_SUCCESS, params: {...action.params, data}});
+        yield put({
+            type: types.POST_OPERATIONS_SUCCESS,
+            params: {...action.params, data},
+        });
     } catch (e: any) {
         yield put({type: types.API_CALL_ERROR});
-        yield put({type: types.POST_OPERATIONS_FAILURE, params: {...action.params, error: e.message}});
+        yield put({
+            type: types.POST_OPERATIONS_FAILURE,
+            params: {...action.params, error: e.message},
+        });
         yield put({type: types.GET_OPERATIONS_REQUEST});
     }
 }

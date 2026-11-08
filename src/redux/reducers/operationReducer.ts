@@ -29,7 +29,7 @@ export default function operationReducer(state = initialState.operation, action:
         case types.GET_OPERATIONS_FAILURE:
             return {
                 ...state,
-                status: "NOT_DEFINED"
+                status: "LOADING_ERROR"
             }
 
         case types.CREATE_OPERATION_REQUEST:

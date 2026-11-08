@@ -1,174 +1,179 @@
 type RouteError = {
-    statusText: string,
-    message: string,
-}
+    statusText: string;
+    message: string;
+};
 
 type FilterParams = {
-    startDate: number,
-    endDate: number,
-    tags: string []
-}
+    startDate: number;
+    endDate: number;
+    tags: string[];
+};
 
 interface AuthenticationParams {
-    email: string
-    password: string
+    email: string;
+    password: string;
 }
 
 interface RegistrationParams {
-    email: string
-    password: string
+    email: string;
+    password: string;
 }
 
 interface TokenResult {
     claims: {
-        role: string
-    }
+        role: string;
+    };
 }
 
 interface PostOperationsParams {
-    postAsSingle: boolean,
-    ids: string[]
+    postAsSingle: boolean;
+    ids: string[];
 }
 
 interface GetRecentlyPostedParams {
-    startCursor: string
+    startCursor: string;
 }
 
 interface GetReportRecordsParams {
-    startCursor: string,
-    filter: FilterParams
+    startCursor: string;
+    filter: FilterParams;
 }
 
 interface DeleteOperationParams {
-    id: number
+    id: number;
 }
 
 interface GenerateExpensesReportParams {
-    startDate: string,
-    endDate: string,
-    tags: string[]
+    startDate: string;
+    endDate: string;
+    tags: string[];
 }
 
 interface ReportPeriodExceededParams {
-    daysLimit: number
+    daysLimit: number;
 }
 
 interface GetAccountBalanceParams {
-    accountName: string
+    accountName: string;
 }
 
 interface OperationBase {
-    id: number | undefined,
-    date: number | string,
-    account: string,
-    group: string,
-    created: number,
-    description: string,
-    sum: number,
-    tags: string[]
+    id: number | undefined;
+    date: number | string;
+    account: string;
+    group: string;
+    created: number;
+    description: string;
+    sum: number;
+    tags: string[];
 }
 
 interface UpdateOperationParams extends OperationBase {
-    id: number
-    date: string
+    id: number;
+    date: string;
+}
+
+interface BulkUpdateParams {
+    ids: number[];
+    date: number;
+    description: string;
+    tags: string[];
 }
 
 interface RevertOperationParams {
-    docNumber: number
+    docNumber: number;
 }
 
 interface CreateOperationParams extends OperationBase {
-    id: undefined,
-    date: string
+    id: undefined;
+    date: string;
 }
 
 interface Operation extends OperationBase {
-    id: number,
-    date: number
+    id: number;
+    date: number;
 }
 
 interface Group {
-    name: string,
-    tags: Array<string>
+    name: string;
+    tags: Array<string>;
 }
 
-interface CreateGroupParams extends Group {
-}
+interface CreateGroupParams extends Group {}
 
-interface UpdateGroupParams extends Group {
-}
+interface UpdateGroupParams extends Group {}
 
 interface DeleteGroupParams {
-    name: string
+    name: string;
 }
 
 interface CreateRateParams {
-    rate: number,
-    currency: string
+    rate: number;
+    currency: string;
 }
 
-interface Account  {
-    name: string,
-    isActive: boolean,
-    currency: string,
-    balance: number
+interface Account {
+    name: string;
+    isActive: boolean;
+    currency: string;
+    balance: number;
 }
 
-type ItemStatus = "DEFINED" | "NOT_DEFINED" | "REQUESTED"
-type InitStatus = "NOT_STARTED" | "STARTED" | "FINISHED"
+type ItemStatus = "DEFINED" | "NOT_DEFINED" | "REQUESTED" | "LOADING_ERROR";
+type InitStatus = "NOT_STARTED" | "STARTED" | "FINISHED";
 
 interface Rate {
-    rate: number,
-    date: number
+    rate: number;
+    date: number;
 }
 
 interface CurrencyRate extends Rate {
-    currency: string
+    currency: string;
 }
 
 interface PanelButton {
-    btnText: string,
-    tooltip: string,
-    disabled: boolean,
-    isMarked: boolean,
-    onClick: () => void
+    btnText: string;
+    tooltip: string;
+    disabled: boolean;
+    isMarked: boolean;
+    onClick: () => void;
 }
 
 interface AccountInfo {
-    title: string,
-    description: string,
-    imagePath: string,
-    accountName: string
+    title: string;
+    description: string;
+    imagePath: string;
+    accountName: string;
 }
 
 interface PostedOperation {
-    id: number,
-    date: string,
-    created: number,
-    account: string,
-    docNumber: number,
-    equivalent: number,
-    balance: number,
-    description: string,
-    sum: number,
-    tags: string[],
-    isReverted: boolean,
-    isRevertOperation: boolean
+    id: number;
+    date: string;
+    created: number;
+    account: string;
+    docNumber: number;
+    equivalent: number;
+    balance: number;
+    description: string;
+    sum: number;
+    tags: string[];
+    isReverted: boolean;
+    isRevertOperation: boolean;
 }
 
 interface PostedOperationResult {
-    id: string,
-    date: number,
-    created: number,
-    account: string,
-    docNumber: number,
-    euro: number,
-    balance: number,
-    description: string,
-    sum: number,
-    tags: string[],
-    isReverted: boolean,
-    isRevertOperation: boolean
+    id: string;
+    date: number;
+    created: number;
+    account: string;
+    docNumber: number;
+    euro: number;
+    balance: number;
+    description: string;
+    sum: number;
+    tags: string[];
+    isReverted: boolean;
+    isRevertOperation: boolean;
 }
 
 interface HeadCell {
@@ -179,8 +184,6 @@ interface HeadCell {
 }
 
 interface OperationTemplate {
-    title: string,
-    description: string,
+    title: string;
+    description: string;
 }
-
-
