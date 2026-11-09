@@ -66,6 +66,10 @@ interface RevertOperationParams {
     docNumber: number
 }
 
+interface CreateFromTemplateParams {
+  tags: string[]
+}
+
 interface CreateOperationParams extends OperationBase {
     id: undefined,
     date: string
@@ -169,6 +173,7 @@ interface HeadCell {
 interface OperationTemplate {
     title: string,
     description: string,
+    tags: string[]
 }
 
 

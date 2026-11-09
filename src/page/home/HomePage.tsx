@@ -52,11 +52,15 @@ const templates: OperationTemplate[] = [
         title: 'EUR => UAH',
         description:
             'Currency exchange operation template.',
+        tags: [
+          "exchange"
+        ]
     },
     {
         title: 'Communal payments',
         description:
             'Monthly payment for the electricity, gas...',
+        tags: []
     },
 ];
 
