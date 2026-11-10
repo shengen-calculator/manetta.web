@@ -33,6 +33,13 @@ export default function messageReducer(state = initialState.message, action: any
                 text: action.text
             };
 
+        case types.CREATE_FROM_TEMPLATE_FAILURE:
+            return {
+                ...state,
+                type: 'error',
+                text: action.params.error
+            };
+
         case types.CREATE_OPERATION_FAILURE:
             return {
                 ...state,

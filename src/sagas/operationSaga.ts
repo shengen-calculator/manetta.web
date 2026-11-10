@@ -46,7 +46,7 @@ export function* createFromTemplate(action: CreateFromTemplateAction) {
     try {
         yield put({type: types.BEGIN_API_CALL});
         const {data} = yield call(OperationApi.createFromTemplate, action.params);
-        yield put({type: types.CREATE_FROM_TEMPLATE_SUCCESS, params: {...action.params, data}});
+        yield put({type: types.CREATE_FROM_TEMPLATE_SUCCESS, data});
     } catch (e: any) {
         yield put({type: types.API_CALL_ERROR});
         yield put({type: types.CREATE_FROM_TEMPLATE_FAILURE, params: {...action.params, error: e.message}});

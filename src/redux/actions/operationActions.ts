@@ -61,7 +61,7 @@ export function createOperationRequest(
   return { type: types.CREATE_OPERATION_REQUEST, params };
 }
 
-export function CreateFromTemplateRequest(
+export function createFromTemplateRequest(
   params: CreateFromTemplateParams,
 ): CreateFromTemplateAction {
   return { type: types.CREATE_FROM_TEMPLATE_REQUEST, params };

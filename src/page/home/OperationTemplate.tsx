@@ -6,25 +6,28 @@ import CardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
 
 interface TemplateProps {
-    post: {
+    template: {
         description: string;
         title: string;
+        tags: string[];
     };
+    open: (title: string, tags: string[]) => void
+
 }
 
 export default function OperationTemplate(props: TemplateProps) {
-    const { post } = props;
+    const { template, open} = props;
 
     return (
         <Grid item xs={12} md={6}>
-            <CardActionArea component="a" onClick={() => alert('Card clicked!')}>
+            <CardActionArea component="a" onClick={() => open(template.title, template.tags)}>
                 <Card sx={{ display: 'flex', bgcolor: 'grey.200' }}>
                     <CardContent sx={{ flex: 1 }}>
                         <Typography component="h2" variant="h5">
-                            {post.title}
+                            {template.title}
                         </Typography>
                         <Typography variant="subtitle1" paragraph>
-                            {post.description}
+                            {template.description}
                         </Typography>
                     </CardContent>
                 </Card>
