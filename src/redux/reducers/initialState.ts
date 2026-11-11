@@ -18,6 +18,12 @@ const initialState: ApplicationState = {
     history: {
         status: "NOT_DEFINED",
         items: [],
+        isRecentlyPosted: true,
+        filter: {
+            startDate: 0,
+            endDate: 0,
+            tags: []
+        },
         cursor: ""
     },
     account: {

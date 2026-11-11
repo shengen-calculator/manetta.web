@@ -26,7 +26,9 @@ type AccountState = {
 
 type HistoryState = {
     status: ItemStatus,
-    items: Array<PostedOperation>
+    items: Array<PostedOperation>,
+    filter: FilterParams,
+    isRecentlyPosted: boolean,
     cursor: string
 }
 

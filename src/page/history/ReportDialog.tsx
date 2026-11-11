@@ -15,10 +15,13 @@ interface ReportDialogProps {
     allTags: string [][]
     startDate: number
     endDate: number
+    tags: string []
     onCancel: () => void
     onTagsChange: (tags: string[]) => void
     onChange: (value: Dayjs | null, name: string) => void
     onReport: (startDate: number, endDate: number) => void
+    onFilter: (startDate: number, endDate: number) => void
+    onReset: () => void
 }
 
 const ReportDialog: React.FC<ReportDialogProps> = (
@@ -27,10 +30,13 @@ const ReportDialog: React.FC<ReportDialogProps> = (
         allTags,
         startDate,
         endDate,
+        tags,
         onTagsChange,
         onCancel,
         onChange,
-        onReport
+        onReport,
+        onFilter,
+        onReset
     }
 ) => {
     return (
@@ -58,13 +64,15 @@ const ReportDialog: React.FC<ReportDialogProps> = (
                     </DemoContainer>
                     <OperationTagsSelector
                         onChange={onTagsChange}
-                        tags={[]}
+                        tags={tags}
                         allTags={allTags}
                     />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onCancel}>Cancel</Button>
-                    <Button onClick={() => onReport(startDate, endDate)}>Submit</Button>
+                    <Button onClick={onReset}>Reset</Button>
+                    <Button onClick={() => onFilter(startDate, endDate)}>Preview</Button>
+                    <Button onClick={() => onReport(startDate, endDate)}>Export XLS</Button>
                 </DialogActions>
             </Dialog>
         </div>

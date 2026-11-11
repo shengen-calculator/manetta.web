@@ -21,7 +21,7 @@ export default function groupReducer(state = initialState.group, action: any): G
         case types.GET_GROUPS_FAILURE:
             return {
                 ...state,
-                status: "NOT_DEFINED"
+                status: "LOADING_ERROR"
             }
 
         case types.CREATE_GROUP_REQUEST:

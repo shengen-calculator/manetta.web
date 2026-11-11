@@ -1,38 +1,64 @@
-import initialState from './initialState';
+import initialState from "./initialState";
 import {types} from "../actions/types";
 import {HistoryState} from "./types";
 
-export default function historyReducer(state = initialState.history, action: any): HistoryState {
+export default function historyReducer(
+    state = initialState.history,
+    action: any,
+): HistoryState {
     switch (action.type) {
-
         case types.GET_RECENTLY_POSTED_REQUEST:
             return {
                 ...state,
-                status: "REQUESTED"
-            }
+                status: "REQUESTED",
+                isRecentlyPosted: true,
+                filter: {
+                    startDate: 0,
+                    endDate: 0,
+                    tags: [],
+                },
+                items: [...(state.isRecentlyPosted ? state.items : [])],
+            };
 
+        case types.GET_REPORT_RECORDS_REQUEST:
+            return {
+                ...state,
+                status: "REQUESTED",
+                isRecentlyPosted: false,
+                filter: {
+                    startDate: action.params.filter.startDate,
+                    endDate: action.params.filter.endDate,
+                    tags: action.params.filter.tags,
+                },
+                cursor: action.params.startCursor,
+                items: [...(state.isRecentlyPosted ? [] : state.items)],
+            };
+        case types.GET_REPORT_RECORDS_SUCCESS:
         case types.GET_RECENTLY_POSTED_SUCCESS:
             return {
                 ...state,
                 items: [
-                    ...state.cursor ? state.items : [],
-                    ...action.data.entries.map((posted: PostedOperationResult) => {
-                        return {
-                            created: posted.created,
-                            account: posted.account,
-                            date: posted.date,
-                            description: posted.description,
-                            docNumber: posted.docNumber,
-                            equivalent: posted.euro/100,
-                            balance: posted.balance/100,
-                            sum: posted.sum/100,
-                            tags: posted.tags,
-                            isReverted: posted.isReverted,
-                            isRevertOperation: posted.isRevertOperation
-                        }
-                    })
+                    ...(state.cursor ? state.items : []),
+                    ...action.data.entries.map(
+                        (posted: PostedOperationResult) => {
+                            return {
+                                id: posted.id,
+                                created: posted.created,
+                                account: posted.account,
+                                date: posted.date,
+                                description: posted.description,
+                                docNumber: posted.docNumber,
+                                equivalent: posted.euro / 100,
+                                balance: posted.balance / 100,
+                                sum: posted.sum / 100,
+                                tags: posted.tags,
+                                isReverted: posted.isReverted,
+                                isRevertOperation: posted.isRevertOperation,
+                            };
+                        },
+                    ),
                 ],
-                cursor: action.data.cursor
+                cursor: action.data.cursor,
             };
 
         case types.POST_OPERATIONS_SUCCESS:
@@ -47,36 +73,65 @@ export default function historyReducer(state = initialState.history, action: any
                             created: posted.created,
                             description: posted.description,
                             docNumber: posted.docNumber,
-                            equivalent: posted.equivalent/100,
-                            balance: posted.balance/100,
-                            sum: posted.sum/100,
+                            equivalent: posted.equivalent / 100,
+                            balance: posted.balance / 100,
+                            sum: posted.sum / 100,
                             tags: posted.tags,
                             isReverted: posted.isReverted,
-                            isRevertOperation: posted.isRevertOperation
-                        }
+                            isRevertOperation: posted.isRevertOperation,
+                        };
                     }),
-                    ...state.items
-                ]
-            }
+                    ...state.items,
+                ],
+            };
 
         case types.GET_RECENTLY_POSTED_FAILURE:
             return {
                 ...state,
-                status: "NOT_DEFINED"
-            }
+                status: "LOADING_ERROR",
+            };
+
+        case types.GET_REPORT_RECORDS_FAILURE:
+            return {
+                ...state,
+                status: "LOADING_ERROR",
+            };
+
+        case types.BULK_UPDATE_SUCCESS:
+            return {
+                ...state,
+                items: state.items.map((item) =>
+                    action.data.entries
+                        .map((rec: any) => String(rec.id))
+                        .includes(item.id)
+                        ? {
+                              ...item,
+                              description: action.data.entries.find(
+                                  (entry: any) => entry.id == item.id,
+                              ).description,
+                              tags: action.data.entries.find(
+                                  (entry: any) => entry.id == item.id,
+                              ).tags,
+                              date: action.data.entries.find(
+                                  (entry: any) => entry.id == item.id,
+                              ).date,
+                          }
+                        : item,
+                ),
+            };
 
         case types.REVERT_OPERATION_REQUEST:
             return {
                 ...state,
-                items: state.items.map(item => {
+                items: state.items.map((item) => {
                     if (item.docNumber !== action.params.docNumber) {
                         return item;
                     }
                     return {
                         ...item,
-                        isReverted: true
-                    }
-                })
+                        isReverted: true,
+                    };
+                }),
             };
 
         case types.REVERT_OPERATION_SUCCESS:
@@ -90,21 +145,21 @@ export default function historyReducer(state = initialState.history, action: any
                             created: item.created,
                             description: item.description,
                             docNumber: item.docNumber,
-                            equivalent: item.equivalent/100,
-                            balance: item.balance/100,
-                            sum: item.sum/100,
+                            equivalent: item.equivalent / 100,
+                            balance: item.balance / 100,
+                            sum: item.sum / 100,
                             tags: item.tags,
                             isReverted: item.isReverted,
-                            isRevertOperation: item.isRevertOperation
-                        }
+                            isRevertOperation: item.isRevertOperation,
+                        };
                     }),
-                    ...state.items
-                ]
+                    ...state.items,
+                ],
             };
 
         case types.REVERT_OPERATION_FAILURE:
             return {
-                ...state
+                ...state,
             };
 
         default:

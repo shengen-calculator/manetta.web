@@ -33,6 +33,11 @@ export default function operationReducer(
         ...state,
         status: "NOT_DEFINED",
       };
+        case types.GET_OPERATIONS_FAILURE:
+            return {
+                ...state,
+                status: "LOADING_ERROR"
+            }
 
     case types.GET_OPERATIONS_FAILURE:
       return {

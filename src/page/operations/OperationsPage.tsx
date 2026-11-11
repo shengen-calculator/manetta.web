@@ -75,6 +75,7 @@ const OperationsPage: React.FC<OperationsPageProps> = (
     const panelButtons: PanelButton[] = [{
         btnText: "POST",
         tooltip: "Hot key: Alt (option) + P",
+        isMarked: false,
         disabled: rowStatuses.some(rs => !rs.isValid) || nonZeroOperations.length === 0,
         onClick: () => setPostDialogStatus({
             isOpen: true,
@@ -83,6 +84,7 @@ const OperationsPage: React.FC<OperationsPageProps> = (
     }, {
         btnText: "POST AS SINGLE",
         tooltip: "Hot key: Alt (option) + L",
+        isMarked: false,
         disabled: rowStatuses.some(rs => !rs.isValid) || nonZeroOperations.length === 0,
         onClick: () => setPostDialogStatus({
             isOpen: true,

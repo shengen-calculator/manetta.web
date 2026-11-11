@@ -1,86 +1,106 @@
-import { types } from "./types";
+import {types} from "./types";
 
 export type GetOperationsAction = {
-  type: types.GET_OPERATIONS_REQUEST;
+    type: types.GET_OPERATIONS_REQUEST;
 };
 
 export type GetRecentlyPostedAction = {
-  type: types.GET_RECENTLY_POSTED_REQUEST;
-  params: GetRecentlyPostedParams;
+    type: types.GET_RECENTLY_POSTED_REQUEST;
+    params: GetRecentlyPostedParams;
+};
+
+export type GetReportRecordsAction = {
+    type: types.GET_REPORT_RECORDS_REQUEST;
+    params: GetReportRecordsParams;
 };
 
 export type PostOperationsAction = {
-  type: types.POST_OPERATIONS_REQUEST;
-  params: PostOperationsParams;
+    type: types.POST_OPERATIONS_REQUEST;
+    params: PostOperationsParams;
 };
 
 export type CreateOperationAction = {
-  type: types.CREATE_OPERATION_REQUEST;
-  params: CreateOperationParams;
-};
-
-export type CreateFromTemplateAction = {
-  type: types.CREATE_FROM_TEMPLATE_REQUEST;
-  params: CreateFromTemplateParams;
+    type: types.CREATE_OPERATION_REQUEST;
+    params: CreateOperationParams;
 };
 
 export type UpdateOperationAction = {
-  type: types.UPDATE_OPERATION_REQUEST;
-  params: UpdateOperationParams;
+    type: types.UPDATE_OPERATION_REQUEST;
+    params: UpdateOperationParams;
 };
 
 export type RevertOperationAction = {
-  type: types.REVERT_OPERATION_REQUEST;
-  params: RevertOperationParams;
+    type: types.REVERT_OPERATION_REQUEST;
+    params: RevertOperationParams;
 };
 
 export type DeleteOperationAction = {
-  type: types.DELETE_OPERATION_REQUEST;
-  params: DeleteOperationParams;
+    type: types.DELETE_OPERATION_REQUEST;
+    params: DeleteOperationParams;
+};
+
+export type BulkUpdateAction = {
+    type: types.BULK_UPDATE_REQUEST;
+    params: BulkUpdateParams;
 };
 
 export function getOperationsRequest(): GetOperationsAction {
-  return { type: types.GET_OPERATIONS_REQUEST };
+    return {type: types.GET_OPERATIONS_REQUEST};
 }
 
 export function getRecentlyPostedRequest(
-  params: GetRecentlyPostedParams,
+    params: GetRecentlyPostedParams,
 ): GetRecentlyPostedAction {
-  return { type: types.GET_RECENTLY_POSTED_REQUEST, params };
+    return {type: types.GET_RECENTLY_POSTED_REQUEST, params};
+}
+
+export function getReportRecordsRequest(
+    params: GetReportRecordsParams,
+): GetReportRecordsAction {
+    return {type: types.GET_REPORT_RECORDS_REQUEST, params};
 }
 
 export function postOperationsRequest(
-  params: PostOperationsParams,
+    params: PostOperationsParams,
 ): PostOperationsAction {
-  return { type: types.POST_OPERATIONS_REQUEST, params };
+    return {type: types.POST_OPERATIONS_REQUEST, params};
 }
 
 export function createOperationRequest(
-  params: CreateOperationParams,
+    params: CreateOperationParams,
 ): CreateOperationAction {
-  return { type: types.CREATE_OPERATION_REQUEST, params };
+    return {type: types.CREATE_OPERATION_REQUEST, params};
 }
 
 export function createFromTemplateRequest(
-  params: CreateFromTemplateParams,
+    params: CreateFromTemplateParams,
 ): CreateFromTemplateAction {
-  return { type: types.CREATE_FROM_TEMPLATE_REQUEST, params };
+    return {type: types.CREATE_FROM_TEMPLATE_REQUEST, params};
 }
 
+export type CreateFromTemplateAction = {
+    type: types.CREATE_FROM_TEMPLATE_REQUEST;
+    params: CreateFromTemplateParams;
+};
+
 export function deleteOperationRequest(
-  params: DeleteOperationParams,
+    params: DeleteOperationParams,
 ): DeleteOperationAction {
-  return { type: types.DELETE_OPERATION_REQUEST, params };
+    return {type: types.DELETE_OPERATION_REQUEST, params};
 }
 
 export function updateOperationRequest(
-  params: UpdateOperationParams,
+    params: UpdateOperationParams,
 ): UpdateOperationAction {
-  return { type: types.UPDATE_OPERATION_REQUEST, params };
+    return {type: types.UPDATE_OPERATION_REQUEST, params};
+}
+
+export function bulkUpdateRequest(params: BulkUpdateParams): BulkUpdateAction {
+    return {type: types.BULK_UPDATE_REQUEST, params};
 }
 
 export function revertOperationRequest(
-  params: RevertOperationParams,
+    params: RevertOperationParams,
 ): RevertOperationAction {
-  return { type: types.REVERT_OPERATION_REQUEST, params };
+    return {type: types.REVERT_OPERATION_REQUEST, params};
 }
