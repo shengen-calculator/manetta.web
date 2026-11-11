@@ -21,7 +21,6 @@ import {
 } from "../../redux/actions/operationActions";
 import { connect } from "react-redux";
 
-
 const mainFeaturedPost = {
   title: "Manetta Accounting",
   description: "The newest accounting system based on tags",
@@ -63,9 +62,19 @@ const templates: OperationTemplate[] = [
     tags: ["exchange"],
   },
   {
-    title: "Communal payments",
-    description: "Monthly payment for the electricity, gas...",
-    tags: [],
+    title: "Apartment electricity",
+    description: "Monthly payment for the electricity",
+    tags: ["expenses", "apartment", "electricity"],
+  },
+  {
+    title: "Apartment gas",
+    description: "Monthly payment for the gas",
+    tags: ["expenses", "apartment", "naftogaz"],
+  },
+  {
+    title: "House gas",
+    description: "Monthly payment for the gas",
+    tags: ["expenses", "house", "naftogaz"],
   },
 ];
 
@@ -81,9 +90,7 @@ interface HomePageProps {
   ) => CreateFromTemplateAction;
 }
 
-const HomePage: React.FC<HomePageProps> = ({
-  createFromTemplateRequest
-}) => {
+const HomePage: React.FC<HomePageProps> = ({ createFromTemplateRequest }) => {
   const navigate = useNavigate();
 
   const [fromTemplateDialogStatus, setFromTemplateDialogStatus] =
@@ -111,13 +118,13 @@ const HomePage: React.FC<HomePageProps> = ({
 
   const createOperations = (tags: string[]) => {
     createFromTemplateRequest({
-      tags
+      tags,
     });
     setFromTemplateDialogStatus({
       ...fromTemplateDialogStatus,
       isOpen: false,
     });
-  }
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -147,7 +154,11 @@ const HomePage: React.FC<HomePageProps> = ({
             <Grid container spacing={5} sx={{ mt: 3 }}></Grid>
             <Grid container spacing={4}>
               {templates.map((template) => (
-                <OperationTemplate key={template.title} template={template} open={openFromTemplateDialog} />
+                <OperationTemplate
+                  key={template.title}
+                  template={template}
+                  open={openFromTemplateDialog}
+                />
               ))}
             </Grid>
           </main>
@@ -156,7 +167,7 @@ const HomePage: React.FC<HomePageProps> = ({
       <Footer description="Accounting it's easy!" />
     </ThemeProvider>
   );
-}
+};
 // noinspection JSUnusedGlobalSymbols
 const mapDispatchToProps = {
   createFromTemplateRequest,
