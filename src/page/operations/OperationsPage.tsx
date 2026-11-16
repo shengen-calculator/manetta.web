@@ -18,6 +18,7 @@ import {
 import {HotKeys} from "react-hotkeys";
 import {getHandlers, keyMap} from "../../component/KeyMapHandlers";
 import {useNavigate} from "react-router-dom";
+import LoadRecentOperationsDialog from "./LoadRecentOperationsDialog";
 
 type RowStatus = {
     id: number;
@@ -29,9 +30,8 @@ type PostDialogStatus = {
     asSingle: boolean;
 };
 
-type TemplateDialogStatus = {
+type LoadRecentOperationsDialogStatus = {
     isOpen: boolean;
-    group: string;
 };
 
 interface OperationsPageProps {
@@ -64,10 +64,9 @@ const OperationsPage: React.FC<OperationsPageProps> = ({
             isOpen: false,
             asSingle: false,
         });
-    const [templateDialogStatus, setTemplateDialogStatus] =
-        React.useState<TemplateDialogStatus>({
+    const [loadDialogStatus, setLoadDialogStatus] =
+        React.useState<LoadRecentOperationsDialogStatus>({
             isOpen: false,
-            group: "",
         });
     const navigate = useNavigate();
 
@@ -82,52 +81,66 @@ const OperationsPage: React.FC<OperationsPageProps> = ({
                 isOpen: true,
                 asSingle,
             });
+        } else {
+            setLoadDialogStatus({
+                isOpen: true,
+            });
         }
     };
 
-    const panelButtons: PanelButton[] = [
-        {
-            btnText: "POST",
-            tooltip: "Hot key: Alt (option) + P",
-            isMarked: false,
-            disabled:
-                rowStatuses.some((rs) => !rs.isValid) ||
-                nonZeroOperations.length === 0,
-            onClick: () =>
-                setPostDialogStatus({
-                    isOpen: true,
-                    asSingle: false,
-                }),
-        },
-        {
-            btnText: "POST AS SINGLE",
+    const panelButtons: PanelButton[] = [];
+    if (nonZeroOperations.length === 0) {
+        panelButtons.push({
+            btnText: "RECENT",
             tooltip: "Hot key: Alt (option) + L",
             isMarked: false,
-            disabled:
-                rowStatuses.some((rs) => !rs.isValid) ||
-                nonZeroOperations.length === 0,
+            disabled: false,
             onClick: () =>
-                setPostDialogStatus({
+                setLoadDialogStatus({
                     isOpen: true,
-                    asSingle: true,
                 }),
-        },
-        {
-            btnText: "RECENT",
-            tooltip: "Hot key: Alt (option) + H",
-            isMarked: false,
-            disabled: nonZeroOperations.length > 0,
-            onClick: () =>
-                setPostDialogStatus({
-                    isOpen: true,
-                    asSingle: true,
-                }),
-        },
-    ];
+        });
+    } else {
+        panelButtons.push(
+            {
+                btnText: "POST",
+                tooltip: "Hot key: Alt (option) + P",
+                isMarked: false,
+                disabled:
+                    rowStatuses.some((rs) => !rs.isValid) ||
+                    nonZeroOperations.length === 0,
+                onClick: () =>
+                    setPostDialogStatus({
+                        isOpen: true,
+                        asSingle: false,
+                    }),
+            },
+            {
+                btnText: "POST AS SINGLE",
+                tooltip: "Hot key: Alt (option) + L",
+                isMarked: false,
+                disabled:
+                    rowStatuses.some((rs) => !rs.isValid) ||
+                    nonZeroOperations.length === 0,
+                onClick: () =>
+                    setPostDialogStatus({
+                        isOpen: true,
+                        asSingle: true,
+                    }),
+            },
+        );
+    }
 
     const handlePostDialogCancel = () => {
         setPostDialogStatus({
             ...postDialogStatus,
+            isOpen: false,
+        });
+    };
+
+    const handleLoadDialogCancel = () => {
+        setLoadDialogStatus({
+            ...loadDialogStatus,
             isOpen: false,
         });
     };
@@ -151,6 +164,10 @@ const OperationsPage: React.FC<OperationsPageProps> = ({
                     asSingle={postDialogStatus.asSingle}
                     onCancel={handlePostDialogCancel}
                     post={post}
+                />
+                <LoadRecentOperationsDialog
+                    isOpen={loadDialogStatus.isOpen}
+                    onCancel={handleLoadDialogCancel}
                 />
                 <HotKeys
                     handlers={getHandlers(navigate, dialog)}
