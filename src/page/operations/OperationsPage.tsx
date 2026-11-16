@@ -19,6 +19,7 @@ import {HotKeys} from "react-hotkeys";
 import {getHandlers, keyMap} from "../../component/KeyMapHandlers";
 import {useNavigate} from "react-router-dom";
 import LoadRecentOperationsDialog from "./LoadRecentOperationsDialog";
+import {GroupState} from "../../redux/reducers/types";
 
 type RowStatus = {
     id: number;
@@ -32,6 +33,7 @@ type PostDialogStatus = {
 
 type LoadRecentOperationsDialogStatus = {
     isOpen: boolean;
+    groups: Group[];
 };
 
 interface OperationsPageProps {
@@ -39,11 +41,13 @@ interface OperationsPageProps {
         params: PostOperationsParams,
     ) => PostOperationsAction;
     operation: OperationState;
+    group: GroupState;
 }
 
 const OperationsPage: React.FC<OperationsPageProps> = ({
     postOperationsRequest,
     operation,
+    group,
 }) => {
     const post = (postAsSingle: boolean) => {
         postOperationsRequest({
@@ -67,6 +71,7 @@ const OperationsPage: React.FC<OperationsPageProps> = ({
     const [loadDialogStatus, setLoadDialogStatus] =
         React.useState<LoadRecentOperationsDialogStatus>({
             isOpen: false,
+            groups: [],
         });
     const navigate = useNavigate();
 
@@ -84,6 +89,7 @@ const OperationsPage: React.FC<OperationsPageProps> = ({
         } else {
             setLoadDialogStatus({
                 isOpen: true,
+                groups: group.items,
             });
         }
     };
@@ -98,6 +104,7 @@ const OperationsPage: React.FC<OperationsPageProps> = ({
             onClick: () =>
                 setLoadDialogStatus({
                     isOpen: true,
+                    groups: group.items,
                 }),
         });
     } else {
@@ -168,6 +175,7 @@ const OperationsPage: React.FC<OperationsPageProps> = ({
                 <LoadRecentOperationsDialog
                     isOpen={loadDialogStatus.isOpen}
                     onCancel={handleLoadDialogCancel}
+                    groups={loadDialogStatus.groups}
                 />
                 <HotKeys
                     handlers={getHandlers(navigate, dialog)}
@@ -188,6 +196,7 @@ const OperationsPage: React.FC<OperationsPageProps> = ({
 const mapStateToProps = (state: ApplicationState) => {
     return {
         operation: state.operation,
+        group: state.group,
     };
 };
 
