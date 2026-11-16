@@ -28,7 +28,7 @@ export default function operationReducer(
         ],
       };
 
-    case types.CREATE_FROM_TEMPLATE_SUCCESS:
+    case types.LOAD_RECENT_OPERATIONS_SUCCESS:
       return {
         ...state,
         status: "NOT_DEFINED",

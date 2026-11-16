@@ -17,8 +17,8 @@ class OperationApi {
         return func(params);
     }
 
-    static createFromTemplate(params: CreateFromTemplateParams) {
-        const func = httpsCallable(functions, "operation-createFromTemplate");
+    static loadRecentOperations(params: LoadRecentOperationsParams) {
+        const func = httpsCallable(functions, "operation-loadRecentOperations");
         return func(params);
     }
 

@@ -24,6 +24,11 @@ export type CreateOperationAction = {
     params: CreateOperationParams;
 };
 
+export type LoadRecentOperationsAction = {
+    type: types.LOAD_RECENT_OPERATIONS_REQUEST;
+    params: LoadRecentOperationsParams;
+};
+
 export type UpdateOperationAction = {
     type: types.UPDATE_OPERATION_REQUEST;
     params: UpdateOperationParams;
@@ -72,16 +77,11 @@ export function createOperationRequest(
     return {type: types.CREATE_OPERATION_REQUEST, params};
 }
 
-export function createFromTemplateRequest(
-    params: CreateFromTemplateParams,
-): CreateFromTemplateAction {
-    return {type: types.CREATE_FROM_TEMPLATE_REQUEST, params};
+export function loadRecentOperationsRequest(
+    params: LoadRecentOperationsParams,
+): LoadRecentOperationsAction {
+    return {type: types.LOAD_RECENT_OPERATIONS_REQUEST, params};
 }
-
-export type CreateFromTemplateAction = {
-    type: types.CREATE_FROM_TEMPLATE_REQUEST;
-    params: CreateFromTemplateParams;
-};
 
 export function deleteOperationRequest(
     params: DeleteOperationParams,

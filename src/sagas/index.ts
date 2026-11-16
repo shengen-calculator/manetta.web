@@ -3,7 +3,7 @@ import {logIn, logOut, register} from "./authenticationSaga";
 import {types} from "../redux/actions/types";
 import {
     createOperation,
-    createFromTemplate,
+    loadRecentOperations,
     deleteOperation,
     revertOperation,
     getOperations,
@@ -25,7 +25,7 @@ function* mySaga() {
     yield takeLatest(types.REGISTRATION_REQUEST, register);
     yield takeLatest(types.GET_OPERATIONS_REQUEST, getOperations);
     yield takeLatest(types.GET_RECENTLY_POSTED_REQUEST, getRecentlyPosted);
-    yield takeLatest(types.CREATE_FROM_TEMPLATE_REQUEST, createFromTemplate);
+    yield takeLatest(types.LOAD_RECENT_OPERATIONS_REQUEST, loadRecentOperations);
     yield takeLatest(types.GET_REPORT_RECORDS_REQUEST, getReportRecords);
     yield takeEvery(types.CREATE_OPERATION_REQUEST, createOperation);
     yield takeEvery(types.DELETE_OPERATION_REQUEST, deleteOperation);

@@ -84,8 +84,8 @@ interface RevertOperationParams {
     docNumber: number;
 }
 
-interface CreateFromTemplateParams {
-    tags: string[];
+interface LoadRecentOperationsParams {
+    group: string;
 }
 
 interface CreateOperationParams extends OperationBase {

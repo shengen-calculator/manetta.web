@@ -35,7 +35,7 @@ export default function messageReducer(
                 text: action.text,
             };
 
-        case types.CREATE_FROM_TEMPLATE_FAILURE:
+        case types.LOAD_RECENT_OPERATIONS_FAILURE:
             return {
                 ...state,
                 type: 'error',
