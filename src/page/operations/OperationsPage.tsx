@@ -14,6 +14,8 @@ import PostDialog from "./PostDialog";
 import {
     PostOperationsAction,
     postOperationsRequest,
+    LoadRecentOperationsAction,
+    loadRecentOperationsRequest,
 } from "../../redux/actions/operationActions";
 import {HotKeys} from "react-hotkeys";
 import {getHandlers, keyMap} from "../../component/KeyMapHandlers";
@@ -40,12 +42,16 @@ interface OperationsPageProps {
     postOperationsRequest: (
         params: PostOperationsParams,
     ) => PostOperationsAction;
+    loadRecentOperationsRequest: (
+        params: LoadRecentOperationsParams,
+    ) => LoadRecentOperationsAction;
     operation: OperationState;
     group: GroupState;
 }
 
 const OperationsPage: React.FC<OperationsPageProps> = ({
     postOperationsRequest,
+    loadRecentOperationsRequest,
     operation,
     group,
 }) => {
@@ -63,7 +69,9 @@ const OperationsPage: React.FC<OperationsPageProps> = ({
     };
 
     const load = (group: string) => {
-        alert(`Group => ${group}`);
+        loadRecentOperationsRequest({
+            group,
+        });
         setLoadDialogStatus({
             ...loadDialogStatus,
             isOpen: false,
@@ -212,6 +220,7 @@ const mapStateToProps = (state: ApplicationState) => {
 // noinspection JSUnusedGlobalSymbols
 const mapDispatchToProps = {
     postOperationsRequest,
+    loadRecentOperationsRequest,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OperationsPage);
