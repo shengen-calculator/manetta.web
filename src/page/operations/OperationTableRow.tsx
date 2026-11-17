@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import {Dayjs} from "dayjs";
@@ -14,40 +14,42 @@ import TableDateInput from "./TableDateInput";
 import {useEffect} from "react";
 
 interface OperationTableRowProps {
-    saveRowStatus: (id: number, isValid: boolean) => void
-    tagDialogOpen: (operationId: number, tags: string[], groupName: string) => void
-    operation: Operation
-    accounts: Account[]
-    groups: Group[]
-    save: (operation: Operation) => void
-    deleteRowClick: (params: DeleteOperationParams) => void
+    saveRowStatus: (id: number, isValid: boolean) => void;
+    tagDialogOpen: (
+        operationId: number,
+        tags: string[],
+        groupName: string,
+    ) => void;
+    operation: Operation;
+    accounts: Account[];
+    groups: Group[];
+    save: (operation: Operation) => void;
+    deleteRowClick: (params: DeleteOperationParams) => void;
 }
 
 interface OperationRow extends Operation {
-    inputGroup: string,
-    inputAccount: string
+    inputGroup: string;
+    inputAccount: string;
 }
 
 type RowError = {
-    isDateValid: boolean,
-    isAccountValid: boolean,
-    isGroupValid: boolean,
-    isSumValid: boolean
-}
+    isDateValid: boolean;
+    isAccountValid: boolean;
+    isGroupValid: boolean;
+    isSumValid: boolean;
+};
 
-const OperationTableRow: React.FC<OperationTableRowProps> = (
-    {
-        saveRowStatus,
-        tagDialogOpen,
-        operation,
-        accounts,
-        groups,
-        deleteRowClick,
-        save
-    }
-) => {
-    const maxDate = '2030-12-31';
-    const minDate = '2020-01-01';
+const OperationTableRow: React.FC<OperationTableRowProps> = ({
+    saveRowStatus,
+    tagDialogOpen,
+    operation,
+    accounts,
+    groups,
+    deleteRowClick,
+    save,
+}) => {
+    const maxDate = "2030-12-31";
+    const minDate = "2020-01-01";
 
     const [operationRow, setOperationRow] = useState<OperationRow>({
         id: operation.id,
@@ -59,7 +61,7 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
         sum: operation.sum,
         tags: operation.tags,
         inputGroup: "",
-        inputAccount: ""
+        inputAccount: "",
     });
 
     useEffect(() => {
@@ -69,11 +71,11 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
     }, []);
 
     useEffect(() => {
-        setOperationRow(prev => ({
+        setOperationRow((prev) => ({
             ...prev,
             id: operation.id,
             tags: prev.id ? operation.tags : operationRow.tags,
-            group: prev.id ? operation.group : operationRow.group
+            group: prev.id ? operation.group : operationRow.group,
         }));
     }, [operation.tags, operation.group, operation.id]);
 
@@ -83,32 +85,36 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const {name, value} = event.target;
-        setOperationRow(prev => ({
+        setOperationRow((prev) => ({
             ...prev,
-            [name]: value
+            [name]: value,
         }));
     };
 
     const handleDateChange = (value: Dayjs | null, name: string): void => {
-        setOperationRow(prev => ({
+        setOperationRow((prev) => ({
             ...prev,
-            [name]: (value && value.isValid()) ? value.valueOf() : null
+            [name]: value && value.isValid() ? value.valueOf() : null,
         }));
     };
 
-    const handleAutocompleteChange = (event: React.SyntheticEvent, newValue: string | null, inputId: string): void => {
-        setOperationRow(prev => ({
+    const handleAutocompleteChange = (
+        event: React.SyntheticEvent,
+        newValue: string | null,
+        inputId: string,
+    ): void => {
+        setOperationRow((prev) => ({
             ...prev,
-            [inputId]: newValue
+            [inputId]: newValue,
         }));
 
         if (inputId !== "group") {
             return;
         }
-        const group = groups.find(gr => gr.name === newValue);
-        setOperationRow(prev => ({
+        const group = groups.find((gr) => gr.name === newValue);
+        setOperationRow((prev) => ({
             ...prev,
-            tags: group ? group.tags : []
+            tags: group ? group.tags : [],
         }));
     };
 
@@ -116,7 +122,7 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
         isDateValid: true,
         isAccountValid: true,
         isGroupValid: true,
-        isSumValid: true
+        isSumValid: true,
     });
 
     const isOperationValid = (): boolean => {
@@ -125,14 +131,17 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
         const rowError = {
             isAccountValid: !!operationRow.account,
             isGroupValid: !!operationRow.group,
-            isSumValid: operationRow.sum != 0 &&
+            isSumValid:
+                operationRow.sum != 0 &&
                 operationRow.sum > -100000000 &&
                 operationRow.sum < 100000000,
-            isDateValid: operationRow.date >= startDate.setUTCHours(0,0,0,0) &&
-                operationRow.date <= endDate.setUTCHours(23,59,59,999)
+            isDateValid:
+                operationRow.date >= startDate.setUTCHours(0, 0, 0, 0) &&
+                operationRow.date <= endDate.setUTCHours(23, 59, 59, 999),
         };
         setErrors(rowError);
-        const isValid = rowError.isAccountValid &&
+        const isValid =
+            rowError.isAccountValid &&
             rowError.isGroupValid &&
             rowError.isSumValid &&
             rowError.isDateValid;
@@ -141,16 +150,18 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
     };
 
     const isOperationUpdated = (): boolean => {
-            return operation.date !== operationRow.date ||
+        return (
+            operation.date !== operationRow.date ||
             operation.account !== operationRow.account ||
             operation.sum !== Number(operationRow.sum) ||
             operation.description !== operationRow.description ||
             operation.group !== operationRow.group ||
-            operation.tags !== operationRow.tags;
+            operation.tags !== operationRow.tags
+        );
     };
 
     const handleFocusLost = (event: React.SyntheticEvent): void => {
-        if(operationRow.sum === 0) {
+        if (operationRow.sum === 0) {
             return;
         }
         if (isOperationUpdated() && isOperationValid()) {
@@ -158,11 +169,15 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
         }
     };
 
-    const account = accounts.find(acc => acc.name === operationRow.account);
-    const groupValue = (groups.length && operationRow.group) ? operationRow.group : "";
+    const account = accounts.find((acc) => acc.name === operationRow.account);
+    const groupValue =
+        groups.length && operationRow.group ? operationRow.group : "";
 
     return (
-        <TableRow onBlur={handleFocusLost} sx={{'&:last-child td, &:last-child th': {border: 0}}}>
+        <TableRow
+            onBlur={handleFocusLost}
+            sx={{"&:last-child td, &:last-child th": {border: 0}}}
+        >
             <TableCell component="th" scope="row">
                 <TableDateInput
                     id="date"
@@ -172,7 +187,7 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
                     maxDate={maxDate}
                     value={operationRow.date}
                     onChange={(val) => {
-                        handleDateChange(val, "date")
+                        handleDateChange(val, "date");
                     }}
                 />
             </TableCell>
@@ -180,26 +195,37 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
                 <AutoCompleteInput
                     id="account"
                     label="Account"
-                    options={accounts.map(acc => acc.name)}
+                    options={accounts.map((acc) => acc.name)}
                     width={160}
                     error={!errors.isAccountValid}
                     value={operationRow.account}
                     inputValue={operationRow.inputAccount}
-                    onChange={(e, newVal) => handleAutocompleteChange(e, newVal, "account")}
-                    onInputChange={(e, newVal) => handleAutocompleteChange(e, newVal, "inputAccount")}
+                    onChange={(e, newVal) =>
+                        handleAutocompleteChange(e, newVal, "account")
+                    }
+                    onInputChange={(e, newVal) =>
+                        handleAutocompleteChange(e, newVal, "inputAccount")
+                    }
                 />
             </TableCell>
             <TableCell align="right">
                 <AutoCompleteInput
                     id="group"
                     label="Group"
-                    options={(groupValue ? groups : [{name: "", tags: []}, ...groups]).map(gr => gr.name)}
+                    options={(groupValue
+                        ? groups
+                        : [{name: "", tags: []}, ...groups]
+                    ).map((gr) => gr.name)}
                     width={200}
                     error={!errors.isGroupValid}
                     value={groupValue}
                     inputValue={operationRow.inputGroup}
-                    onChange={(e, newVal) => handleAutocompleteChange(e, newVal, "group")}
-                    onInputChange={(e, newVal) => handleAutocompleteChange(e, newVal, "inputGroup")}
+                    onChange={(e, newVal) =>
+                        handleAutocompleteChange(e, newVal, "group")
+                    }
+                    onInputChange={(e, newVal) =>
+                        handleAutocompleteChange(e, newVal, "inputGroup")
+                    }
                 />
             </TableCell>
             <TableCell align="right">
@@ -229,7 +255,7 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
                         component="label"
                         onClick={handleTagDialogOpen}
                     >
-                        <BookmarksIcon/>
+                        <BookmarksIcon />
                     </IconButton>
                 </Badge>
             </TableCell>
@@ -239,14 +265,16 @@ const OperationTableRow: React.FC<OperationTableRowProps> = (
                     component="label"
                     color="error"
                     disabled={operationRow.sum === 0}
-                    onClick={() => deleteRowClick({
-                        id: Number(operationRow.id)
-                    })}
+                    onClick={() =>
+                        deleteRowClick({
+                            id: Number(operationRow.id),
+                        })
+                    }
                 >
-                    <DeleteIcon/>
+                    <DeleteIcon />
                 </IconButton>
             </TableCell>
         </TableRow>
-    )
+    );
 };
 export default OperationTableRow;

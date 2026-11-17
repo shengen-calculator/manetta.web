@@ -5,30 +5,66 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import {DialogContentText} from "@mui/material";
+import {useState} from "react";
 import AutoCompleteInput from "./AutoCompleteInput";
 
 interface LoadRecentOperationsDialogProps {
     isOpen: boolean;
     onCancel: () => void;
     groups: Group[];
+    onLoad: (group: string) => void;
+}
+
+interface DialogState {
+    inputGroupName: string;
+    groupName: string;
 }
 
 const LoadRecentOperationsDialog: React.FC<LoadRecentOperationsDialogProps> = ({
     isOpen,
     onCancel,
     groups,
+    onLoad,
 }) => {
+    const [dialogState, setDialogState] = useState<DialogState>({
+        inputGroupName: "",
+        groupName: "",
+    });
+
     const handleAutocompleteChange = (
         event: React.SyntheticEvent,
         newValue: string | null,
         inputId: string,
-    ): void => {};
+    ): void => {
+        setDialogState((prev) => ({
+            ...prev,
+            [inputId]: newValue,
+        }));
+    };
+
+    const handleCancel = () => {
+        setDialogState((prev) => ({
+            ...prev,
+            inputGroupName: "",
+            groupName: "",
+        }));
+        onCancel();
+    };
+
+    const handleLoad = () => {
+        onLoad(dialogState.groupName);
+        setDialogState((prev) => ({
+            ...prev,
+            inputGroupName: "",
+            groupName: "",
+        }));
+    };
 
     return (
         <div>
             <Dialog
                 open={isOpen}
-                onClose={onCancel}
+                onClose={handleCancel}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
@@ -48,8 +84,8 @@ const LoadRecentOperationsDialog: React.FC<LoadRecentOperationsDialogProps> = ({
                         margin="dense"
                         error={false}
                         variant={"outlined"}
-                        value={""}
-                        inputValue={""}
+                        value={dialogState.groupName}
+                        inputValue={dialogState.inputGroupName}
                         onChange={(e, newVal) =>
                             handleAutocompleteChange(e, newVal, "groupName")
                         }
@@ -63,8 +99,8 @@ const LoadRecentOperationsDialog: React.FC<LoadRecentOperationsDialogProps> = ({
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={onCancel}>CANCEL</Button>
-                    <Button onClick={onCancel} autoFocus>
+                    <Button onClick={handleCancel}>CANCEL</Button>
+                    <Button onClick={handleLoad} autoFocus>
                         LOAD
                     </Button>
                 </DialogActions>

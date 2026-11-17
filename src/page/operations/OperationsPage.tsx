@@ -62,6 +62,14 @@ const OperationsPage: React.FC<OperationsPageProps> = ({
         });
     };
 
+    const load = (group: string) => {
+        alert(`Group => ${group}`);
+        setLoadDialogStatus({
+            ...loadDialogStatus,
+            isOpen: false,
+        });
+    };
+
     const [rowStatuses, setRowStatuses] = React.useState<RowStatus[]>([]);
     const [postDialogStatus, setPostDialogStatus] =
         React.useState<PostDialogStatus>({
@@ -176,6 +184,7 @@ const OperationsPage: React.FC<OperationsPageProps> = ({
                     isOpen={loadDialogStatus.isOpen}
                     onCancel={handleLoadDialogCancel}
                     groups={loadDialogStatus.groups}
+                    onLoad={load}
                 />
                 <HotKeys
                     handlers={getHandlers(navigate, dialog)}
