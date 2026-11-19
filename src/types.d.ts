@@ -190,5 +190,5 @@ interface HeadCell {
 interface OperationTemplate {
     title: string;
     description: string;
-    tags: string[];
+    group: string;
 }
