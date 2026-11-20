@@ -20,7 +20,6 @@ import {
 } from "../../redux/actions/operationActions";
 import {connect} from "react-redux";
 import LoadRecentOperationsDialog from "../operations/LoadRecentOperationsDialog";
-import {ApplicationState, GroupState} from "../../redux/reducers/types";
 
 const mainFeaturedPost = {
     title: "Manetta Accounting",
@@ -81,30 +80,29 @@ const templates: OperationTemplate[] = [
 
 type LoadRecentOperationsDialogStatus = {
     isOpen: boolean;
-    groups: Group[];
+    group: string;
 };
 
 interface HomePageProps {
     loadRecentOperationsRequest: (
         params: LoadRecentOperationsParams,
     ) => LoadRecentOperationsAction;
-    group: GroupState;
 }
 
-const HomePage: React.FC<HomePageProps> = ({loadRecentOperationsRequest, group}) => {
+const HomePage: React.FC<HomePageProps> = ({loadRecentOperationsRequest}) => {
     const navigate = useNavigate();
 
     const [loadDialogStatus, setLoadDialogStatus] =
         React.useState<LoadRecentOperationsDialogStatus>({
             isOpen: false,
-            groups: [],
+            group: "",
         });
 
-    const handleLoadDialogOpen = (): void => {
+    const handleLoadDialogOpen = (group: string): void => {
         setLoadDialogStatus({
             ...loadDialogStatus,
             isOpen: true,
-            groups: group.items,
+            group,
         });
     };
 
@@ -132,8 +130,9 @@ const HomePage: React.FC<HomePageProps> = ({loadRecentOperationsRequest, group})
                 <LoadRecentOperationsDialog
                     isOpen={loadDialogStatus.isOpen}
                     onCancel={handleLoadDialogCancel}
-                    groups={loadDialogStatus.groups}
+                    groups={[{name: loadDialogStatus.group, tags: []}]}
                     onLoad={createOperations}
+                    defaultValue={loadDialogStatus.group}
                 />
                 <HotKeys handlers={getHandlers(navigate, null)} keyMap={keyMap}>
                     <Header title="MANETTA" menuItems={menuItems} />
@@ -155,7 +154,7 @@ const HomePage: React.FC<HomePageProps> = ({loadRecentOperationsRequest, group})
                                 <OperationTemplate
                                     key={template.title}
                                     template={template}
-                                    open={handleLoadDialogOpen}
+                                    openDialog={handleLoadDialogOpen}
                                 />
                             ))}
                         </Grid>
@@ -167,15 +166,9 @@ const HomePage: React.FC<HomePageProps> = ({loadRecentOperationsRequest, group})
     );
 };
 
-const mapStateToProps = (state: ApplicationState) => {
-    return {
-        group: state.group,
-    };
-};
-
 // noinspection JSUnusedGlobalSymbols
 const mapDispatchToProps = {
     loadRecentOperationsRequest,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
+export default connect(null, mapDispatchToProps)(HomePage);

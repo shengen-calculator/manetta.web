@@ -1,26 +1,31 @@
-import * as React from 'react';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import Card from '@mui/material/Card';
-import CardActionArea from '@mui/material/CardActionArea';
-import CardContent from '@mui/material/CardContent';
+import * as React from "react";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardContent from "@mui/material/CardContent";
 
 interface TemplateProps {
-    open: () => void;
+    openDialog: (group: string) => void;
     template: {
         description: string;
         title: string;
+        group: string;
     };
 }
 
 export default function OperationTemplate(props: TemplateProps) {
-    const { template, open } = props;
+    const {template, openDialog} = props;
+
+    const handleClick = () => {
+        openDialog(template.group);
+    };
 
     return (
         <Grid item xs={12} md={6}>
-            <CardActionArea component="a" onClick={open}>
-                <Card sx={{ display: 'flex', bgcolor: 'grey.200' }}>
-                    <CardContent sx={{ flex: 1 }}>
+            <CardActionArea component="a" onClick={handleClick}>
+                <Card sx={{display: "flex", bgcolor: "grey.200"}}>
+                    <CardContent sx={{flex: 1}}>
                         <Typography component="h2" variant="h5">
                             {template.title}
                         </Typography>

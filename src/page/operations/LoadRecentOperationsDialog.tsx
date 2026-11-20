@@ -13,6 +13,7 @@ interface LoadRecentOperationsDialogProps {
     onCancel: () => void;
     groups: Group[];
     onLoad: (group: string) => void;
+    defaultValue?: string;
 }
 
 interface DialogState {
@@ -25,6 +26,7 @@ const LoadRecentOperationsDialog: React.FC<LoadRecentOperationsDialogProps> = ({
     onCancel,
     groups,
     onLoad,
+    defaultValue,
 }) => {
     const [dialogState, setDialogState] = useState<DialogState>({
         inputGroupName: "",
@@ -52,7 +54,7 @@ const LoadRecentOperationsDialog: React.FC<LoadRecentOperationsDialogProps> = ({
     };
 
     const handleLoad = () => {
-        onLoad(dialogState.groupName);
+        onLoad(dialogState.groupName || defaultValue || "");
         setDialogState((prev) => ({
             ...prev,
             inputGroupName: "",
@@ -85,7 +87,7 @@ const LoadRecentOperationsDialog: React.FC<LoadRecentOperationsDialogProps> = ({
                         error={false}
                         variant={"outlined"}
                         value={dialogState.groupName}
-                        inputValue={dialogState.inputGroupName}
+                        inputValue={dialogState.inputGroupName || defaultValue || ""}
                         onChange={(e, newVal) =>
                             handleAutocompleteChange(e, newVal, "groupName")
                         }
